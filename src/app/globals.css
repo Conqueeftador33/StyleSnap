@@ -5,78 +5,78 @@
 
 @layer base {
   :root {
-    /* New Theme: Inspired by "Oriental Touch" - Updating background */
-    --background: 0 15% 93%; /* Very light grayish rose */
-    --foreground: 30 20% 25%; /* Dark warm brown */
+    /* Theme inspired by "Blue Mosaic & Yellow Flowers" */
+    --background: 225 60% 94%; /* Soft Periwinkle Blue */
+    --foreground: 230 30% 25%; /* Deep Desaturated Blue */
     
-    --card: 30 50% 100%; /* Slightly off-white for cards */
-    --card-foreground: 30 20% 20%;
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 230 30% 20%; /* Darker Blue for card text */
 
-    --popover: 30 50% 100%;
-    --popover-foreground: 30 20% 20%;
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 230 30% 20%;
 
-    --primary: 0 60% 55%; /* Muted, sophisticated red (e.g., Cinnabar-like) */
-    --primary-foreground: 30 50% 98%; /* Light cream text on primary */
+    --primary: 220 75% 55%; /* Vibrant Cobalt Blue */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
 
-    --secondary: 30 30% 88%; /* Soft beige / light warm gray */
-    --secondary-foreground: 30 20% 30%;
+    --secondary: 225 50% 88%; /* Muted Periwinkle */
+    --secondary-foreground: 230 30% 30%;
 
-    --muted: 30 35% 92%; /* Lighter beige for muted elements */
-    --muted-foreground: 30 20% 45%; /* Softer foreground for muted text */
+    --muted: 225 55% 92%; /* Lighter Periwinkle for muted elements */
+    --muted-foreground: 230 30% 45%; /* Softer foreground for muted text */
 
-    --accent: 40 85% 60%; /* Warm gold/ochre */
-    --accent-foreground: 30 20% 15%; /* Dark brown text on accent */
+    --accent: 45 90% 60%; /* Warm Yellow/Gold */
+    --accent-foreground: 40 30% 15%; /* Dark brown/yellow text on accent */
 
-    --destructive: 0 70% 50%; /* A clearer red for destructive actions */
+    --destructive: 0 70% 50%; /* Standard red for destructive actions */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 20% 85%; /* Softer border color */
-    --input: 30 50% 97%; /* Light input background, slightly warmer */
-    --ring: 0 60% 65%; /* Ring color related to primary, slightly lighter */
+    --border: 225 40% 85%; /* Softer blue border */
+    --input: 225 70% 97%; /* Very light blue input background */
+    --ring: 220 75% 65%; /* Ring color related to primary, slightly lighter */
     
-    --chart-1: 0 60% 50%; /* Primary Red for charts */
-    --chart-2: 40 85% 55%; /* Accent Gold for charts */
-    --chart-3: 30 20% 50%; /* Neutral Warm Gray */
-    --chart-4: 0 50% 70%; /* Lighter Red */
-    --chart-5: 40 70% 70%; /* Lighter Gold */
-    --radius: 0.5rem; /* Existing radius, looks good */
+    --chart-1: 220 75% 55%; /* Primary Blue */
+    --chart-2: 45 90% 60%;  /* Accent Gold */
+    --chart-3: 225 30% 60%; /* Neutral Muted Blue */
+    --chart-4: 220 65% 70%; /* Lighter Primary Blue */
+    --chart-5: 45 80% 70%;  /* Lighter Accent Gold */
+    --radius: 0.5rem;
   }
 
   .dark {
     /* Dark theme adjustments for the new palette */
-    --background: 30 10% 12%; /* Deep, dark warm brown/charcoal */
-    --foreground: 30 30% 88%; /* Light warm beige/cream text */
+    --background: 230 20% 12%; /* Deep Dark Blue/Charcoal */
+    --foreground: 225 40% 88%; /* Light Periwinkle/Blue text */
     
-    --card: 30 10% 16%; /* Slightly lighter dark for cards */
-    --card-foreground: 30 30% 88%;
+    --card: 230 20% 16%; /* Slightly lighter dark blue for cards */
+    --card-foreground: 225 40% 88%;
 
-    --popover: 30 10% 15%;
-    --popover-foreground: 30 30% 88%;
+    --popover: 230 20% 15%;
+    --popover-foreground: 225 40% 88%;
 
-    --primary: 0 55% 65%; /* Red, adjusted for dark mode visibility */
+    --primary: 220 70% 65%; /* Vibrant Blue, adjusted for dark mode */
     --primary-foreground: 0 0% 98%; /* Very light text on primary */
 
-    --secondary: 30 15% 35%; /* Muted dark warm gray */
-    --secondary-foreground: 30 30% 90%;
+    --secondary: 225 25% 35%; /* Muted dark blue/gray */
+    --secondary-foreground: 225 40% 90%;
 
-    --muted: 30 10% 25%; /* Darker muted background */
-    --muted-foreground: 30 25% 70%; /* Lighter muted text */
+    --muted: 225 20% 25%; /* Darker muted blue */
+    --muted-foreground: 225 30% 70%; /* Lighter muted text */
 
-    --accent: 40 80% 68%; /* Gold, adjusted for dark mode */
-    --accent-foreground: 30 10% 10%; /* Very dark text on accent */
+    --accent: 45 80% 68%; /* Gold, adjusted for dark mode */
+    --accent-foreground: 40 20% 10%; /* Very dark text on accent */
 
     --destructive: 0 65% 60%; 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 10% 30%; 
-    --input: 30 10% 20%; 
-    --ring: 0 55% 60%; 
+    --border: 225 20% 30%; 
+    --input: 225 20% 20%; 
+    --ring: 220 70% 60%; 
     
-    --chart-1: 0 55% 60%;
-    --chart-2: 40 80% 60%;
-    --chart-3: 30 15% 50%;
-    --chart-4: 0 45% 75%;
-    --chart-5: 40 65% 75%;
+    --chart-1: 220 70% 60%;
+    --chart-2: 45 80% 65%;
+    --chart-3: 225 25% 50%;
+    --chart-4: 220 60% 75%;
+    --chart-5: 45 70% 75%;
   }
 }
 
@@ -92,4 +92,3 @@
     @apply font-headline;
   }
 }
-
