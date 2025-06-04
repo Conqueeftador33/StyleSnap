@@ -5,97 +5,78 @@
 
 @layer base {
   :root {
-    /* Updated theme based on PRD: Dusty Rose, Light Grayish Rose, Muted Violet */
-    --background: 0 17% 93%; /* Very light grayish rose (#F0ECEC) */
-    --foreground: 0 0% 20%; /* Darker foreground for contrast on light background */
+    /* PRD Theme: Dusty Rose, Light Grayish Rose, Muted Violet */
+    --background: 354 25% 95%; /* Very light grayish rose (#F0ECEC) hsl(354, 25%, 95%) */
+    --foreground: 354 10% 20%; /* Darker foreground for contrast */
     
     --card: 0 0% 100%; /* White cards */
-    --card-foreground: 0 0% 15%;
+    --card-foreground: 354 10% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 354 10% 15%;
 
-    --primary: 0 19% 70%; /* Dusty rose (#C2A3A3) */
+    --primary: 0 27% 70%; /* Dusty rose (#C2A3A3) hsl(0, 27%, 70%) */
     --primary-foreground: 0 0% 10%; /* Dark text on dusty rose */
 
-    --secondary: 240 15% 80%; /* Lighter variant of Muted Violet for secondary elements */
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 240 27% 80%; /* Lighter variant of Muted Violet for secondary elements (Adjusted) hsl(240, 27%, 80%) */
+    --secondary-foreground: 240 10% 20%;
 
-    --muted: 0 10% 88%; /* Slightly darker than background for muted elements */
-    --muted-foreground: 0 0% 40%;
+    --muted: 354 20% 88%; /* Slightly darker than background */
+    --muted-foreground: 354 10% 40%;
 
-    --accent: 240 21% 70%; /* Muted violet (#A3A3C2) */
+    --accent: 240 27% 70%; /* Muted violet (#A3A3C2) hsl(240, 27%, 70%) */
     --accent-foreground: 0 0% 100%; /* White text on muted violet */
 
     --destructive: 0 75% 55%; /* Strong Red (Kept for destructive actions) */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 10% 80%; /* Soft border, related to background/muted */
+    --border: 354 20% 80%; /* Soft border */
     --input: 0 0% 98%; /* Light input background */
-    --ring: 0 19% 65%; /* Ring color related to primary */
+    --ring: 0 27% 65%; /* Ring color related to primary */
     
-    --chart-1: 0 19% 60%;
-    --chart-2: 240 21% 60%;
+    --chart-1: 0 27% 60%;
+    --chart-2: 240 27% 60%;
     --chart-3: 0 10% 50%;
-    --chart-4: 0 19% 75%;
-    --chart-5: 240 21% 75%;
+    --chart-4: 0 27% 75%;
+    --chart-5: 240 27% 75%;
     --radius: 0.5rem;
-
-    /* Sidebar colors - can be adjusted for better harmony with the new theme */
-    --sidebar-background: 0 15% 90%; /* Lighter than main bg but similar hue */
-    --sidebar-foreground: 0 0% 25%;
-    --sidebar-primary: 0 19% 65%; /* Primary for sidebar */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 10% 85%; /* Accent for sidebar elements */
-    --sidebar-accent-foreground: 0 0% 15%;
-    --sidebar-border: 0 10% 75%;
-    --sidebar-ring: 0 19% 60%;
   }
 
   .dark {
     /* Dark theme adjustments for the new palette */
-    --background: 0 5% 12%; /* Dark grayish rose */
-    --foreground: 0 0% 85%; 
+    --background: 354 5% 12%; /* Dark grayish rose */
+    --foreground: 354 5% 85%; 
     
-    --card: 0 5% 15%; 
-    --card-foreground: 0 0% 85%;
+    --card: 354 5% 15%; 
+    --card-foreground: 354 5% 85%;
 
-    --popover: 0 5% 15%;
-    --popover-foreground: 0 0% 85%;
+    --popover: 354 5% 15%;
+    --popover-foreground: 354 5% 85%;
 
-    --primary: 0 19% 60%; /* Dusty rose, slightly desaturated/darker for dark mode */
+    --primary: 0 27% 60%; /* Dusty rose, slightly adjusted for dark mode */
     --primary-foreground: 0 0% 95%;
 
-    --secondary: 240 15% 55%; 
+    --secondary: 240 20% 55%; 
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 5% 20%; 
-    --muted-foreground: 0 0% 60%;
+    --muted: 354 5% 20%; 
+    --muted-foreground: 354 5% 60%;
 
-    --accent: 240 21% 60%; /* Muted violet, slightly desaturated/darker */
+    --accent: 240 27% 60%; /* Muted violet, slightly adjusted */
     --accent-foreground: 0 0% 95%;
 
     --destructive: 0 70% 50%; 
     --destructive-foreground: 0 0% 95%;
 
-    --border: 0 5% 25%; 
-    --input: 0 5% 18%; 
-    --ring: 0 19% 55%; 
+    --border: 354 5% 25%; 
+    --input: 354 5% 18%; 
+    --ring: 0 27% 55%; 
     
-    --chart-1: 0 19% 50%;
-    --chart-2: 240 21% 50%;
+    --chart-1: 0 27% 50%;
+    --chart-2: 240 27% 50%;
     --chart-3: 0 10% 40%;
-    --chart-4: 0 19% 65%;
-    --chart-5: 240 21% 65%;
-
-    --sidebar-background: 0 5% 10%;
-    --sidebar-foreground: 0 0% 80%;
-    --sidebar-primary: 0 19% 55%;
-    --sidebar-primary-foreground: 0 0% 95%;
-    --sidebar-accent: 0 5% 14%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 0 5% 20%;
-    --sidebar-ring: 0 19% 50%;
+    --chart-4: 0 27% 65%;
+    --chart-5: 240 27% 65%;
   }
 }
 
@@ -104,7 +85,10 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
     font-feature-settings: "rlig" 1, "calt" 1; /* Enable common ligatures */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline;
   }
 }

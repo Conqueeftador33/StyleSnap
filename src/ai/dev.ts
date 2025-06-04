@@ -2,9 +2,10 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/analyze-clothing-image.ts';
-import '@/ai/flows/suggest-category.ts';
-import '@/ai/flows/suggest-outfits-flow.ts';
-import '@/ai/flows/explore-new-looks-flow.ts'; // Added new flow
+// This file will import Genkit flows for local development testing.
+// Currently empty as flows will be recreated.
 
+// Example of what might go here later:
+// import '@/ai/flows/analyze-clothing-image';
+// import '@/ai/flows/suggest-outfits-flow';
     
