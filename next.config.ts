@@ -1,17 +1,24 @@
 
-import type {NextConfig} from 'next';
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  // ==========================================================================
+  // BUILD PROCESS CONFIGURATION
+  // ==========================================================================
   typescript: {
     // WARNING: Setting this to true can hide underlying TypeScript compilation errors.
-    // While not directly related to 'async_hooks', it's important to be aware of.
+    // This is kept as per your existing configuration.
     ignoreBuildErrors: true,
   },
   eslint: {
     // WARNING: Setting this to true can hide ESLint issues.
+    // This is kept as per your existing configuration.
     ignoreDuringBuilds: true,
   },
+
+  // ==========================================================================
+  // IMAGE OPTIMIZATION
+  // ==========================================================================
   images: {
     remotePatterns: [
       {
@@ -31,10 +38,10 @@ const nextConfig: NextConfig = {
   // incorrectly bundled into the client-side JavaScript. If this module is
   // included in the client bundle, it will cause a "Module not found" error
   // because 'async_hooks' is a Node.js native module and does not exist in browsers.
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     // This modification should ONLY apply to client-side bundles.
     if (!isServer) {
-      // Ensure the 'resolve' object exists on the Webpack config if it doesn't.
+      // Ensure the 'resolve' object exists on the Webpack config.
       if (!config.resolve) {
         config.resolve = {};
       }
