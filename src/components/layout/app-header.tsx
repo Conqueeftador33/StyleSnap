@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { PlusCircle, Sparkles, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppHeader() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setIsMounted(true);
@@ -27,22 +29,20 @@ export function AppHeader() {
           <Button
             onClick={() => router.push('/outfit-suggestions')}
             variant="outline"
-            size="sm"
-            className="px-2 sm:px-3"
-            aria-label="Suggest Outfits"
+            size={isMounted && isMobile ? 'icon' : 'sm'}
+            aria-label={isMounted && isMobile ? "Suggest Outfits" : undefined}
           >
             <Sparkles className="h-4 w-4" />
-            {isMounted && <span className="hidden sm:ml-2 sm:inline">Suggest Outfits</span>}
+            {isMounted && !isMobile && <span className="ml-2">Suggest Outfits</span>}
           </Button>
           <Button
             onClick={() => router.push('/add')}
             variant="default"
-            size="sm"
-            className="px-2 sm:px-3"
-            aria-label="Add Item"
+            size={isMounted && isMobile ? 'icon' : 'sm'}
+            aria-label={isMounted && isMobile ? "Add Item" : undefined}
           >
             <PlusCircle className="h-4 w-4" />
-            {isMounted && <span className="hidden sm:ml-2 sm:inline">Add Item</span>}
+            {isMounted && !isMobile && <span className="ml-2">Add Item</span>}
           </Button>
         </div>
       </div>
