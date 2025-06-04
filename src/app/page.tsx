@@ -5,12 +5,25 @@ import { useWardrobe } from '@/hooks/use-wardrobe';
 import { WardrobeGrid } from '@/components/wardrobe/wardrobe-grid';
 import { SearchFilters, type Filters } from '@/components/wardrobe/search-filters';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { Loader2, LayersIcon } from 'lucide-react';
+import { Loader2, LayersIcon, ListOrdered } from 'lucide-react';
 import type { ClothingItem } from '@/lib/types';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+const sortOptions = [
+  { value: 'createdAt_desc', label: 'Date Added (Newest First)' },
+  { value: 'createdAt_asc', label: 'Date Added (Oldest First)' },
+  { value: 'name_asc', label: 'Name (A-Z)' },
+  { value: 'name_desc', label: 'Name (Z-A)' },
+  { value: 'category_asc', label: 'Category (A-Z)' },
+  { value: 'type_asc', label: 'Type (A-Z)' },
+];
 
 export default function WardrobePage() {
   const { items: allItems, isLoading } = useWardrobe();
   const [filters, setFilters] = useState<Filters>({});
+  const [sortBy, setSortBy] = useState<string>('createdAt_desc'); // Default sort
 
   const filteredItems = useMemo(() => {
     if (!filters || Object.keys(filters).length === 0) {
@@ -29,6 +42,34 @@ export default function WardrobePage() {
       return nameMatch && categoryMatch && typeMatch && colorMatch && materialMatch;
     });
   }, [allItems, filters]);
+
+  const sortedAndFilteredItems = useMemo(() => {
+    let sortableItems = [...filteredItems]; 
+
+    switch (sortBy) {
+      case 'createdAt_desc':
+        sortableItems.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      case 'createdAt_asc':
+        sortableItems.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        break;
+      case 'name_asc':
+        sortableItems.sort((a, b) => (a.name || a.type).localeCompare(b.name || b.type));
+        break;
+      case 'name_desc':
+        sortableItems.sort((a, b) => (b.name || b.type).localeCompare(a.name || a.type));
+        break;
+      case 'category_asc':
+        sortableItems.sort((a, b) => a.category.localeCompare(b.category));
+        break;
+      case 'type_asc':
+        sortableItems.sort((a, b) => a.type.localeCompare(b.type));
+        break;
+      default:
+        sortableItems.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return sortableItems;
+  }, [filteredItems, sortBy]);
 
   if (isLoading) {
     return (
@@ -53,9 +94,37 @@ export default function WardrobePage() {
       </div>
 
       {allItems.length > 0 && <DashboardStats items={allItems} />}
-      {allItems.length > 0 && <SearchFilters onFilterChange={setFilters} />}
       
-      <WardrobeGrid items={filteredItems} />
+      {allItems.length > 0 && (
+        <div className="space-y-4">
+          <Card className="shadow-sm">
+            <CardHeader className="py-4 px-4 sm:px-6"> {/* Adjusted padding for CardHeader */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <CardTitle className="font-headline text-lg flex items-center whitespace-nowrap">
+                  <ListOrdered className="mr-2 h-5 w-5 text-primary" />
+                  View Options
+                </CardTitle>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Label htmlFor="sort-by-select" className="text-sm font-medium whitespace-nowrap">Sort by:</Label>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger id="sort-by-select" className="h-10 w-full sm:w-[220px]">
+                      <SelectValue placeholder="Select sort order" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sortOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+          <SearchFilters onFilterChange={setFilters} />
+        </div>
+      )}
+      
+      <WardrobeGrid items={sortedAndFilteredItems} />
     </div>
   );
 }
