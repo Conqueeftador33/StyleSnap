@@ -19,6 +19,8 @@ const ChatMessageSchema = z.object({
   text: z.string(),
 });
 
+// Zod schema for the input to the stylist chat flow.
+// This schema is NOT exported because this file uses 'use server'.
 const StylistChatInputSchema = z.object({
   userInput: z.string().describe("The user's latest message to the chatbot."),
   chatHistory: z.array(ChatMessageSchema).optional().describe("The recent history of the conversation. Provide the last 5-10 messages for context."),
@@ -31,7 +33,7 @@ export type StylistChatOutput = string;
 
 // Exported async function that client components will call
 export async function stylistChatFlow(input: StylistChatInput): Promise<StylistChatOutput> {
-  const result = await stylistChatConversationFlow(input); // Call the defined Genkit flow
+  const result = await stylistChatConversationFlow(input);
   return result.aiResponse;
 }
 
@@ -58,8 +60,7 @@ Conversation Context:
 {{#if chatHistory}}
 Here's the recent conversation history (last message is the most recent user message before the current one):
   {{#each chatHistory}}
-    {{#if (eq sender "user")}}User: {{text}}{{/if}}
-    {{#if (eq sender "ai")}}Stylist: {{text}}{{/if}}
+  {{this.sender}}: {{this.text}}
   {{/each}}
 {{else}}
 This is the beginning of our conversation.
@@ -83,15 +84,15 @@ Based on all this, what is your helpful and stylish response? Keep it to a few s
 // Genkit flow definition
 const stylistChatConversationFlow = ai.defineFlow(
   {
-    name: 'stylistChatConversationFlow', // Unique name for this defined flow
-    inputSchema: StylistChatInputSchema, // Uses the local (non-exported) schema
-    outputSchema: z.object({ aiResponse: z.string() }), // Matches prompt output
+    name: 'stylistChatConversationFlow',
+    inputSchema: StylistChatInputSchema,
+    outputSchema: z.object({ aiResponse: z.string() }),
   },
   async (input) => {
     const { output } = await stylistPrompt(input);
     if (!output) {
       throw new Error('AI stylist prompt did not return an output.');
     }
-    return output; // This is { aiResponse: string }
+    return output;
   }
 );
