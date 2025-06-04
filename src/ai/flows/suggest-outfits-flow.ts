@@ -45,7 +45,7 @@ const prompt = ai.definePrompt({
 
 User's Wardrobe Items:
 {{#each wardrobeItems}}
-- Item ID: {{id}}, Name: {{name DNE="Unnamed Item"}}, Type: {{type}}, Color: {{color}}, Category: {{category}}{{#if description}}, Description: "{{description}}"{{/if}}
+- Item ID: {{id}}, Name: {{#if name}}{{name}}{{else}}Unnamed Item{{/if}}, Type: {{type}}, Color: {{color}}, Category: {{category}}{{#if description}}, Description: "{{description}}"{{/if}}
 {{/each}}
 
 {{#if occasion}}
@@ -94,7 +94,7 @@ const suggestOutfitsFlow = ai.defineFlow(
           // This is a problem, AI might have hallucinated an ID or not used one.
           // For robustness, one might filter out such items or the whole outfit, or throw an error.
           // Here, we'll log and let it pass, but in production, more handling might be needed.
-          console.warn(`Outfit "${outfit.outfitName}" contains an item with itemId "${item.itemId}" not found in the provided wardrobe.`);
+          console.warn('Outfit "' + outfit.outfitName + '" contains an item with itemId "' + item.itemId + '" not found in the provided wardrobe.');
         }
       });
       // Filter out items with invalid itemIds from an outfit
@@ -107,4 +107,3 @@ const suggestOutfitsFlow = ai.defineFlow(
     return output;
   }
 );
-
