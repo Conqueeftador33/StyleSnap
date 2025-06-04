@@ -3,13 +3,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ImageUploader } from '@/components/common/image-uploader';
-import { CameraCapturePlaceholder } from '@/components/common/camera-capture-placeholder';
+import { CameraCapture } from '@/components/common/camera-capture'; // Updated import
 import { ItemForm, ItemFormData } from '@/components/forms/item-form';
 import { Button } from '@/components/ui/button';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
 import { analyzeClothingImage, AnalyzeClothingImageOutput } from '@/ai/flows/analyze-clothing-image';
-// import { suggestCategory } from '@/ai/flows/suggest-category'; // No longer needed here
 import type { AiClothingType, AiClothingMaterial, AiClothingColor, WardrobeCategory, ClothingItem } from '@/lib/types';
 import { WARDROBE_CATEGORIES, AI_CLOTHING_TYPES, AI_CLOTHING_MATERIALS, AI_CLOTHING_COLORS } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -55,17 +54,17 @@ export default function AddItemPage() {
       material: selectedAiItem.material as AiClothingMaterial,
       color: selectedAiItem.color as AiClothingColor,
       category: validCategory as WardrobeCategory,
-      name: '', // AI doesn't suggest name yet, clear previous if any
+      name: '', 
     });
 
-    if (!itemsToUse) { // Only toast if not called during initial analysis batch
+    if (!itemsToUse) { 
         toast({ title: 'Item Selected', description: `Details for '${selectedAiItem.type} (${selectedAiItem.color})' loaded into the form.`, variant: 'default' });
     }
   };
 
   const handleAnalyzeImage = async () => {
     if (!imageDataUri) {
-      toast({ title: 'No Image', description: 'Please upload an image first.', variant: 'destructive' });
+      toast({ title: 'No Image', description: 'Please upload or capture an image first.', variant: 'destructive' });
       return;
     }
     setIsAnalyzing(true);
@@ -82,7 +81,7 @@ export default function AddItemPage() {
       setAnalysisDone(true);
 
       if (analysisResult.items && analysisResult.items.length > 0) {
-        handleSelectAnalyzedItem(0, analysisResult.items); // Auto-select the first item
+        handleSelectAnalyzedItem(0, analysisResult.items); 
         if (analysisResult.items.length === 1) {
             toast({ title: 'Analysis Complete!', description: 'AI analyzed the item. Review details below.', variant: 'default', className: 'bg-green-500 text-white' });
         } else {
@@ -150,7 +149,7 @@ export default function AddItemPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
         <div className="space-y-4">
           <ImageUploader onImageUpload={handleImageUpload} />
-          <CameraCapturePlaceholder />
+          <CameraCapture onImageCapture={handleImageUpload} /> {/* Use CameraCapture and pass handler */}
         </div>
         
         <Card className="sticky top-24">
