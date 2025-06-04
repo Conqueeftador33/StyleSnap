@@ -4,60 +4,22 @@
  * @fileOverview Suggests daily outfits based on wardrobe inventory, season, desired count, gender, and offers purchase advice.
  *
  * - suggestOutfits - A function that suggests outfits.
- * - SuggestOutfitsInput - The input type for the suggestOutfits function.
- * - SuggestOutfitsOutput - The return type for the suggestOutfits function.
+ * - SuggestOutfitsInput - The input type for the suggestOutfits function. (Imported from shared-types)
+ * - SuggestOutfitsOutput - The return type for the suggestOutfits function. (Imported from shared-types)
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
 import type { ClothingItem } from '@/lib/types'; // Full ClothingItem for context
+import {
+  SuggestOutfitsInputSchema,
+  SuggestOutfitsOutputSchema,
+  type SuggestOutfitsInput,   // Import type
+  type SuggestOutfitsOutput,  // Import type
+  // FlowClothingItemSchema, // Now in shared-types
+  // Seasons, // Now in shared-types
+  // Genders, // Now in shared-types
+} from './shared-types';
 
-export const FlowClothingItemSchema = z.object({
-  id: z.string(),
-  name: z.string().optional(),
-  type: z.string(),
-  color: z.string(),
-  material: z.string(),
-  category: z.string(),
-});
-export type FlowClothingItem = z.infer<typeof FlowClothingItemSchema>;
-
-export const Seasons = z.enum(['Spring', 'Summer', 'Autumn', 'Winter']);
-export type Season = z.infer<typeof Seasons>;
-
-export const Genders = z.enum(['Male', 'Female', 'Unspecified']);
-export type Gender = z.infer<typeof Genders>;
-
-const SuggestOutfitsInputSchema = z.object({
-  season: Seasons.describe('The current season for which to suggest outfits.'),
-  wardrobeItems: z.array(FlowClothingItemSchema).describe('A list of available clothing items in the wardrobe.'),
-  desiredOutfitCount: z.number().int().min(1).max(7).optional().describe('Optional. The number of distinct new outfits the user would like to see (1-7).'),
-  gender: Genders.optional().describe("Optional. The user's gender to help tailor suggestions. If 'Unspecified' or not provided, suggest generally applicable styles."),
-});
-export type SuggestOutfitsInput = z.infer<typeof SuggestOutfitsInputSchema>;
-
-const OutfitSuggestionSchema = z.object({
-  itemName: z.string().describe("The name of the clothing item (or its type if name is not available)."),
-  itemId: z.string().describe("The ID of the clothing item from the wardrobe."),
-});
-
-const DailyOutfitSchema = z.object({
-  dayOfWeek: z.string().describe('The day of the week (e.g., Monday, Tuesday).'),
-  outfitDescription: z.string().describe('A brief description of the suggested outfit and why it fits the season/day/gender, incorporating fashion trends and styling principles.'),
-  items: z.array(OutfitSuggestionSchema).describe('A list of clothing item IDs that make up the outfit.'),
-});
-
-const SuggestedPurchaseSchema = z.object({
-    itemDescription: z.string().describe("A description of the item to purchase (e.g., 'a versatile white t-shirt', 'dark wash denim jeans for a male frame', 'a flowy midi skirt for a female frame')."),
-    reason: z.string().describe("Why this item is suggested and how it would enhance the wardrobe or help create more outfits, considering gender if specified."),
-});
-
-const SuggestOutfitsOutputSchema = z.object({
-  suggestions: z.array(DailyOutfitSchema).describe('A list of daily outfit suggestions for a week.'),
-  suggestedPurchases: z.array(SuggestedPurchaseSchema).optional().describe("Optional. A list of items to consider purchasing if the desired number of outfits couldn't be met or to significantly enhance wardrobe versatility, tailored to gender if provided."),
-  aiFashionNotes: z.string().optional().describe("Optional. General fashion advice or observations based on the wardrobe, request, and gender (if provided)."),
-});
-export type SuggestOutfitsOutput = z.infer<typeof SuggestOutfitsOutputSchema>;
 
 export async function suggestOutfits(input: SuggestOutfitsInput): Promise<SuggestOutfitsOutput> {
   return suggestOutfitsFlow(input);
@@ -113,7 +75,7 @@ const suggestOutfitsFlow = ai.defineFlow(
     inputSchema: SuggestOutfitsInputSchema,
     outputSchema: SuggestOutfitsOutputSchema,
   },
-  async (input) => {
+  async (input: SuggestOutfitsInput) => { // Explicitly type input here for clarity
     if (input.wardrobeItems.length === 0) {
       const emptyMessage = "Your wardrobe is empty! Add some items to get outfit suggestions.";
       return {
@@ -134,5 +96,3 @@ const suggestOutfitsFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    

@@ -4,41 +4,21 @@
  * @fileOverview Generates new, trendy outfit look ideas based on gender, season, and fashion trends, using existing wardrobe for style reference.
  *
  * - exploreNewLooks - A function that generates aspirational outfit looks.
- * - ExploreLooksInput - The input type for the exploreNewLooks function.
- * - ExploreLooksOutput - The return type for the exploreNewLooks function.
+ * - ExploreLooksInput - The input type for the exploreNewLooks function. (Imported from shared-types)
+ * - ExploreLooksOutput - The return type for the exploreNewLooks function. (Imported from shared-types)
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-import type { FlowClothingItem, Season } from './suggest-outfits-flow'; // Re-use from suggest-outfits
-import { Seasons, Genders, FlowClothingItemSchema } from './suggest-outfits-flow'; // Re-use Season and Gender enums
+import {
+  ExploreLooksInputSchema,
+  ExploreLooksOutputSchema,
+  type ExploreLooksInput,  // Import type
+  type ExploreLooksOutput, // Import type
+  FlowClothingItemSchema, // For prompt context
+  Seasons,                // For prompt context
+  Genders,                // For prompt context
+} from './shared-types';
 
-export const ExploreLooksInputSchema = z.object({
-  gender: Genders.describe("The user's gender (Male, Female, Unspecified) to tailor look suggestions."),
-  season: Seasons.describe('The current season for which to suggest looks.'),
-  wardrobeItems: z.array(FlowClothingItemSchema).optional().describe('Optional. A list of available clothing items in the wardrobe for style reference and potential inclusion.'),
-  numberOfLooks: z.number().int().min(1).max(5).optional().default(3).describe('The number of distinct new look ideas the user would like (1-5). Defaults to 3.'),
-});
-export type ExploreLooksInput = z.infer<typeof ExploreLooksInputSchema>;
-
-const SuggestedItemForExploredLookSchema = z.object({
-  itemName: z.string().describe("Name/description of the clothing item (e.g., 'slim-fit white linen shirt', 'high-waisted dark denim jeans', 'statement gold chain necklace')."),
-  sourceSuggestion: z.enum(['New Purchase', 'Potentially From Wardrobe']).describe("Indicates if this item is primarily a new purchase suggestion or might be found/adapted from a typical wardrobe or the user's provided items."),
-  reason: z.string().optional().describe("Why this item is crucial for the look, or how it fits the trend. Be specific to the item and the overall look."),
-});
-
-const ExploredLookSchema = z.object({
-  lookName: z.string().describe("A catchy and descriptive name for the look (e.g., 'Urban Explorer Chic', 'Monochromatic Power Dressing', 'Bohemian Summer Festival')."),
-  description: z.string().describe("A brief (2-3 sentences) description of the look, its style, what occasions it's suitable for, and why it's fashionable for the specified gender and season."),
-  keyPieces: z.array(SuggestedItemForExploredLookSchema).describe("A list of 3-5 key clothing items and accessories that make up this look."),
-  stylingNotes: z.string().optional().describe("Optional (1-2 sentences) tips on how to style the look, variations, or specific fashion advice (e.g., 'Tuck the shirt loosely for a relaxed vibe.', 'Pair with minimalist silver jewelry.')."),
-});
-
-export const ExploreLooksOutputSchema = z.object({
-  looks: z.array(ExploredLookSchema).describe("A list of explored outfit look suggestions."),
-  fashionReport: z.string().optional().describe("A brief general fashion report or trend insight for the season and gender, if applicable."),
-});
-export type ExploreLooksOutput = z.infer<typeof ExploreLooksOutputSchema>;
 
 export async function exploreNewLooks(input: ExploreLooksInput): Promise<ExploreLooksOutput> {
   return exploreNewLooksFlow(input);
@@ -91,10 +71,8 @@ const exploreNewLooksFlow = ai.defineFlow(
     inputSchema: ExploreLooksInputSchema,
     outputSchema: ExploreLooksOutputSchema,
   },
-  async (input) => {
+  async (input: ExploreLooksInput) => { // Explicitly type input here for clarity
     const {output} = await exploreNewLooksPrompt(input);
     return output!;
   }
 );
-
-    

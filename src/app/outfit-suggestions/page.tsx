@@ -9,15 +9,27 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette, Copy, ShoppingBag, Lightbulb, HelpCircle, User, Send } from 'lucide-react';
 import Image from 'next/image';
-import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, Gender, FlowClothingItem } from '@/ai/flows/suggest-outfits-flow';
-import { exploreNewLooks, ExploreLooksInput, ExploreLooksOutput } from '@/ai/flows/explore-new-looks-flow';
+import { suggestOutfits } from '@/ai/flows/suggest-outfits-flow';
+import { exploreNewLooks } from '@/ai/flows/explore-new-looks-flow';
+import type {
+  SuggestOutfitsInput,
+  SuggestOutfitsOutput,
+  ExploreLooksInput,
+  ExploreLooksOutput,
+  Season,
+  Gender,
+  FlowClothingItem
+} from '@/ai/flows/shared-types'; // Import from shared-types
+import { Seasons as SEASONS_ENUM, Genders as GENDERS_ENUM } from '@/ai/flows/shared-types'; // Import enums for options
+
 import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 
-const SEASONS: Season[] = ['Spring', 'Summer', 'Autumn', 'Winter'];
-const GENDERS: Gender[] = ['Female', 'Male', 'Unspecified'];
+const SEASONS: Season[] = [...SEASONS_ENUM.unwrap().innerType.options]; // Get options from Zod enum
+const GENDERS: Gender[] = [...GENDERS_ENUM.unwrap().innerType.options]; // Get options from Zod enum
+
 const OUTFIT_COUNTS = [
     {label: "Up to 3 outfits", value: 3},
     {label: "Up to 5 outfits", value: 5},
@@ -63,7 +75,7 @@ export default function OutfitSuggestionsPage() {
       toast({ title: 'Select Gender', description: 'Please select a gender to tailor suggestions.', variant: 'destructive' });
       return;
     }
-    if (wardrobeItems.length === 0 && !isWardrobeLoading) { 
+    if (wardrobeItems.length === 0 && !isWardrobeLoading) {
         toast({ title: 'Empty Wardrobe', description: 'Add items to your wardrobe to get suggestions.', variant: 'default' });
         setWardrobeSuggestionsOutput({
              suggestions: Array(7).fill(null).map((_, i) => ({ dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i], outfitDescription: "Your wardrobe is empty! Add some items.", items: [] })),
@@ -263,7 +275,7 @@ export default function OutfitSuggestionsPage() {
           )}
           {wardrobeSuggestionsOutput?.suggestions && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-headline tracking-tight">Your Week in Style ({selectedSeason}, {selectedGender})</h2>
+              <h2 className="text-2xl font-headline tracking-tight">Your Week in Style ({selectedSeason}{selectedGender && `, ${selectedGender}`})</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
                 {wardrobeSuggestionsOutput.suggestions.map((ds) => (
                   <Card key={ds.dayOfWeek} className="flex flex-col h-full hover:shadow-lg transition-shadow duration-200">
@@ -313,7 +325,7 @@ export default function OutfitSuggestionsPage() {
             )}
             {exploreLooksOutput?.looks && exploreLooksOutput.looks.length > 0 && (
                 <div className="space-y-6">
-                    <h2 className="text-2xl font-headline tracking-tight">New Look Ideas for {selectedSeason} ({selectedGender})</h2>
+                    <h2 className="text-2xl font-headline tracking-tight">New Look Ideas for {selectedSeason}{selectedGender && `, ${selectedGender}`}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                         {exploreLooksOutput.looks.map((look, index) => (
                             <Card key={index} className="flex flex-col h-full hover:shadow-lg transition-shadow">
@@ -395,5 +407,3 @@ const LoadingSkeletons = ({ type }: { type: 'wardrobe' | 'explore' }) => (
         {[...Array(type === 'wardrobe' ? 3 : 2)].map((_, i) => <CardSkeleton key={i} isExplore={type === 'explore'} />)}
     </div>
 );
-
-    
