@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Webpack configuration to handle client-side bundling issues
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Ensure the fallback object exists before attempting to modify it.
@@ -26,7 +27,7 @@ const nextConfig: NextConfig = {
         config.resolve.fallback = {};
       }
       // Prevent 'async_hooks' from being bundled on the client
-      // by providing an empty module fallback.
+      // by providing an empty module fallback. This is crucial for some OpenTelemetry/Genkit dependencies.
       config.resolve.fallback.async_hooks = false;
     }
     // Important: return the modified config
