@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Wand2, Shirt, MessageSquareText } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export function AppHeader() {
   const router = useRouter();
@@ -18,17 +19,45 @@ export function AppHeader() {
           </h1>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
-          <Button variant="ghost" onClick={() => router.push('/wardrobe')} className="hidden sm:inline-flex text-xs sm:text-sm px-2 sm:px-3">
-            <Shirt className="mr-1 sm:mr-2 h-4 w-4"/> My Wardrobe
+          <Button 
+            variant="ghost" 
+            onClick={() => router.push('/wardrobe')} 
+            className="group hidden sm:inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
+          >
+            <Shirt className="h-4 w-4" />
+            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
+              My Wardrobe
+            </span>
           </Button>
-           <Button variant="outline" onClick={() => router.push('/add')} className="text-xs sm:text-sm px-2 sm:px-3">
-            <PlusCircle className="mr-1 sm:mr-2 h-4 w-4"/> Add Item
+           <Button 
+            variant="outline" 
+            onClick={() => router.push('/add')} 
+            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
+              Add Item
+            </span>
           </Button>
-          <Button variant="default" onClick={() => router.push('/outfit-suggestions')} className="text-xs sm:text-sm px-2 sm:px-3">
-            <Wand2 className="mr-1 sm:mr-2 h-4 w-4"/> AI Outfits
+          <Button 
+            variant="default" 
+            onClick={() => router.push('/outfit-suggestions')} 
+            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
+          >
+            <Wand2 className="h-4 w-4" />
+            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
+              AI Outfits
+            </span>
           </Button>
-          <Button variant="secondary" onClick={() => router.push('/stylist-chat')} className="text-xs sm:text-sm px-2 sm:px-3">
-            <MessageSquareText className="mr-1 sm:mr-2 h-4 w-4"/> Stylist Chat
+          <Button 
+            variant="secondary" 
+            onClick={() => router.push('/stylist-chat')} 
+            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
+          >
+            <MessageSquareText className="h-4 w-4" />
+            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
+              Stylist Chat
+            </span>
           </Button>
         </nav>
       </div>
