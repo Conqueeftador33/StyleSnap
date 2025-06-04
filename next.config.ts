@@ -1,62 +1,36 @@
 
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from 'next'
 
-const nextConfig = {
-  // ==========================================================================
-  // BUILD PROCESS CONFIGURATION
-  // ==========================================================================
+const nextConfig: NextConfig = {
   typescript: {
-    // WARNING: Setting this to true can hide underlying TypeScript compilation errors.
-    // This is kept as per your existing configuration.
     ignoreBuildErrors: true,
   },
   eslint: {
-    // WARNING: Setting this to true can hide ESLint issues.
-    // This is kept as per your existing configuration.
     ignoreDuringBuilds: true,
   },
-
-  // ==========================================================================
-  // IMAGE OPTIMIZATION
-  // ==========================================================================
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'placehold.co',
-        port: '',
         pathname: '/**',
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // Ensure the fallback object exists before attempting to modify it.
+    // This handles a potential case where config.resolve or config.resolve.fallback might be undefined.
+    config.resolve = config.resolve || {};
+    config.resolve.fallback = config.resolve.fallback || {};
 
-  // ==========================================================================
-  // CRITICAL WEBPACK CONFIGURATION FOR 'async_hooks' RESOLUTION
-  // ==========================================================================
-  // This section is vital for preventing server-only modules (like 'async_hooks',
-  // often used by OpenTelemetry/Genkit for server-side tracing) from being
-  // incorrectly bundled into the client-side JavaScript. If this module is
-  // included in the client bundle, it will cause a "Module not found" error
-  // because 'async_hooks' is a Node.js native module and does not exist in browsers.
-  webpack: (config, { isServer, webpack }) => {
-    // This modification should ONLY apply to client-side bundles.
     if (!isServer) {
-      // Ensure the 'resolve' object exists on the Webpack config.
-      if (!config.resolve) {
-        config.resolve = {};
-      }
-      // Ensure the 'fallback' object exists on 'config.resolve'.
-      // Spread any existing fallbacks to preserve them, then add/override async_hooks.
-      config.resolve.fallback = {
-        ...(config.resolve.fallback || {}), // Preserve existing fallbacks
-        async_hooks: false, // Explicitly set async_hooks to false for client bundles
-      };
+      // Prevent 'async_hooks' from being bundled on the client
+      // by providing an empty module fallback.
+      config.resolve.fallback.async_hooks = false;
     }
-
-    // IMPORTANT: Always return the modified configuration object.
+    // Important: return the modified config
     return config;
   },
-  // ==========================================================================
 };
 
 export default nextConfig;

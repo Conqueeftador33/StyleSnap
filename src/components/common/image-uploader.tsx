@@ -30,26 +30,24 @@ export function ImageUploader({ onImageUpload, initialImage = null }: ImageUploa
         });
       }
       
-      Array.from(files).forEach((file, index) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const dataUri = reader.result as string;
-          // For multiple files, onImageUpload is called for each.
-          // The preview will show the *last* image in the batch.
-          // AddItemPage's handleImageUpload resets state for each new image.
-          if (index === files.length - 1) {
-            setPreview(dataUri);
-          }
-          onImageUpload(dataUri); // This will trigger processing in AddItemPage for each image
-        };
-        reader.readAsDataURL(file);
-      });
+      // Process only the first selected file for preview and initial upload.
+      // AddItemPage will handle the AI analysis for this one image.
+      // True multi-image processing (analyzing all) would require AddItemPage to queue images.
+      const fileToProcess = files[0]; 
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUri = reader.result as string;
+        setPreview(dataUri);
+        onImageUpload(dataUri); 
+      };
+      reader.readAsDataURL(fileToProcess);
+
     }
   };
 
   const handleRemoveImage = () => {
     setPreview(null);
-    onImageUpload(''); // Signal to clear image data
+    onImageUpload(''); 
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; 
     }
@@ -70,7 +68,7 @@ export function ImageUploader({ onImageUpload, initialImage = null }: ImageUploa
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              multiple // Allow multiple file selection
+              multiple // Allows selecting multiple files in the dialog
               className="sr-only"
               onChange={handleFileChange}
             />

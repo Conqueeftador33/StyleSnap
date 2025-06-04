@@ -47,7 +47,12 @@ export default function AddItemPage() {
     setAddedAnalysedItemIndices([]);
   };
 
+  // This is called by ImageUploader for each file (though current uploader only processes first of batch)
   const handleImageUpload = (dataUri: string) => {
+    if (!dataUri) { // If uploader signals removal
+        resetPageToBlank();
+        return;
+    }
     resetPageToBlank(); 
     setImageDataUri(dataUri);
   };
@@ -137,9 +142,14 @@ export default function AddItemPage() {
       return;
     }
     if (selectedAnalyzedItemIndex === null && analyzedItemsList && analyzedItemsList.length > 0 && !addedAnalysedItemIndices.includes(0)) {
-        toast({ title: 'Select Item', description: 'Please select an item from the detected list to add.', variant: 'destructive'});
-        return;
+        // If multiple items were detected, ensure one is selected (or the first one if not explicitly selected yet but it's the only one left to add)
+        const firstAvailable = analyzedItemsList.findIndex((_, idx) => !addedAnalysedItemIndices.includes(idx));
+        if (firstAvailable === -1 || (selectedAnalyzedItemIndex === null && analyzedItemsList.length > addedAnalysedItemIndices.length)) {
+          toast({ title: 'Select Item', description: 'Please select an item from the detected list to add.', variant: 'destructive'});
+          return;
+        }
     }
+
 
     setIsSubmitting(true);
     try {
@@ -157,18 +167,23 @@ export default function AddItemPage() {
       if (selectedAnalyzedItemIndex !== null) {
         newAddedIndices.push(selectedAnalyzedItemIndex);
         setAddedAnalysedItemIndices(newAddedIndices);
+      } else if (analyzedItemsList && analyzedItemsList.length > 0 && !addedAnalysedItemIndices.includes(0) && analyzedItemsList.length === 1) {
+        // Auto-added the only item if not explicitly selected.
+        newAddedIndices.push(0);
+        setAddedAnalysedItemIndices(newAddedIndices);
       }
+
 
       const allAnalyzedItemsAdded = analyzedItemsList && newAddedIndices.length === analyzedItemsList.length;
 
       if (allAnalyzedItemsAdded || !analyzedItemsList || analyzedItemsList.length === 0) {
-        if (isMobile) {
+        if (isMobile) { // On mobile, reset for new item after adding.
           resetPageToBlank();
-        } else {
-          router.push('/');
+        } else { // On desktop, navigate away or reset.
+          router.push('/'); // Or resetPageToBlank() if preferred.
         }
-      } else {
-        setFormDefaultValues({
+      } else { // More items from analysis to add
+        setFormDefaultValues({ // Reset form for next item
             type: AI_CLOTHING_TYPES[0],
             material: AI_CLOTHING_MATERIALS[0],
             color: AI_CLOTHING_COLORS[0],
@@ -181,9 +196,9 @@ export default function AddItemPage() {
         if(nextItemToSelect !== -1){
             handleSelectAnalyzedItem(nextItemToSelect, analyzedItemsList);
              toast({ title: 'Item Added & Next Loaded', description: 'Previous item added. Details for the next detected item are loaded.', variant: 'default' });
-        } else {
+        } else { // Should not happen if allAnalyzedItemsAdded is false, but as a fallback
             toast({ title: 'Item Added', description: 'All detected items from this image have been processed.', variant: 'default' });
-             if (isMobile) { resetPageToBlank(); } else { router.push('/');}
+            if (isMobile) { resetPageToBlank(); } else { router.push('/');}
         }
       }
 
@@ -205,7 +220,7 @@ export default function AddItemPage() {
           Back
         </Button>
         <h1 className="text-3xl font-headline tracking-tight">Add New Clothing Item</h1>
-        <p className="text-muted-foreground">Upload an image or use your camera to add an item to your virtual wardrobe.</p>
+        <p className="text-muted-foreground">Upload an image or use your camera. AI can help fill in the details.</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">

@@ -26,7 +26,7 @@ export type Gender = z.infer<typeof Genders>;
 export const SuggestOutfitsInputSchema = z.object({
   season: Seasons.describe('The current season for which to suggest outfits.'),
   wardrobeItems: z.array(FlowClothingItemSchema).describe('A list of available clothing items in the wardrobe.'),
-  desiredOutfitCount: z.number().int().min(1).max(7).optional().describe('Optional. The number of distinct new outfits the user would like to see (1-7).'),
+  desiredOutfitCount: z.number().int().min(1).max(7).optional().describe('Optional. The number of distinct new, fashionable outfits the user would like to see (1-7).'),
   gender: Genders.optional().describe("Optional. The user's gender to help tailor suggestions. If 'Unspecified' or not provided, suggest generally applicable styles."),
 });
 export type SuggestOutfitsInput = z.infer<typeof SuggestOutfitsInputSchema>;
@@ -38,19 +38,19 @@ const OutfitSuggestionSchema = z.object({
 
 const DailyOutfitSchema = z.object({
   dayOfWeek: z.string().describe('The day of the week (e.g., Monday, Tuesday).'),
-  outfitDescription: z.string().describe('A brief description of the suggested outfit and why it fits the season/day/gender, incorporating fashion trends and styling principles.'),
+  outfitDescription: z.string().describe('A brief, fashionable description of the suggested outfit and why it fits the season/day/gender, incorporating fashion trends and styling principles.'),
   items: z.array(OutfitSuggestionSchema).describe('A list of clothing item IDs that make up the outfit.'),
 });
 
 const SuggestedPurchaseSchema = z.object({
-    itemDescription: z.string().describe("A description of the item to purchase (e.g., 'a versatile white t-shirt', 'dark wash denim jeans for a male frame', 'a flowy midi skirt for a female frame')."),
-    reason: z.string().describe("Why this item is suggested and how it would enhance the wardrobe or help create more outfits, considering gender if specified."),
+    itemDescription: z.string().describe("A description of a fashionable item to purchase (e.g., 'a versatile oversized white linen shirt', 'dark wash slim-fit denim jeans for a male frame', 'a trendy floral print midi skirt for a female frame', 'minimalist gold hoop earrings')."),
+    reason: z.string().describe("Why this item is suggested (e.g., completes looks, adds versatility, aligns with current trends) and how it would enhance the wardrobe or help create more fashionable outfits, considering gender if specified."),
 });
 
 export const SuggestOutfitsOutputSchema = z.object({
-  suggestions: z.array(DailyOutfitSchema).describe('A list of daily outfit suggestions for a week.'),
-  suggestedPurchases: z.array(SuggestedPurchaseSchema).optional().describe("Optional. A list of items to consider purchasing if the desired number of outfits couldn't be met or to significantly enhance wardrobe versatility, tailored to gender if provided."),
-  aiFashionNotes: z.string().optional().describe("Optional. General fashion advice or observations based on the wardrobe, request, and gender (if provided)."),
+  suggestions: z.array(DailyOutfitSchema).describe('A list of daily fashionable outfit suggestions for a week.'),
+  suggestedPurchases: z.array(SuggestedPurchaseSchema).optional().describe("Optional. A list of fashionable items to consider purchasing if the desired number of outfits couldn't be met or to significantly enhance wardrobe versatility and style, tailored to gender if provided."),
+  aiFashionNotes: z.string().optional().describe("Optional. General fashion advice, styling tips, or observations based on the wardrobe, request, and gender (if provided), focusing on enhancing style."),
 });
 export type SuggestOutfitsOutput = z.infer<typeof SuggestOutfitsOutputSchema>;
 
@@ -82,4 +82,3 @@ export const ExploreLooksOutputSchema = z.object({
   fashionReport: z.string().optional().describe("A brief general fashion report or trend insight for the season and gender, if applicable."),
 });
 export type ExploreLooksOutput = z.infer<typeof ExploreLooksOutputSchema>;
-

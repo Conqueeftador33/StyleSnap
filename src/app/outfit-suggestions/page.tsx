@@ -19,16 +19,16 @@ import type {
   Season,
   Gender,
   FlowClothingItem
-} from '@/ai/flows/shared-types'; // Import from shared-types
-import { Seasons as SEASONS_ENUM, Genders as GENDERS_ENUM } from '@/ai/flows/shared-types'; // Import enums for options
+} from '@/ai/flows/shared-types'; 
+import { Seasons as SEASONS_ENUM, Genders as GENDERS_ENUM } from '@/ai/flows/shared-types'; 
 
 import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
 
-const SEASONS: Season[] = [...SEASONS_ENUM.unwrap().innerType.options]; // Get options from Zod enum
-const GENDERS: Gender[] = [...GENDERS_ENUM.unwrap().innerType.options]; // Get options from Zod enum
+const SEASONS: Season[] = [...SEASONS_ENUM.unwrap().innerType.options]; 
+const GENDERS: Gender[] = [...GENDERS_ENUM.unwrap().innerType.options]; 
 
 const OUTFIT_COUNTS = [
     {label: "Up to 3 outfits", value: 3},
@@ -43,7 +43,7 @@ const EXPLORE_LOOK_COUNTS = [
     {label: "5 Looks", value: 5},
 ];
 
-const ANY_OUTFIT_COUNT_VALUE = "__ANY_OUTFIT_COUNT__";
+const ANY_OUTFIT_COUNT_VALUE = "__ANY_OUTFIT_COUNT__"; // Represents user not specifying a count
 
 export default function OutfitSuggestionsPage() {
   const { items: wardrobeItems, isLoading: isWardrobeLoading } = useWardrobe();
@@ -54,13 +54,13 @@ export default function OutfitSuggestionsPage() {
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
 
   // "My Wardrobe Outfits" state
-  const [desiredOutfitCount, setDesiredOutfitCount] = useState<number | undefined>(undefined);
+  const [desiredOutfitCount, setDesiredOutfitCount] = useState<number | undefined>(undefined); // Undefined means "any number"
   const [wardrobeSuggestionsOutput, setWardrobeSuggestionsOutput] = useState<SuggestOutfitsOutput | null>(null);
   const [isSuggestingWardrobe, setIsSuggestingWardrobe] = useState(false);
   const [wardrobeError, setWardrobeError] = useState<string | null>(null);
 
   // "Explore New Looks" state
-  const [desiredExploreLooksCount, setDesiredExploreLooksCount] = useState<number>(3); // Default to 3
+  const [desiredExploreLooksCount, setDesiredExploreLooksCount] = useState<number>(3); 
   const [exploreLooksOutput, setExploreLooksOutput] = useState<ExploreLooksOutput | null>(null);
   const [isExploringLooks, setIsExploringLooks] = useState(false);
   const [exploreError, setExploreError] = useState<string | null>(null);
@@ -86,14 +86,9 @@ export default function OutfitSuggestionsPage() {
       toast({ title: 'Select Gender', description: 'Please select a gender to tailor suggestions.', variant: 'destructive' });
       return;
     }
-    if (wardrobeItems.length === 0 && !isWardrobeLoading) {
-        toast({ title: 'Empty Wardrobe', description: 'Add items to your wardrobe to get suggestions.', variant: 'default' });
-        setWardrobeSuggestionsOutput({
-             suggestions: Array(7).fill(null).map((_, i) => ({ dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][i], outfitDescription: "Your wardrobe is empty! Add some items.", items: [] })),
-            suggestedPurchases: [{ itemDescription: "Basic Tops", reason: "Essential for building outfits." }, { itemDescription: "Versatile Bottoms", reason: "Core pieces for daily wear." }],
-            aiFashionNotes: "Your wardrobe is currently empty. Add basic items to start."
-        });
-        return;
+    if (wardrobeItems.length === 0 && !isWardrobeLoading && (!desiredOutfitCount || desiredOutfitCount > 0)) {
+        toast({ title: 'Empty Wardrobe', description: 'Your wardrobe is empty. AI will suggest foundational pieces to buy.', variant: 'default' });
+        // AI flow will handle generating suggestions for an empty wardrobe
     }
 
     setIsSuggestingWardrobe(true);
@@ -114,7 +109,7 @@ export default function OutfitSuggestionsPage() {
         season: selectedSeason,
         gender: selectedGender,
         wardrobeItems: flowItems,
-        desiredOutfitCount: desiredOutfitCount === ANY_OUTFIT_COUNT_VALUE ? undefined : desiredOutfitCount
+        desiredOutfitCount: desiredOutfitCount, // Pass undefined if user selected "Any number"
       };
       const result = await suggestOutfits(input);
       setWardrobeSuggestionsOutput(result);
@@ -156,7 +151,7 @@ export default function OutfitSuggestionsPage() {
       const input: ExploreLooksInput = {
         season: selectedSeason,
         gender: selectedGender,
-        wardrobeItems: flowItems, // Pass for style reference
+        wardrobeItems: flowItems, 
         numberOfLooks: desiredExploreLooksCount,
       };
       const result = await exploreNewLooks(input);
@@ -185,7 +180,7 @@ export default function OutfitSuggestionsPage() {
       .catch(() => toast({ title: 'Copy Failed', variant: 'destructive' }));
   };
   
-  if (isWardrobeLoading) { // Single loading state for initial wardrobe load
+  if (isWardrobeLoading) { 
     return (
          <div className="space-y-8">
             <div>
@@ -198,7 +193,7 @@ export default function OutfitSuggestionsPage() {
                     <Skeleton className="h-10 w-full" /> <Skeleton className="h-10 w-full" /> <Skeleton className="h-10 w-full" />
                 </CardContent>
             </Card>
-             <Skeleton className="h-10 w-1/4" /> {/* TabsList skeleton */}
+             <Skeleton className="h-10 w-1/4" /> 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
             {[...Array(3)].map((_, i) => ( <CardSkeleton key={i} /> ))}
             </div>
@@ -244,12 +239,11 @@ export default function OutfitSuggestionsPage() {
           <TabsTrigger value="explore-looks">Explore New Looks</TabsTrigger>
         </TabsList>
 
-        {/* MY WARDROBE OUTFITS TAB */}
         <TabsContent value="my-wardrobe" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
                 <CardTitle className="font-headline flex items-center"><Palette className="mr-2 h-5 w-5"/>Plan From Your Closet</CardTitle>
-                <CardDescription>Get a week of outfits using items you already own. Optionally, specify how many unique outfits you'd like.</CardDescription>
+                <CardDescription>Get a week of fashionable outfits using items you already own. Optionally, specify how many unique outfits you'd like, and AI will suggest purchases if needed.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-1.5">
@@ -259,10 +253,10 @@ export default function OutfitSuggestionsPage() {
                     value={desiredOutfitCount?.toString() ?? ANY_OUTFIT_COUNT_VALUE}
                     >
                     <SelectTrigger id="outfit-count-select">
-                        <SelectValue>{desiredOutfitCount !== undefined ? OUTFIT_COUNTS.find(opt => opt.value === desiredOutfitCount)?.label : "Any number"}</SelectValue>
+                        <SelectValue>{desiredOutfitCount !== undefined ? OUTFIT_COUNTS.find(opt => opt.value === desiredOutfitCount)?.label : "Let AI decide"}</SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value={ANY_OUTFIT_COUNT_VALUE}>Any number</SelectItem>
+                        <SelectItem value={ANY_OUTFIT_COUNT_VALUE}>Let AI decide (flexible)</SelectItem>
                         {OUTFIT_COUNTS.map(opt => <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>)}
                     </SelectContent>
                     </Select>
@@ -281,7 +275,7 @@ export default function OutfitSuggestionsPage() {
             <Card className="bg-accent/30 border-accent"><CardHeader className="flex-row items-center gap-3 space-y-0"><Lightbulb className="h-6 w-6 text-accent-foreground/80"/><CardTitle className="font-headline text-lg text-accent-foreground/90">AI Fashion Notes</CardTitle></CardHeader><CardContent><p className="text-sm text-accent-foreground/80">{wardrobeSuggestionsOutput.aiFashionNotes}</p></CardContent></Card>
           )}
           {wardrobeSuggestionsOutput?.suggestedPurchases && wardrobeSuggestionsOutput.suggestedPurchases.length > 0 && (
-            <Card><CardHeader><CardTitle className="font-headline flex items-center"><ShoppingBag className="mr-2 h-5 w-5 text-primary"/>AI Shopping Advisor</CardTitle><CardDescription>Consider adding these items to enhance your current wardrobe:</CardDescription></CardHeader><CardContent className="space-y-3">{wardrobeSuggestionsOutput.suggestedPurchases.map((p, i) => <div key={i} className="p-3 border rounded-md bg-muted/20"><p className="font-semibold">{p.itemDescription}</p><p className="text-xs text-muted-foreground">{p.reason}</p></div>)}</CardContent></Card>
+            <Card><CardHeader><CardTitle className="font-headline flex items-center"><ShoppingBag className="mr-2 h-5 w-5 text-primary"/>AI Shopping Advisor</CardTitle><CardDescription>Consider adding these items to achieve your desired number of outfits or enhance your style:</CardDescription></CardHeader><CardContent className="space-y-3">{wardrobeSuggestionsOutput.suggestedPurchases.map((p, i) => <div key={i} className="p-3 border rounded-md bg-muted/20"><p className="font-semibold">{p.itemDescription}</p><p className="text-xs text-muted-foreground">{p.reason}</p></div>)}</CardContent></Card>
           )}
           {wardrobeSuggestionsOutput?.suggestions && (
             <div className="space-y-6">
@@ -292,7 +286,7 @@ export default function OutfitSuggestionsPage() {
                     <CardHeader><CardTitle className="font-headline text-xl">{ds.dayOfWeek}</CardTitle></CardHeader>
                     <CardContent className="flex-grow space-y-3">
                       <p className="text-sm text-muted-foreground italic mb-3">{ds.outfitDescription}</p>
-                      {ds.items.length > 0 ? <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{ds.items.map(itemRef => <ItemImageDisplay key={itemRef.itemId} itemId={itemRef.itemId} itemName={itemRef.itemName} getItemImageUrl={getItemImageUrl} />)}</div> : <p className="text-sm text-muted-foreground">{ds.outfitDescription.includes("empty") ? "" : "No specific items selected."}</p>}
+                      {ds.items.length > 0 ? <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">{ds.items.map(itemRef => <ItemImageDisplay key={itemRef.itemId} itemId={itemRef.itemId} itemName={itemRef.itemName} getItemImageUrl={getItemImageUrl} />)}</div> : <p className="text-sm text-muted-foreground">{ds.outfitDescription.includes("empty") ? "" : "No specific items selected by AI for this day."}</p>}
                     </CardContent>
                     {ds.items.length > 0 && <CardFooter className="pt-4 border-t"><Button variant="outline" size="sm" onClick={() => handleCopyOutfitItems(ds)} className="w-full"><Copy className="mr-2 h-4 w-4" /> Copy Item Names</Button></CardFooter>}
                   </Card>
@@ -301,11 +295,10 @@ export default function OutfitSuggestionsPage() {
             </div>
           )}
           {!isSuggestingWardrobe && !wardrobeSuggestionsOutput && !wardrobeError && (
-             <Alert><Sparkles className="h-4 w-4" /><AlertTitle>Ready to Plan From Your Wardrobe?</AlertTitle><AlertDescription>{wardrobeItems.length === 0 && !isWardrobeLoading ? "Add items to your wardrobe first. " : ""}Select preferences above and click the button.</AlertDescription></Alert>
+             <Alert><Sparkles className="h-4 w-4" /><AlertTitle>Ready to Plan From Your Wardrobe?</AlertTitle><AlertDescription>{wardrobeItems.length === 0 && !isWardrobeLoading ? "Your wardrobe is empty. AI can still suggest foundational purchases. " : ""}Select preferences above and click the button.</AlertDescription></Alert>
            )}
         </TabsContent>
 
-        {/* EXPLORE NEW LOOKS TAB */}
         <TabsContent value="explore-looks" className="mt-6 space-y-6">
             <Card>
                 <CardHeader>
@@ -377,7 +370,6 @@ export default function OutfitSuggestionsPage() {
   );
 }
 
-// Helper component for item image display
 const ItemImageDisplay = ({ itemId, itemName, getItemImageUrl }: { itemId: string, itemName: string, getItemImageUrl: (id: string) => string | undefined }) => {
     const imageUrl = getItemImageUrl(itemId);
     return (
@@ -392,7 +384,6 @@ const ItemImageDisplay = ({ itemId, itemName, getItemImageUrl }: { itemId: strin
     );
 };
 
-// Helper component for loading skeletons
 const CardSkeleton = ({ isExplore = false }: { isExplore?: boolean}) => (
     <Card>
         <CardHeader>
@@ -417,4 +408,3 @@ const LoadingSkeletons = ({ type }: { type: 'wardrobe' | 'explore' }) => (
         {[...Array(type === 'wardrobe' ? 3 : 2)].map((_, i) => <CardSkeleton key={i} isExplore={type === 'explore'} />)}
     </div>
 );
-

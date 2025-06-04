@@ -22,7 +22,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
   const [initializationMessage, setInitializationMessage] = useState<string | null>(null);
   const [currentFacingMode, setCurrentFacingMode] = useState<FacingMode>("environment");
   const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
-  const [isCameraOpen, setIsCameraOpen] = useState(false); // New state to control camera activation
+  const [isCameraOpen, setIsCameraOpen] = useState(false); // Controls camera activation
 
   const stopCurrentStream = useCallback(() => {
     if (currentStream) {
@@ -32,12 +32,12 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
         videoRef.current.srcObject = null;
       }
     }
-    setHasCameraPermission(null); // Reset permission status when stream stops
+    setHasCameraPermission(null); 
     setInitializationMessage(null);
   }, [currentStream]);
 
   const startCameraStream = useCallback(async (facingMode: FacingMode) => {
-    if (!isCameraOpen) return; // Only start if explicitly opened
+    if (!isCameraOpen) return; 
 
     stopCurrentStream();
     setIsSwitchingCamera(true);
@@ -69,7 +69,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
       if (error instanceof Error) {
         if (error.name === "NotAllowedError") {
           description = "Camera access was denied. Please enable it in your browser settings and refresh the page.";
-           setIsCameraOpen(false); // Keep camera closed if denied
+           setIsCameraOpen(false); 
         } else if (error.name === "NotFoundError" || error.name === "OverconstrainedError") {
           description = `Could not find a camera with mode: ${facingMode}. Attempting to switch.`;
           nextFacingMode = facingMode === "environment" ? "user" : "environment";
@@ -80,9 +80,9 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
       setHasCameraPermission(false);
       setInitializationMessage(description);
       if (nextFacingMode) {
-        setCurrentFacingMode(nextFacingMode); // This will trigger useEffect to try again
+        setCurrentFacingMode(nextFacingMode); 
       } else {
-        setIsCameraOpen(false); // Failed to get any camera
+        setIsCameraOpen(false); 
       }
     } finally {
       setIsSwitchingCamera(false);
@@ -95,7 +95,6 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
     } else {
       stopCurrentStream();
     }
-    // Cleanup function to stop stream when component unmounts or isCameraOpen changes to false
     return () => {
       stopCurrentStream();
     };
@@ -131,7 +130,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
       const dataUri = canvas.toDataURL('image/jpeg');
       onImageCapture(dataUri);
       toast({ title: "Image Captured!", description: "The photo has been loaded for analysis.", className: "bg-green-500 text-white" });
-      handleCloseCamera(); // Close camera after capture
+      handleCloseCamera(); 
     } else {
       toast({ title: "Capture Failed", description: "Could not process the image.", variant: "destructive" });
     }
