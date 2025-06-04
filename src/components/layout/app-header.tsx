@@ -2,7 +2,7 @@
 "use client";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Palette, PlusCircle } from 'lucide-react'; // Using Palette as a placeholder logo icon
+import { Palette, PlusCircle, Wand2 } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
 
 export function AppHeader() {
@@ -18,11 +18,12 @@ export function AppHeader() {
           </h1>
         </Link>
         <nav className="flex items-center gap-2">
-          {/* Basic navigation can be added here later, e.g., Add Item, View Wardrobe */}
           <Button variant="outline" onClick={() => router.push('/add')}>
             <PlusCircle className="mr-2 h-4 w-4"/> Add Item
           </Button>
-          {/* Add more navigation buttons as features are built */}
+          <Button variant="outline" onClick={() => router.push('/outfit-suggestions')}>
+            <Wand2 className="mr-2 h-4 w-4"/> AI Outfit Stylist
+          </Button>
         </nav>
       </div>
     </header>
