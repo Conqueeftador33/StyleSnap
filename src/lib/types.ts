@@ -51,3 +51,6 @@ export interface AnalyzedItemAttributes {
   category: WardrobeCategory; // AI suggested category
   description: string; // AI generated description of the item
 }
+
+// Type for controlling the display size of items in the wardrobe grid
+export type ItemDisplaySize = 'small' | 'medium' | 'large';

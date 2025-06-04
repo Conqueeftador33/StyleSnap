@@ -39,7 +39,7 @@ export default function EditItemPage() {
         description: `${data.name || data.type} has been updated.`,
         className: "bg-green-500 text-white"
       });
-      router.push('/'); // Redirect to wardrobe view
+      router.push('/wardrobe'); 
     } catch (error) {
       console.error("Error updating item:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error updating item.";

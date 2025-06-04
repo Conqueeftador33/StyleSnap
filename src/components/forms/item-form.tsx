@@ -278,8 +278,8 @@ export function ItemForm({
             />
           </CardContent>
           <CardFooter className="flex flex-col sm:flex-row justify-end gap-3 p-4 border-t">
-            <Button type="button" variant="outline" onClick={() => router.push('/')} disabled={isSubmitting}>
-              Cancel & Go Home
+            <Button type="button" variant="outline" onClick={() => router.push('/wardrobe')} disabled={isSubmitting}>
+              Cancel
             </Button>
             <TooltipProvider>
               <Tooltip open={isSubmitButtonDisabled && !isSubmitting && !imageUrl ? undefined : false}>

@@ -1,7 +1,6 @@
 
 "use client";
-import type { ClothingItem } from '@/lib/types';
-import type { ItemDisplaySize } from '@/app/page'; // Import the type
+import type { ClothingItem, ItemDisplaySize } from '@/lib/types'; // Import ItemDisplaySize from lib/types
 import { ClothingItemCard } from './clothing-item-card';
 import { Boxes } from 'lucide-react';
 import Link from 'next/link';
@@ -9,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 interface WardrobeGridProps {
   items: ClothingItem[];
-  itemSize?: ItemDisplaySize; // Make itemSize optional for now or provide a default
+  itemSize?: ItemDisplaySize; 
 }
 
 const getItemSizeClasses = (size: ItemDisplaySize = 'medium'): string => {
@@ -20,7 +19,7 @@ const getItemSizeClasses = (size: ItemDisplaySize = 'medium'): string => {
       return 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
     case 'large':
       return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-    default: // Fallback to medium
+    default: 
       return 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
   }
 };

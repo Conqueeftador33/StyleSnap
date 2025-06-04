@@ -2,7 +2,7 @@
 "use client";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Palette, PlusCircle, Wand2 } from 'lucide-react'; 
+import { Palette, PlusCircle, Wand2, Shirt } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
 
 export function AppHeader() {
@@ -18,11 +18,14 @@ export function AppHeader() {
           </h1>
         </Link>
         <nav className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => router.push('/add')}>
+          <Button variant="ghost" onClick={() => router.push('/wardrobe')} className="hidden sm:inline-flex">
+            <Shirt className="mr-2 h-4 w-4"/> My Wardrobe
+          </Button>
+           <Button variant="outline" onClick={() => router.push('/add')}>
             <PlusCircle className="mr-2 h-4 w-4"/> Add Item
           </Button>
-          <Button variant="outline" onClick={() => router.push('/outfit-suggestions')}>
-            <Wand2 className="mr-2 h-4 w-4"/> AI Outfit Stylist
+          <Button variant="default" onClick={() => router.push('/outfit-suggestions')}>
+            <Wand2 className="mr-2 h-4 w-4"/> AI Stylist
           </Button>
         </nav>
       </div>

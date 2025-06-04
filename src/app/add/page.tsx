@@ -70,7 +70,7 @@ export default function AddItemPage() {
         description: `${data.name || data.type} has been added to your wardrobe.`,
         className: "bg-green-500 text-white"
       });
-      router.push('/'); // Redirect to wardrobe view or homepage
+      router.push('/wardrobe'); 
     } catch (error) {
       console.error("Error saving item:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error saving item.";
