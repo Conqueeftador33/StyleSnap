@@ -25,7 +25,7 @@ export type FlowClothingItem = z.infer<typeof FlowClothingItemSchema>;
 const Seasons = z.enum(['Spring', 'Summer', 'Autumn', 'Winter']);
 export type Season = z.infer<typeof Seasons>;
 
-export const SuggestOutfitsInputSchema = z.object({
+const SuggestOutfitsInputSchema = z.object({
   season: Seasons.describe('The current season for which to suggest outfits.'),
   wardrobeItems: z.array(FlowClothingItemSchema).describe('A list of available clothing items in the wardrobe.'),
 });
@@ -42,7 +42,7 @@ const DailyOutfitSchema = z.object({
   items: z.array(OutfitSuggestionSchema).describe('A list of clothing item IDs that make up the outfit.'),
 });
 
-export const SuggestOutfitsOutputSchema = z.object({
+const SuggestOutfitsOutputSchema = z.object({
   suggestions: z.array(DailyOutfitSchema).describe('A list of daily outfit suggestions for a week.'),
 });
 export type SuggestOutfitsOutput = z.infer<typeof SuggestOutfitsOutputSchema>;
