@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploaderProps {
   onImageUpload: (dataUri: string) => void;
@@ -16,23 +17,39 @@ interface ImageUploaderProps {
 export function ImageUploader({ onImageUpload, initialImage = null }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(initialImage);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const dataUri = reader.result as string;
-        setPreview(dataUri);
-        onImageUpload(dataUri);
-      };
-      reader.readAsDataURL(file);
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      if (files.length > 1) {
+        toast({
+          title: `${files.length} images selected`,
+          description: "Processing images one by one. The first image is now loaded for analysis.",
+          variant: "default"
+        });
+      }
+      
+      Array.from(files).forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const dataUri = reader.result as string;
+          // For multiple files, onImageUpload is called for each.
+          // The preview will show the *last* image in the batch.
+          // AddItemPage's handleImageUpload resets state for each new image.
+          if (index === files.length - 1) {
+            setPreview(dataUri);
+          }
+          onImageUpload(dataUri); // This will trigger processing in AddItemPage for each image
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
   const handleRemoveImage = () => {
     setPreview(null);
-    onImageUpload(''); 
+    onImageUpload(''); // Signal to clear image data
     if (fileInputRef.current) {
       fileInputRef.current.value = ''; 
     }
@@ -45,14 +62,15 @@ export function ImageUploader({ onImageUpload, initialImage = null }: ImageUploa
           <div className="flex flex-col items-center justify-center space-y-4 rounded-lg border-2 border-dashed border-muted-foreground/30 p-8 text-center">
             <UploadCloud className="h-12 w-12 text-muted-foreground" />
             <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline">
-              Click to upload an image
+              Click to upload image(s)
             </Label>
-            <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
+            <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB. You can select multiple files.</p>
             <Input
               id="image-upload"
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              multiple // Allow multiple file selection
               className="sr-only"
               onChange={handleFileChange}
             />

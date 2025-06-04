@@ -6,20 +6,29 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette, Copy } from 'lucide-react';
+import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette, Copy, ShoppingBag, Lightbulb } from 'lucide-react';
 import Image from 'next/image';
 import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, FlowClothingItem } from '@/ai/flows/suggest-outfits-flow';
 import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input'; // For number input, though Select might be better
 
 const SEASONS: Season[] = ['Spring', 'Summer', 'Autumn', 'Winter'];
+const OUTFIT_COUNTS = [
+    {label: "Up to 3 outfits", value: 3},
+    {label: "Up to 5 outfits", value: 5},
+    {label: "A full week (7 outfits)", value: 7},
+];
+
 
 export default function OutfitSuggestionsPage() {
   const { items: wardrobeItems, isLoading: isWardrobeLoading } = useWardrobe();
   const { toast } = useToast();
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(undefined);
-  const [suggestions, setSuggestions] = useState<SuggestOutfitsOutput['suggestions'] | null>(null);
+  const [desiredOutfitCount, setDesiredOutfitCount] = useState<number | undefined>(undefined);
+  const [suggestionsOutput, setSuggestionsOutput] = useState<SuggestOutfitsOutput | null>(null);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,27 +39,33 @@ export default function OutfitSuggestionsPage() {
     }
     if (wardrobeItems.length === 0 && !isWardrobeLoading) { 
         toast({ title: 'Empty Wardrobe', description: 'Add items to your wardrobe to get suggestions.', variant: 'default' });
-        setSuggestions([
-            { dayOfWeek: "Monday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Tuesday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Wednesday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Thursday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Friday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Saturday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-            { dayOfWeek: "Sunday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
-        ]);
+        const emptyMessage = "Your wardrobe is currently empty. Add some clothes!";
+        setSuggestionsOutput({
+             suggestions: [
+                { dayOfWeek: "Monday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Tuesday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Wednesday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Thursday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Friday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Saturday", outfitDescription: emptyMessage, items: [] },
+                { dayOfWeek: "Sunday", outfitDescription: emptyMessage, items: [] },
+            ],
+            suggestedPurchases: [{ itemDescription: "Basic Tops (e.g., T-shirts, Blouses)", reason: "Essential for building any outfit." }, { itemDescription: "Versatile Bottoms (e.g., Jeans, Trousers)", reason: "Core pieces for daily wear." }],
+            aiFashionNotes: "Your wardrobe is currently empty. Start by adding some basic clothing items like tops, bottoms, and a pair of shoes to build a foundation."
+        });
         return;
     }
 
     setIsSuggesting(true);
     setError(null);
-    setSuggestions(null);
+    setSuggestionsOutput(null);
 
     const flowItems: FlowClothingItem[] = wardrobeItems.map(item => ({
         id: item.id,
         name: item.name,
         type: item.type,
         color: item.color,
+        material: item.material, // Added material
         category: item.category,
     }));
 
@@ -58,9 +73,10 @@ export default function OutfitSuggestionsPage() {
       const input: SuggestOutfitsInput = {
         season: selectedSeason,
         wardrobeItems: flowItems,
+        desiredOutfitCount: desiredOutfitCount
       };
       const result = await suggestOutfits(input);
-      setSuggestions(result.suggestions);
+      setSuggestionsOutput(result);
       toast({ title: 'Outfits Suggested!', description: `AI has planned your week for ${selectedSeason}.`, className: 'bg-green-500 text-white' });
     } catch (e) {
       console.error('Outfit suggestion error:', e);
@@ -104,9 +120,10 @@ export default function OutfitSuggestionsPage() {
                 <CardHeader>
                     <Skeleton className="h-8 w-1/3" />
                 </CardHeader>
-                <CardContent className="flex flex-col sm:flex-row gap-4 items-center">
-                    <Skeleton className="h-10 w-full sm:w-[200px]" />
-                    <Skeleton className="h-10 w-full sm:w-auto px-10" />
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full px-10" />
                 </CardContent>
             </Card>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -137,25 +154,42 @@ export default function OutfitSuggestionsPage() {
         <h1 className="text-3xl font-headline tracking-tight flex items-center">
           <Sparkles className="mr-3 h-8 w-8 text-primary" /> AI Outfit Planner
         </h1>
-        <p className="text-muted-foreground">Let AI plan your outfits for the week based on the season and your wardrobe!</p>
+        <p className="text-muted-foreground">Let AI plan your outfits, advise on trends, and suggest what to buy next!</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">Select Season & Get Suggestions</CardTitle>
+          <CardTitle className="font-headline">Configure Your Suggestions</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col sm:flex-row gap-4 items-center">
-          <Select onValueChange={(value) => setSelectedSeason(value as Season)} value={selectedSeason}>
-            <SelectTrigger className="w-full sm:w-[200px]">
-              <SelectValue placeholder="Select a season" />
-            </SelectTrigger>
-            <SelectContent>
-              {SEASONS.map(season => (
-                <SelectItem key={season} value={season}>{season}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button onClick={handleSuggestOutfits} disabled={isSuggesting || !selectedSeason || isWardrobeLoading} className="w-full sm:w-auto">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div className="space-y-1.5">
+            <Label htmlFor="season-select">Season</Label>
+            <Select onValueChange={(value) => setSelectedSeason(value as Season)} value={selectedSeason}>
+              <SelectTrigger id="season-select" className="w-full">
+                <SelectValue placeholder="Select a season" />
+              </SelectTrigger>
+              <SelectContent>
+                {SEASONS.map(season => (
+                  <SelectItem key={season} value={season}>{season}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+           <div className="space-y-1.5">
+            <Label htmlFor="outfit-count-select">Desired New Outfits (Optional)</Label>
+            <Select onValueChange={(value) => setDesiredOutfitCount(value ? parseInt(value) : undefined)} value={desiredOutfitCount?.toString()}>
+              <SelectTrigger id="outfit-count-select" className="w-full">
+                <SelectValue placeholder="Any number" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Any number</SelectItem>
+                {OUTFIT_COUNTS.map(opt => (
+                  <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button onClick={handleSuggestOutfits} disabled={isSuggesting || !selectedSeason || isWardrobeLoading} className="w-full md:self-end h-10">
             {isSuggesting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -184,6 +218,10 @@ export default function OutfitSuggestionsPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <Skeleton className="h-20 w-full" />
+                 <div className="flex gap-2 mt-2">
+                    <Skeleton className="h-16 w-12" />
+                    <Skeleton className="h-16 w-12" />
+                </div>
                 <Skeleton className="h-4 w-1/4" />
               </CardContent>
                 <CardFooter>
@@ -193,51 +231,82 @@ export default function OutfitSuggestionsPage() {
           ))}
         </div>
       )}
+      
+      {suggestionsOutput?.aiFashionNotes && (
+         <Card className="bg-accent/30 border-accent">
+            <CardHeader className="flex-row items-center gap-3 space-y-0">
+                <Lightbulb className="h-6 w-6 text-accent-foreground/80"/>
+                <CardTitle className="font-headline text-lg text-accent-foreground/90">AI Fashion Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-accent-foreground/80">{suggestionsOutput.aiFashionNotes}</p>
+            </CardContent>
+        </Card>
+      )}
 
-      {suggestions && (
+      {suggestionsOutput?.suggestedPurchases && suggestionsOutput.suggestedPurchases.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-headline flex items-center">
+                <ShoppingBag className="mr-2 h-5 w-5 text-primary"/>AI Shopping Advisor
+            </CardTitle>
+            <CardDescription>Consider adding these items to your wardrobe to unlock more outfits or fill gaps:</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {suggestionsOutput.suggestedPurchases.map((purchase, index) => (
+              <div key={index} className="p-3 border rounded-md bg-muted/20">
+                <p className="font-semibold">{purchase.itemDescription}</p>
+                <p className="text-xs text-muted-foreground">{purchase.reason}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {suggestionsOutput?.suggestions && (
         <div className="space-y-6">
           <h2 className="text-2xl font-headline tracking-tight">Your Week in Style for {selectedSeason}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-            {suggestions.map((dailySuggestion) => (
-              <Card key={dailySuggestion.dayOfWeek} className="flex flex-col h-full">
+            {suggestionsOutput.suggestions.map((dailySuggestion) => (
+              <Card key={dailySuggestion.dayOfWeek} className="flex flex-col h-full hover:shadow-lg transition-shadow duration-200">
                 <CardHeader>
                   <CardTitle className="font-headline text-xl">{dailySuggestion.dayOfWeek}</CardTitle>
-                  <CardDescription>{dailySuggestion.outfitDescription}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
+                <CardContent className="flex-grow space-y-3">
+                  <p className="text-sm text-muted-foreground italic mb-3">{dailySuggestion.outfitDescription}</p>
                   {dailySuggestion.items.length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                       {dailySuggestion.items.map((itemRef) => {
                         const imageUrl = getItemImageUrl(itemRef.itemId);
                         return (
-                          <div key={itemRef.itemId} className="flex items-center gap-3 p-2 border rounded-md bg-muted/20 hover:bg-muted/40">
+                          <div key={itemRef.itemId} className="flex flex-col items-center gap-1 text-center">
                             {imageUrl ? (
                               <Image
                                 src={imageUrl}
                                 alt={itemRef.itemName}
-                                width={48}
-                                height={64}
-                                className="rounded object-cover aspect-[3/4]"
+                                width={80} 
+                                height={107} 
+                                className="rounded-md object-cover aspect-[3/4] border"
                                 data-ai-hint="fashion item"
                               />
                             ) : (
-                              <div className="w-12 h-16 bg-muted rounded flex items-center justify-center">
-                                <Palette className="h-6 w-6 text-muted-foreground" />
+                              <div className="w-full aspect-[3/4] bg-muted rounded-md flex items-center justify-center border">
+                                <Palette className="h-8 w-8 text-muted-foreground" />
                               </div>
                             )}
-                            <span className="text-sm">{itemRef.itemName}</span>
+                            <span className="text-xs leading-tight mt-1">{itemRef.itemName}</span>
                           </div>
                         );
                       })}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">{dailySuggestion.outfitDescription.includes("empty") ? dailySuggestion.outfitDescription : "No specific items suggested, or perhaps you need to add more items to your wardrobe!"}</p>
+                     <p className="text-sm text-muted-foreground">{dailySuggestion.outfitDescription.includes("empty") ? "" : "No specific items selected by AI for this day."}</p>
                   )}
                 </CardContent>
                 {dailySuggestion.items.length > 0 && (
-                  <CardFooter className="pt-4">
+                  <CardFooter className="pt-4 border-t">
                     <Button variant="outline" size="sm" onClick={() => handleCopyOutfitItems(dailySuggestion)} className="w-full">
-                      <Copy className="mr-2 h-4 w-4" /> Copy Items
+                      <Copy className="mr-2 h-4 w-4" /> Copy Item Names
                     </Button>
                   </CardFooter>
                 )}
@@ -246,7 +315,7 @@ export default function OutfitSuggestionsPage() {
           </div>
         </div>
       )}
-       { !isSuggesting && !suggestions && !error && wardrobeItems.length === 0 && !isWardrobeLoading && (
+       { !isSuggesting && !suggestionsOutput && !error && wardrobeItems.length === 0 && !isWardrobeLoading && (
          <Alert>
             <Sparkles className="h-4 w-4" />
             <AlertTitle>Ready to Plan?</AlertTitle>
@@ -255,12 +324,12 @@ export default function OutfitSuggestionsPage() {
             </AlertDescription>
           </Alert>
        )}
-       { !isSuggesting && !suggestions && !error && wardrobeItems.length > 0 && !isWardrobeLoading && (
+       { !isSuggesting && !suggestionsOutput && !error && wardrobeItems.length > 0 && !isWardrobeLoading && (
          <Alert>
             <Sparkles className="h-4 w-4" />
             <AlertTitle>Ready to Plan?</AlertTitle>
             <AlertDescription>
-              Select a season above and click "Suggest Outfits" to get your personalized weekly plan!
+              Select your preferences above and click "Suggest Outfits" to get your personalized weekly plan and shopping advice!
             </AlertDescription>
           </Alert>
        )}
