@@ -10,13 +10,13 @@ import { useIsMobile } from '@/hooks/use-mobile';
 export function AppHeader() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(); // isMobile will be false initially on server and client until useEffect runs
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  return (
+  const commonHeaderContent = (currentSize: "icon" | "sm", showText: boolean) => (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
@@ -29,23 +29,35 @@ export function AppHeader() {
           <Button
             onClick={() => router.push('/outfit-suggestions')}
             variant="outline"
-            size={isMounted && isMobile ? 'icon' : 'sm'}
-            aria-label={isMounted && isMobile ? "Suggest Outfits" : undefined}
+            size={currentSize}
+            aria-label={currentSize === 'icon' ? "Suggest Outfits" : undefined}
           >
             <Sparkles className="h-4 w-4" />
-            {isMounted && !isMobile && <span className="ml-2">Suggest Outfits</span>}
+            {showText && <span className="ml-2">Suggest Outfits</span>}
           </Button>
           <Button
             onClick={() => router.push('/add')}
             variant="default"
-            size={isMounted && isMobile ? 'icon' : 'sm'}
-            aria-label={isMounted && isMobile ? "Add Item" : undefined}
+            size={currentSize}
+            aria-label={currentSize === 'icon' ? "Add Item" : undefined}
           >
             <PlusCircle className="h-4 w-4" />
-            {isMounted && !isMobile && <span className="ml-2">Add Item</span>}
+            {showText && <span className="ml-2">Add Item</span>}
           </Button>
         </div>
       </div>
     </header>
   );
+
+  if (!isMounted) {
+    // Render with default "desktop" look (size="sm", showText=true)
+    // This ensures server and initial client render are consistent.
+    return commonHeaderContent("sm", true);
+  }
+
+  // isMounted is true, now we can use the actual isMobile value
+  const resolvedSize = isMobile ? "icon" : "sm";
+  const resolvedShowText = !isMobile;
+
+  return commonHeaderContent(resolvedSize, resolvedShowText);
 }
