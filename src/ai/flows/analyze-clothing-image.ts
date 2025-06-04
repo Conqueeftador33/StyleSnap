@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -77,17 +78,19 @@ export async function analyzeClothingImage(
   return analyzeClothingImageFlow(input);
 }
 
-const clothingItemIdentifierTool = ai.defineTool({
-  name: 'identifyClothingItem',
-  description: 'Identifies the type, material, and color of a clothing item in an image.',
-  inputSchema: z.object({
-    photoDataUri: z
-      .string()
-      .describe(
-        "A photo of a clothing item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-      ),
-  }),
-  outputSchema: ClothingItemSchema,
+const clothingItemIdentifierTool = ai.defineTool(
+  {
+    name: 'identifyClothingItem',
+    description: 'Identifies the type, material, and color of a clothing item in an image.',
+    inputSchema: z.object({
+      photoDataUri: z
+        .string()
+        .describe(
+          "A photo of a clothing item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+        ),
+    }),
+    outputSchema: ClothingItemSchema,
+  },
   async (input) => {
     // This is a placeholder implementation.  A real implementation would use
     // an image analysis service to identify the clothing item.
@@ -96,8 +99,8 @@ const clothingItemIdentifierTool = ai.defineTool({
       material: 'Cotton',
       color: 'Blue',
     };
-  },
-});
+  }
+);
 
 const analyzeClothingImagePrompt = ai.definePrompt({
   name: 'analyzeClothingImagePrompt',
@@ -123,3 +126,4 @@ const analyzeClothingImageFlow = ai.defineFlow(
     return output!;
   }
 );
+
