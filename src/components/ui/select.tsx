@@ -76,9 +76,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-white text-popover-foreground opacity-100", // Changed bg-popover to bg-white, kept opacity-100
-        // Ensure NO data-[state=open] animation classes that start with opacity 0 are present.
-        // Keep only closed state animations and popper positioning that doesn't affect opacity.
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-background text-foreground opacity-100",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
