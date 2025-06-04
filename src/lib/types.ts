@@ -54,3 +54,12 @@ export interface AnalyzedItemAttributes {
 
 // Type for controlling the display size of items in the wardrobe grid
 export type ItemDisplaySize = 'small' | 'medium' | 'large';
+
+// Type for Chatbot messages
+export interface ChatMessage {
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+  timestamp: Date;
+}
+
