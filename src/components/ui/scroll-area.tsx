@@ -34,9 +34,9 @@ const ScrollBar = React.forwardRef<
     className={cn(
       "flex touch-none select-none transition-colors",
       orientation === "vertical" &&
-        "h-full w-2.5 border-l border-l-transparent p-[1px] bg-secondary", // Added bg-secondary for the track
+        "h-full w-2.5 border-l border-l-transparent p-[1px] bg-card", // Changed bg-secondary to bg-card
       orientation === "horizontal" &&
-        "h-2.5 flex-col border-t border-t-transparent p-[1px] bg-secondary", // Added bg-secondary for the track
+        "h-2.5 flex-col border-t border-t-transparent p-[1px] bg-card", // Changed bg-secondary to bg-card
       className
     )}
     {...props}
