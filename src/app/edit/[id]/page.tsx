@@ -7,14 +7,12 @@ import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
 import type { ClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/use-auth'; // Import useAuth
 
 export default function EditItemPage() {
   const router = useRouter();
   const params = useParams();
-  const { user, loading: authLoading } = useAuth(); // Use auth hook
   const { getItemById, updateItem, isLoading: isWardrobeLoading } = useWardrobe();
   const { toast } = useToast();
   const [item, setItem] = useState<ClothingItem | null | undefined>(undefined); 
@@ -22,34 +20,20 @@ export default function EditItemPage() {
 
   const itemId = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  // Redirect to login if not authenticated
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace(`/login?redirect=/edit/${itemId}`);
-    }
-  }, [user, authLoading, router, itemId]);
-
-  useEffect(() => {
-    // Ensure user is loaded and item ID exists before fetching
-    if (!authLoading && user && itemId && !isWardrobeLoading) { 
+    if (itemId && !isWardrobeLoading) { 
       const fetchedItem = getItemById(itemId);
-      // Ensure the item belongs to the current user if userId was on the item
-      // For now, we assume getItemById from the hook handles user-specific items
       setItem(fetchedItem || null); 
-    } else if (!authLoading && user && isWardrobeLoading) {
-        // Still waiting for wardrobe to load after auth is confirmed
+    } else if (isWardrobeLoading) {
         setItem(undefined);
-    } else if (!authLoading && !user) {
-        // If no user, set item to null to potentially show "not found" or "login required"
-        setItem(null);
     }
-  }, [itemId, getItemById, isWardrobeLoading, user, authLoading]);
+  }, [itemId, getItemById, isWardrobeLoading]);
 
-  const handleFormSubmit = async (data: ItemFormData) => {
-    if (!item || !user) return; // Ensure item and user exist
+  const handleFormSubmit = (data: ItemFormData) => {
+    if (!item) return; 
     setIsSubmitting(true);
     try {
-      await updateItem(item.id, { // updateItem is now async
+      updateItem(item.id, { 
         name: data.name,
         type: data.type,
         material: data.material,
@@ -66,7 +50,7 @@ export default function EditItemPage() {
     }
   };
 
-  if (authLoading || item === undefined || (user && isWardrobeLoading)) { 
+  if (item === undefined || isWardrobeLoading) { 
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center mb-4">
@@ -86,24 +70,12 @@ export default function EditItemPage() {
       </div>
     );
   }
-
-  if (!user) {
-    return (
-      <div className="text-center py-10">
-        <h1 className="text-2xl font-headline mb-4">Access Denied</h1>
-        <p className="text-muted-foreground mb-6">Please log in to edit your clothing items.</p>
-        <Button onClick={() => router.push(`/login?redirect=/edit/${itemId}`)} variant="default">
-            Go to Login
-        </Button>
-      </div>
-    );
-  }
   
   if (!item) { 
     return (
       <div className="text-center py-10">
         <h1 className="text-2xl font-headline mb-4">Item Not Found</h1>
-        <p className="text-muted-foreground mb-6">The clothing item you are trying to edit could not be found or you do not have permission to edit it.</p>
+        <p className="text-muted-foreground mb-6">The clothing item you are trying to edit could not be found.</p>
         <Button onClick={() => router.push('/')} variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Wardrobe

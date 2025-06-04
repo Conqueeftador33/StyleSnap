@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState, useEffect } from 'react'; // Ensure React is imported
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ImageUploader } from '@/components/common/image-uploader';
 import { CameraCapture } from '@/components/common/camera-capture';
@@ -17,11 +17,9 @@ import { AlertCircle, CheckCircle2, Loader2, Wand2, ListChecks, Check, ArrowLeft
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/use-auth'; // Import useAuth
 
 export default function AddItemPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth(); // Use auth hook
   const { addItem } = useWardrobe();
   const { toast } = useToast();
   const isMobile = useIsMobile();
@@ -38,13 +36,6 @@ export default function AddItemPage() {
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysisDone, setAnalysisDone] = useState(false);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login?redirect=/add');
-    }
-  }, [user, authLoading, router]);
 
   const resetPageToBlank = () => {
     setImageDataUri(null);
@@ -140,19 +131,19 @@ export default function AddItemPage() {
     }
   };
 
-  const handleFormSubmit = async (data: ItemFormData) => {
+  const handleFormSubmit = (data: ItemFormData) => {
     if (!imageDataUri) {
       toast({ title: 'Error', description: 'Image data is missing.', variant: 'destructive' });
       return;
     }
-    if (selectedAnalyzedItemIndex === null && analyzedItemsList && analyzedItemsList.length > 0 && !addedAnalysedItemIndices.includes(0) /* check if first one is available */) {
+    if (selectedAnalyzedItemIndex === null && analyzedItemsList && analyzedItemsList.length > 0 && !addedAnalysedItemIndices.includes(0)) {
         toast({ title: 'Select Item', description: 'Please select an item from the detected list to add.', variant: 'destructive'});
         return;
     }
 
     setIsSubmitting(true);
     try {
-      await addItem({ // addItem is now async
+      addItem({ 
         imageUrl: imageDataUri,
         name: data.name,
         type: data.type,
@@ -205,17 +196,6 @@ export default function AddItemPage() {
   };
   
   const allItemsFromAnalysisAdded = !!analyzedItemsList && analyzedItemsList.length > 0 && addedAnalysedItemIndices.length === analyzedItemsList.length;
-
-  if (authLoading || !user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-15rem)]">
-        {authLoading ? <Loader2 className="h-12 w-12 animate-spin text-primary" /> : <p>Please log in to add items.</p>}
-         {!authLoading && !user && (
-             <Button onClick={() => router.push('/login?redirect=/add')} className="mt-4">Go to Login</Button>
-         )}
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8">
