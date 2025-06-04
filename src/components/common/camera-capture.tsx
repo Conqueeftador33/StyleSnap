@@ -1,7 +1,7 @@
 
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Camera, Video, AlertTriangle, Loader2, CameraReverse } from 'lucide-react';
+import { Camera, Video, AlertTriangle, Loader2, SwitchCamera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,7 +36,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
   const startCameraStream = useCallback(async (facingMode: FacingMode) => {
     stopCurrentStream();
     setIsSwitchingCamera(true);
-    setInitializationMessage("Initializing Camera...");
+    setInitializationMessage(`Initializing ${facingMode === 'user' ? 'Front' : 'Rear'} Camera...`);
 
     if (typeof navigator === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const errorMsg = 'Your browser does not support camera access. Please use image upload.';
@@ -58,20 +58,24 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
     } catch (error) {
       console.error('Error accessing camera:', error);
       let description = 'Could not access the camera. Please ensure it is not in use by another application and that you have granted permission.';
+      let nextFacingMode: FacingMode | null = null;
+
       if (error instanceof Error) {
         if (error.name === "NotAllowedError") {
           description = "Camera access was denied. Please enable it in your browser settings and refresh the page.";
         } else if (error.name === "NotFoundError" || error.name === "OverconstrainedError") {
-          description = `Could not find a camera with mode: ${facingMode}. Try the other camera.`;
+          description = `Could not find a camera with mode: ${facingMode}. Attempting to switch.`;
            // Attempt to switch to the other mode if one fails
-          if (facingMode === "environment") setCurrentFacingMode("user");
-          else setCurrentFacingMode("environment");
+          nextFacingMode = facingMode === "environment" ? "user" : "environment";
         } else {
           description = `Error: ${error.message}. Try refreshing or checking browser permissions.`;
         }
       }
       setHasCameraPermission(false);
       setInitializationMessage(description);
+      if (nextFacingMode) {
+        setCurrentFacingMode(nextFacingMode); // This will trigger useEffect to try again
+      }
     } finally {
       setIsSwitchingCamera(false);
     }
@@ -164,7 +168,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
               {isSwitchingCamera ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <CameraReverse className="mr-2 h-4 w-4" />
+                <SwitchCamera className="mr-2 h-4 w-4" />
               )}
               Switch Camera
             </Button>
