@@ -13,7 +13,7 @@ import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input'; // For number input, though Select might be better
+// Input import was here, removed as it's not used for the count select.
 
 const SEASONS: Season[] = ['Spring', 'Summer', 'Autumn', 'Winter'];
 const OUTFIT_COUNTS = [
@@ -21,6 +21,8 @@ const OUTFIT_COUNTS = [
     {label: "Up to 5 outfits", value: 5},
     {label: "A full week (7 outfits)", value: 7},
 ];
+
+const ANY_OUTFIT_COUNT_VALUE = "__ANY_OUTFIT_COUNT__";
 
 
 export default function OutfitSuggestionsPage() {
@@ -65,7 +67,7 @@ export default function OutfitSuggestionsPage() {
         name: item.name,
         type: item.type,
         color: item.color,
-        material: item.material, // Added material
+        material: item.material,
         category: item.category,
     }));
 
@@ -73,7 +75,7 @@ export default function OutfitSuggestionsPage() {
       const input: SuggestOutfitsInput = {
         season: selectedSeason,
         wardrobeItems: flowItems,
-        desiredOutfitCount: desiredOutfitCount
+        desiredOutfitCount: desiredOutfitCount // This correctly passes undefined if "Any number" is selected
       };
       const result = await suggestOutfits(input);
       setSuggestionsOutput(result);
@@ -177,12 +179,26 @@ export default function OutfitSuggestionsPage() {
           </div>
            <div className="space-y-1.5">
             <Label htmlFor="outfit-count-select">Desired New Outfits (Optional)</Label>
-            <Select onValueChange={(value) => setDesiredOutfitCount(value ? parseInt(value) : undefined)} value={desiredOutfitCount?.toString()}>
+            <Select 
+              onValueChange={(value: string) => {
+                if (value === ANY_OUTFIT_COUNT_VALUE) {
+                  setDesiredOutfitCount(undefined);
+                } else {
+                  setDesiredOutfitCount(parseInt(value));
+                }
+              }} 
+              value={desiredOutfitCount?.toString() ?? ANY_OUTFIT_COUNT_VALUE} // if undefined, use the sentinel for Select's value
+            >
               <SelectTrigger id="outfit-count-select" className="w-full">
-                <SelectValue placeholder="Any number" />
+                 {/* Display "Any number" if desiredOutfitCount is undefined, otherwise the selected label */}
+                <SelectValue> 
+                  {desiredOutfitCount !== undefined 
+                    ? OUTFIT_COUNTS.find(opt => opt.value === desiredOutfitCount)?.label 
+                    : "Any number"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any number</SelectItem>
+                <SelectItem value={ANY_OUTFIT_COUNT_VALUE}>Any number</SelectItem>
                 {OUTFIT_COUNTS.map(opt => (
                   <SelectItem key={opt.value} value={opt.value.toString()}>{opt.label}</SelectItem>
                 ))}
@@ -336,3 +352,5 @@ export default function OutfitSuggestionsPage() {
     </div>
   );
 }
+
+    
