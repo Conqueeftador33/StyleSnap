@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import type { ClothingItem } from '@/lib/types'; // Full ClothingItem for context
 
-const FlowClothingItemSchema = z.object({
+export const FlowClothingItemSchema = z.object({
   id: z.string(),
   name: z.string().optional(),
   type: z.string(),
@@ -22,10 +22,10 @@ const FlowClothingItemSchema = z.object({
 });
 export type FlowClothingItem = z.infer<typeof FlowClothingItemSchema>;
 
-const Seasons = z.enum(['Spring', 'Summer', 'Autumn', 'Winter']);
+export const Seasons = z.enum(['Spring', 'Summer', 'Autumn', 'Winter']);
 export type Season = z.infer<typeof Seasons>;
 
-const Genders = z.enum(['Male', 'Female', 'Unspecified']);
+export const Genders = z.enum(['Male', 'Female', 'Unspecified']);
 export type Gender = z.infer<typeof Genders>;
 
 const SuggestOutfitsInputSchema = z.object({
