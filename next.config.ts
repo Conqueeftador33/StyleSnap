@@ -51,8 +51,6 @@ const nextConfig: NextConfig = {
       // statement in client-side code with an empty module.
       // This is the standard and recommended way to resolve this issue.
       config.resolve.fallback.async_hooks = false;
-
-      // console.log('[Webpack Client Fallback] Applied for async_hooks'); // Uncomment for debugging build logs
     }
 
     // IMPORTANT: Always return the modified configuration object.
