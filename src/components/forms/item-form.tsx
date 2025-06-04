@@ -1,6 +1,6 @@
 
 "use client";
-import React from 'react'; // Added React import
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -14,6 +14,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { AI_CLOTHING_TYPES, AI_CLOTHING_COLORS, AI_CLOTHING_MATERIALS, WARDROBE_CATEGORIES, ClothingItem } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const itemSchema = z.object({
   name: z.string().max(100, "Name can be at most 100 characters").optional(),
@@ -56,8 +57,6 @@ export function ItemForm({
     },
   });
 
-  // useEffect to reset form when defaultValues change (e.g. after AI analysis)
-  // This is important for the AddItemPage scenario
   React.useEffect(() => {
     if (defaultValues) {
       form.reset({
@@ -74,6 +73,8 @@ export function ItemForm({
   const handleSubmit = (data: ItemFormData) => {
     onSubmit(data);
   };
+
+  const isSubmitButtonDisabled = isSubmitting || (!imageUrl && !defaultValues?.imageUrl);
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -206,10 +207,22 @@ export function ItemForm({
             <Button type="button" variant="outline" onClick={() => router.back()} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || (!imageUrl && !defaultValues?.imageUrl) }>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {submitButtonText}
-            </Button>
+            <TooltipProvider>
+              <Tooltip open={isSubmitButtonDisabled && !isSubmitting && (!imageUrl && !defaultValues?.imageUrl) ? undefined : false}>
+                <TooltipTrigger asChild>
+                  {/* The button needs a wrapper for TooltipTrigger when disabled */}
+                  <span tabIndex={0}> 
+                    <Button type="submit" disabled={isSubmitButtonDisabled}>
+                      {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {submitButtonText}
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Please upload an image for the item.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </CardFooter>
         </form>
       </Form>

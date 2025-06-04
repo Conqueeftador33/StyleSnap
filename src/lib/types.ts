@@ -30,3 +30,18 @@ export interface AnalyzedItemData {
   material: AiClothingMaterial;
   color: AiClothingColor;
 }
+
+// Added for Outfit Suggestions flow
+export const SEASONS_LIST = ['Spring', 'Summer', 'Autumn', 'Winter'] as const;
+export type Season = typeof SEASONS_LIST[number];
+
+export interface SuggestedItemReference {
+  itemName: string;
+  itemId: string;
+}
+
+export interface DailyOutfitSuggestion {
+  dayOfWeek: string;
+  outfitDescription: string;
+  items: SuggestedItemReference[];
+}

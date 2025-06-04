@@ -67,7 +67,7 @@ const ClothingItemSchema = z.object({
 });
 
 const AnalyzeClothingImageOutputSchema = z.object({
-  items: z.array(ClothingItemSchema).describe('The clothing items identified in the image.'),
+  items: z.array(ClothingItemSchema).describe('The clothing items identified in the image. If multiple items are clearly visible, provide details for each.'),
 });
 
 export type AnalyzeClothingImageOutput = z.infer<typeof AnalyzeClothingImageOutputSchema>;
@@ -78,38 +78,15 @@ export async function analyzeClothingImage(
   return analyzeClothingImageFlow(input);
 }
 
-const clothingItemIdentifierTool = ai.defineTool(
-  {
-    name: 'identifyClothingItem',
-    description: 'Identifies the type, material, and color of a clothing item in an image.',
-    inputSchema: z.object({
-      photoDataUri: z
-        .string()
-        .describe(
-          "A photo of a clothing item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-        ),
-    }),
-    outputSchema: ClothingItemSchema,
-  },
-  async (input) => {
-    // This is a placeholder implementation.  A real implementation would use
-    // an image analysis service to identify the clothing item.
-    return {
-      type: 'Shirt',
-      material: 'Cotton',
-      color: 'Blue',
-    };
-  }
-);
-
 const analyzeClothingImagePrompt = ai.definePrompt({
   name: 'analyzeClothingImagePrompt',
-  tools: [clothingItemIdentifierTool],
   input: {schema: AnalyzeClothingImageInputSchema},
   output: {schema: AnalyzeClothingImageOutputSchema},
-  prompt: `You are an AI assistant that analyzes images of clothing items and identifies their type, material, and color.
-
-  Analyze the image and identify all clothing items. For each item, use the identifyClothingItem tool to get its type, material, and color.
+  prompt: `You are an AI assistant that analyzes images of clothing.
+  Your task is to identify ALL distinct clothing items visible in the provided image.
+  For EACH identified clothing item, determine its type, material, and color.
+  Use the available enum values for type, material, and color. If a precise match isn't found, select 'Other'.
+  Structure your response according to the output schema, providing a list of identified items.
 
   Image: {{media url=photoDataUri}}
   `,
@@ -123,7 +100,11 @@ const analyzeClothingImageFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await analyzeClothingImagePrompt(input);
-    return output!;
+    // Ensure output is not null and items array is present, even if empty
+    if (output && output.items) {
+        return output;
+    }
+    // Fallback if LLM output is not as expected or completely empty
+    return { items: [] };
   }
 );
-
