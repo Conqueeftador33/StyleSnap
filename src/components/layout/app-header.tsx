@@ -2,7 +2,7 @@
 "use client";
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Palette, PlusCircle, Wand2, Shirt, MessageSquareText } from 'lucide-react'; 
+import { Aperture, PlusCircle, Wand2, Shirt, MessageSquareText } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
 
 export function AppHeader() {
@@ -12,9 +12,9 @@ export function AppHeader() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
-          <Palette className="h-7 w-7 text-primary" />
+          <Aperture className="h-7 w-7 text-primary" />
           <h1 className="font-headline text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
-            Style Snap
+            Style<span className="text-primary">SNAP!</span>
           </h1>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
@@ -35,4 +35,3 @@ export function AppHeader() {
     </header>
   );
 }
-
