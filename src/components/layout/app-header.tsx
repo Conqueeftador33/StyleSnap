@@ -13,18 +13,28 @@ export function AppHeader() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
           <Palette className="h-7 w-7 text-primary" />
-          <h1 className="font-headline text-2xl font-semibold tracking-tight text-foreground">
+          <h1 className="font-headline text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
             Style Snap
           </h1>
         </Link>
-        <div className="flex items-center gap-2">
-          <Button onClick={() => router.push('/outfit-suggestions')} variant="outline" size="sm">
-            <Sparkles className="mr-2 h-4 w-4" />
-            Suggest Outfits
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Button 
+            onClick={() => router.push('/outfit-suggestions')} 
+            variant="outline" 
+            size="sm" 
+            className="px-2 sm:px-3"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span className="hidden sm:ml-2 sm:inline">Suggest Outfits</span>
           </Button>
-          <Button onClick={() => router.push('/add')} variant="default" size="sm">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Item
+          <Button 
+            onClick={() => router.push('/add')} 
+            variant="default" 
+            size="sm"
+            className="px-2 sm:px-3"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span className="hidden sm:ml-2 sm:inline">Add Item</span>
           </Button>
         </div>
       </div>
