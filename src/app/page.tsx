@@ -1,22 +1,21 @@
 
 import Link from 'next/link';
-import Image from 'next/image'; // Already imported, good
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowRight, UploadCloud, LibraryBig, Wand2 } from 'lucide-react'; // Palette removed
+import { ArrowRight, UploadCloud, LibraryBig, Wand2 } from 'lucide-react';
 
 export default function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="text-center py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
-        {/* Replace Palette icon with Image logo */}
         <div className="mb-6 mx-auto flex justify-center">
-          <Image 
-            src="/logo.png" // Assumes your logo is named logo.png in the /public folder
-            alt="StyleSNAP! Logo" 
-            width={180} // Adjust width as needed for hero
-            height={45}  // Adjust height as needed for hero
+          <Image
+            src="/logo.png"
+            alt="StyleSNAP! Logo"
+            width={180}
+            height={45}
             priority
             className="h-auto"
           />
@@ -54,12 +53,12 @@ export default function HomePage() {
               </ul>
             </div>
             <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
-              <Image 
-                src="https://placehold.co/600x450.png" 
-                alt="Stylishly organized digital wardrobe interface" 
-                layout="fill" 
-                objectFit="cover" 
-                data-ai-hint="fashion organization" 
+              <Image
+                src="https://placehold.co/600x450.png"
+                alt="Stylishly organized digital wardrobe interface"
+                layout="fill"
+                objectFit="cover"
+                data-ai-hint="fashion organization"
               />
             </div>
           </CardContent>
