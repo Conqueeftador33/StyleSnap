@@ -2,7 +2,7 @@
 "use client";
 import type { ClothingItem } from '@/lib/types';
 import { Card, CardTitle } from '@/components/ui/card'; // Removed CardHeader and CardContent as we'll do custom layout
-import { Shirt, Layers3, Palette, ShoppingBag } from 'lucide-react'; 
+import { Shirt, Layers3, Palette, ShoppingBag, LayoutGrid, Tags } from 'lucide-react'; 
 import { useMemo } from 'react';
 import React from 'react';
 
@@ -30,8 +30,8 @@ export function DashboardStats({ items }: DashboardStatsProps) {
   
   const stats = [
     { title: "Total Items", value: totalItems, icon: <ShoppingBag className="h-6 w-6 text-primary" />, description: "All clothes in your wardrobe" },
-    { title: "Item Categories", value: uniqueCategories, icon: <Layers3 className="h-6 w-6 text-primary" />, description: "Sections like 'Tops', 'Bottoms'" },
-    { title: "Item Types", value: uniqueTypes, icon: <Shirt className="h-6 w-6 text-primary" />, description: "Distinct types like 'Dress', 'Jeans'" },
+    { title: "Item Categories", value: uniqueCategories, icon: <LayoutGrid className="h-6 w-6 text-primary" />, description: "Sections like 'Tops', 'Bottoms'" },
+    { title: "Item Types", value: uniqueTypes, icon: <Tags className="h-6 w-6 text-primary" />, description: "Distinct types like 'Dress', 'Jeans'" },
     { title: "Color Palette", value: uniqueColors, icon: <Palette className="h-6 w-6 text-primary" />, description: "Different colors represented" },
   ];
 
