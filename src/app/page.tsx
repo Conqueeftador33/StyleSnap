@@ -1,16 +1,26 @@
 
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/image'; // Already imported, good
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowRight, UploadCloud, LibraryBig, Wand2, Palette } from 'lucide-react';
+import { ArrowRight, UploadCloud, LibraryBig, Wand2 } from 'lucide-react'; // Palette removed
 
 export default function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="text-center py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
-        <Palette className="mx-auto h-20 w-20 text-primary mb-6" />
+        {/* Replace Palette icon with Image logo */}
+        <div className="mb-6 mx-auto flex justify-center">
+          <Image 
+            src="/logo.png" // Assumes your logo is named logo.png in the /public folder
+            alt="StyleSNAP! Logo" 
+            width={180} // Adjust width as needed for hero
+            height={45}  // Adjust height as needed for hero
+            priority
+            className="h-auto"
+          />
+        </div>
         <h1 className="text-5xl font-headline tracking-tight text-primary mb-4">
           Welcome to Style Snap!
         </h1>
