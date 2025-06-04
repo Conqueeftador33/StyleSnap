@@ -21,12 +21,13 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      // Ensure the fallback object exists before attempting to modify it.
+      if (!config.resolve.fallback) {
+        config.resolve.fallback = {};
+      }
       // Prevent 'async_hooks' from being bundled on the client
       // by providing an empty module fallback.
-      config.resolve.fallback = {
-        ...config.resolve.fallback, // Spread existing fallbacks
-        async_hooks: false, 
-      };
+      config.resolve.fallback.async_hooks = false; 
     }
     // Important: return the modified config
     return config;
