@@ -5,78 +5,78 @@
 
 @layer base {
   :root {
-    /* PRD Theme: Dusty Rose, Light Grayish Rose, Muted Violet */
-    --background: 354 25% 95%; /* Very light grayish rose (#F0ECEC) hsl(354, 25%, 95%) */
-    --foreground: 354 10% 20%; /* Darker foreground for contrast */
+    /* New Theme: Inspired by "Oriental Touch" - Warm Cream, Muted Red, Gold Accent */
+    --background: 30 50% 98%; /* Very light warm cream */
+    --foreground: 30 20% 25%; /* Dark warm brown */
     
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 354 10% 15%;
+    --card: 30 50% 100%; /* Slightly off-white for cards */
+    --card-foreground: 30 20% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 354 10% 15%;
+    --popover: 30 50% 100%;
+    --popover-foreground: 30 20% 20%;
 
-    --primary: 0 27% 70%; /* Dusty rose (#C2A3A3) hsl(0, 27%, 70%) */
-    --primary-foreground: 0 0% 10%; /* Dark text on dusty rose */
+    --primary: 0 60% 55%; /* Muted, sophisticated red (e.g., Cinnabar-like) */
+    --primary-foreground: 30 50% 98%; /* Light cream text on primary */
 
-    --secondary: 240 27% 80%; /* Lighter variant of Muted Violet for secondary elements (Adjusted) hsl(240, 27%, 80%) */
-    --secondary-foreground: 240 10% 20%;
+    --secondary: 30 30% 88%; /* Soft beige / light warm gray */
+    --secondary-foreground: 30 20% 30%;
 
-    --muted: 354 20% 88%; /* Slightly darker than background */
-    --muted-foreground: 354 10% 40%;
+    --muted: 30 35% 92%; /* Lighter beige for muted elements */
+    --muted-foreground: 30 20% 45%; /* Softer foreground for muted text */
 
-    --accent: 240 27% 70%; /* Muted violet (#A3A3C2) hsl(240, 27%, 70%) */
-    --accent-foreground: 0 0% 100%; /* White text on muted violet */
+    --accent: 40 85% 60%; /* Warm gold/ochre */
+    --accent-foreground: 30 20% 15%; /* Dark brown text on accent */
 
-    --destructive: 0 75% 55%; /* Strong Red (Kept for destructive actions) */
+    --destructive: 0 70% 50%; /* A clearer red for destructive actions */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 354 20% 80%; /* Soft border */
-    --input: 0 0% 98%; /* Light input background */
-    --ring: 0 27% 65%; /* Ring color related to primary */
+    --border: 30 20% 85%; /* Softer border color */
+    --input: 30 50% 97%; /* Light input background, slightly warmer */
+    --ring: 0 60% 65%; /* Ring color related to primary, slightly lighter */
     
-    --chart-1: 0 27% 60%;
-    --chart-2: 240 27% 60%;
-    --chart-3: 0 10% 50%;
-    --chart-4: 0 27% 75%;
-    --chart-5: 240 27% 75%;
-    --radius: 0.5rem;
+    --chart-1: 0 60% 50%; /* Primary Red for charts */
+    --chart-2: 40 85% 55%; /* Accent Gold for charts */
+    --chart-3: 30 20% 50%; /* Neutral Warm Gray */
+    --chart-4: 0 50% 70%; /* Lighter Red */
+    --chart-5: 40 70% 70%; /* Lighter Gold */
+    --radius: 0.5rem; /* Existing radius, looks good */
   }
 
   .dark {
     /* Dark theme adjustments for the new palette */
-    --background: 354 5% 12%; /* Dark grayish rose */
-    --foreground: 354 5% 85%; 
+    --background: 30 10% 12%; /* Deep, dark warm brown/charcoal */
+    --foreground: 30 30% 88%; /* Light warm beige/cream text */
     
-    --card: 354 5% 15%; 
-    --card-foreground: 354 5% 85%;
+    --card: 30 10% 16%; /* Slightly lighter dark for cards */
+    --card-foreground: 30 30% 88%;
 
-    --popover: 354 5% 15%;
-    --popover-foreground: 354 5% 85%;
+    --popover: 30 10% 15%;
+    --popover-foreground: 30 30% 88%;
 
-    --primary: 0 27% 60%; /* Dusty rose, slightly adjusted for dark mode */
-    --primary-foreground: 0 0% 95%;
+    --primary: 0 55% 65%; /* Red, adjusted for dark mode visibility */
+    --primary-foreground: 0 0% 98%; /* Very light text on primary */
 
-    --secondary: 240 20% 55%; 
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 30 15% 35%; /* Muted dark warm gray */
+    --secondary-foreground: 30 30% 90%;
 
-    --muted: 354 5% 20%; 
-    --muted-foreground: 354 5% 60%;
+    --muted: 30 10% 25%; /* Darker muted background */
+    --muted-foreground: 30 25% 70%; /* Lighter muted text */
 
-    --accent: 240 27% 60%; /* Muted violet, slightly adjusted */
-    --accent-foreground: 0 0% 95%;
+    --accent: 40 80% 68%; /* Gold, adjusted for dark mode */
+    --accent-foreground: 30 10% 10%; /* Very dark text on accent */
 
-    --destructive: 0 70% 50%; 
-    --destructive-foreground: 0 0% 95%;
+    --destructive: 0 65% 60%; 
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 354 5% 25%; 
-    --input: 354 5% 18%; 
-    --ring: 0 27% 55%; 
+    --border: 30 10% 30%; 
+    --input: 30 10% 20%; 
+    --ring: 0 55% 60%; 
     
-    --chart-1: 0 27% 50%;
-    --chart-2: 240 27% 50%;
-    --chart-3: 0 10% 40%;
-    --chart-4: 0 27% 65%;
-    --chart-5: 240 27% 65%;
+    --chart-1: 0 55% 60%;
+    --chart-2: 40 80% 60%;
+    --chart-3: 30 15% 50%;
+    --chart-4: 0 45% 75%;
+    --chart-5: 40 65% 75%;
   }
 }
 
@@ -92,3 +92,4 @@
     @apply font-headline;
   }
 }
+
