@@ -5,8 +5,8 @@
 
 @layer base {
   :root {
-    /* New Theme: Inspired by "Oriental Touch" - Warm Cream, Muted Red, Gold Accent */
-    --background: 30 50% 98%; /* Very light warm cream */
+    /* New Theme: Inspired by "Oriental Touch" - Updating background */
+    --background: 0 15% 93%; /* Very light grayish rose */
     --foreground: 30 20% 25%; /* Dark warm brown */
     
     --card: 30 50% 100%; /* Slightly off-white for cards */
