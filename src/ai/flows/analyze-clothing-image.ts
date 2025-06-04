@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { WARDROBE_CATEGORIES } from '@/lib/types'; // Import for prompt description
 
 const ClothingItemType = z.enum([
   'Shirt',
@@ -64,6 +65,7 @@ const ClothingItemSchema = z.object({
   type: ClothingItemType.describe('The type of clothing item.'),
   material: ClothingItemMaterial.describe('The material of the clothing item.'),
   color: ClothingItemColor.describe('The color of the clothing item.'),
+  category: z.string().describe(`The most appropriate category for this specific item from the list: ${WARDROBE_CATEGORIES.join(', ')}. If unsure, provide a best guess.`),
 });
 
 const AnalyzeClothingImageOutputSchema = z.object({
@@ -84,8 +86,9 @@ const analyzeClothingImagePrompt = ai.definePrompt({
   output: {schema: AnalyzeClothingImageOutputSchema},
   prompt: `You are an AI assistant that analyzes images of clothing.
   Your task is to identify ALL distinct clothing items visible in the provided image.
-  For EACH identified clothing item, determine its type, material, and color.
+  For EACH identified clothing item, determine its type, material, color, and suggest a category.
   Use the available enum values for type, material, and color. If a precise match isn't found, select 'Other'.
+  For the category, select the most appropriate one for that specific item from the following list: [${WARDROBE_CATEGORIES.join(', ')}].
   Structure your response according to the output schema, providing a list of identified items.
 
   Image: {{media url=photoDataUri}}
