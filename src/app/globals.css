@@ -6,77 +6,126 @@
 @layer base {
   :root {
     /* Theme inspired by "Blue Mosaic & Yellow Flowers" */
-    --background: 225 60% 94%; /* Soft Periwinkle Blue */
-    --foreground: 230 30% 25%; /* Deep Desaturated Blue */
+    /* Base HSL values for Light Theme */
+    --background-h: 225; --background-s: 60%; --background-l: 94%; /* Soft Periwinkle Blue */
+    --foreground-h: 230; --foreground-s: 30%; --foreground-l: 25%; /* Deep Desaturated Blue */
     
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 230 30% 20%; /* Darker Blue for card text */
+    --card-h: 0; --card-s: 0%; --card-l: 100%; /* White */
+    --card-foreground-h: 230; --card-foreground-s: 30%; --card-foreground-l: 20%; /* Darker Blue for card text */
 
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 230 30% 20%;
+    --popover-h: 0; --popover-s: 0%; --popover-l: 100%; /* White */
+    --popover-foreground-h: 230; --popover-foreground-s: 30%; --popover-foreground-l: 20%;
 
-    --primary: 220 75% 55%; /* Vibrant Cobalt Blue */
-    --primary-foreground: 0 0% 100%; /* White text on primary */
+    --primary-h: 220; --primary-s: 75%; --primary-l: 55%; /* Vibrant Cobalt Blue */
+    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-l: 100%; /* White text on primary */
 
-    --secondary: 225 50% 88%; /* Muted Periwinkle */
-    --secondary-foreground: 230 30% 30%;
+    --secondary-h: 225; --secondary-s: 50%; --secondary-l: 88%; /* Muted Periwinkle */
+    --secondary-foreground-h: 230; --secondary-foreground-s: 30%; --secondary-foreground-l: 30%;
 
-    --muted: 225 55% 92%; /* Lighter Periwinkle for muted elements */
-    --muted-foreground: 230 30% 45%; /* Softer foreground for muted text */
+    --muted-h: 225; --muted-s: 55%; --muted-l: 92%; /* Lighter Periwinkle for muted elements */
+    --muted-foreground-h: 230; --muted-foreground-s: 30%; --muted-foreground-l: 45%; /* Softer foreground for muted text */
 
-    --accent: 45 90% 60%; /* Warm Yellow/Gold */
-    --accent-foreground: 40 30% 15%; /* Dark brown/yellow text on accent */
+    --accent-h: 45; --accent-s: 90%; --accent-l: 60%; /* Warm Yellow/Gold */
+    --accent-foreground-h: 40; --accent-s: 30%; --accent-l: 15%; /* Dark brown/yellow text on accent */
 
-    --destructive: 0 70% 50%; /* Standard red for destructive actions */
-    --destructive-foreground: 0 0% 100%;
+    --destructive-h: 0; --destructive-s: 70%; --destructive-l: 50%; /* Standard red for destructive actions */
+    --destructive-foreground-h: 0; --destructive-s: 0%; --destructive-l: 100%;
 
-    --border: 225 40% 85%; /* Softer blue border */
-    --input: 225 70% 97%; /* Very light blue input background */
-    --ring: 220 75% 65%; /* Ring color related to primary, slightly lighter */
+    --border-h: 225; --border-s: 40%; --border-l: 85%; /* Softer blue border */
+    --input-h: 225; --input-s: 70%; --input-l: 97%; /* Very light blue input background */
+    --ring-h: 220; --ring-s: 75%; --ring-l: 65%; /* Ring color related to primary, slightly lighter */
     
-    --chart-1: 220 75% 55%; /* Primary Blue */
-    --chart-2: 45 90% 60%;  /* Accent Gold */
-    --chart-3: 225 30% 60%; /* Neutral Muted Blue */
-    --chart-4: 220 65% 70%; /* Lighter Primary Blue */
-    --chart-5: 45 80% 70%;  /* Lighter Accent Gold */
+    /* Derived Colors for Light Theme */
+    --background: hsl(var(--background-h) var(--background-s) var(--background-l));
+    --foreground: hsl(var(--foreground-h) var(--foreground-s) var(--foreground-l));
+    --card: hsl(var(--card-h) var(--card-s) var(--card-l));
+    --card-foreground: hsl(var(--card-foreground-h) var(--card-foreground-s) var(--card-foreground-l));
+    --popover: hsl(var(--popover-h) var(--popover-s) var(--popover-l));
+    --popover-foreground: hsl(var(--popover-foreground-h) var(--popover-foreground-s) var(--popover-foreground-l));
+    --primary: hsl(var(--primary-h) var(--primary-s) var(--primary-l));
+    --primary-foreground: hsl(var(--primary-foreground-h) var(--primary-foreground-s) var(--primary-foreground-l));
+    --secondary: hsl(var(--secondary-h) var(--secondary-s) var(--secondary-l));
+    --secondary-foreground: hsl(var(--secondary-foreground-h) var(--secondary-foreground-s) var(--secondary-foreground-l));
+    --muted: hsl(var(--muted-h) var(--muted-s) var(--muted-l));
+    --muted-foreground: hsl(var(--muted-foreground-h) var(--muted-foreground-s) var(--muted-foreground-l));
+    --accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+    --accent-foreground: hsl(var(--accent-foreground-h) var(--accent-foreground-s) var(--accent-foreground-l));
+    --destructive: hsl(var(--destructive-h) var(--destructive-s) var(--destructive-l));
+    --destructive-foreground: hsl(var(--destructive-foreground-h) var(--destructive-foreground-s) var(--destructive-foreground-l));
+    --border: hsl(var(--border-h) var(--border-s) var(--border-l));
+    --input: hsl(var(--input-h) var(--input-s) var(--input-l));
+    --ring: hsl(var(--ring-h) var(--ring-s) var(--ring-l));
+    
+    --chart-1: hsl(var(--primary-h) var(--primary-s) var(--primary-l)); /* Primary Blue */
+    --chart-2: hsl(var(--accent-h) var(--accent-s) var(--accent-l));  /* Accent Gold */
+    --chart-3: hsl(225 30% 60%); /* Neutral Muted Blue */
+    --chart-4: hsl(var(--primary-h) calc(var(--primary-s) - 10%) calc(var(--primary-l) + 15%)); /* Lighter Primary Blue */
+    --chart-5: hsl(var(--accent-h) calc(var(--accent-s) - 10%) calc(var(--accent-l) + 10%));  /* Lighter Accent Gold */
     --radius: 0.5rem;
+
+    --pattern-line-opacity: 0.25;
+    --pattern-tile-size: 40px;
   }
 
   .dark {
-    /* Dark theme adjustments for the new palette */
-    --background: 230 20% 12%; /* Deep Dark Blue/Charcoal */
-    --foreground: 225 40% 88%; /* Light Periwinkle/Blue text */
+    /* Base HSL values for Dark Theme */
+    --background-h: 230; --background-s: 20%; --background-l: 12%; /* Deep Dark Blue/Charcoal */
+    --foreground-h: 225; --foreground-s: 40%; --foreground-l: 88%; /* Light Periwinkle/Blue text */
     
-    --card: 230 20% 16%; /* Slightly lighter dark blue for cards */
-    --card-foreground: 225 40% 88%;
+    --card-h: 230; --card-s: 20%; --card-l: 16%; /* Slightly lighter dark blue for cards */
+    --card-foreground-h: 225; --card-foreground-s: 40%; --card-foreground-l: 88%;
 
-    --popover: 230 20% 15%;
-    --popover-foreground: 225 40% 88%;
+    --popover-h: 230; --popover-s: 20%; --popover-l: 15%;
+    --popover-foreground-h: 225; --popover-foreground-s: 40%; --popover-foreground-l: 88%;
 
-    --primary: 220 70% 65%; /* Vibrant Blue, adjusted for dark mode */
-    --primary-foreground: 0 0% 98%; /* Very light text on primary */
+    --primary-h: 220; --primary-s: 70%; --primary-l: 65%; /* Vibrant Blue, adjusted for dark mode */
+    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-l: 98%; /* Very light text on primary */
 
-    --secondary: 225 25% 35%; /* Muted dark blue/gray */
-    --secondary-foreground: 225 40% 90%;
+    --secondary-h: 225; --secondary-s: 25%; --secondary-l: 35%; /* Muted dark blue/gray */
+    --secondary-foreground-h: 225; --secondary-foreground-s: 40%; --secondary-l: 90%;
 
-    --muted: 225 20% 25%; /* Darker muted blue */
-    --muted-foreground: 225 30% 70%; /* Lighter muted text */
+    --muted-h: 225; --muted-s: 20%; --muted-l: 25%; /* Darker muted blue */
+    --muted-foreground-h: 225; --muted-s: 30%; --muted-l: 70%; /* Lighter muted text */
 
-    --accent: 45 80% 68%; /* Gold, adjusted for dark mode */
-    --accent-foreground: 40 20% 10%; /* Very dark text on accent */
+    --accent-h: 45; --accent-s: 80%; --accent-l: 68%; /* Gold, adjusted for dark mode */
+    --accent-foreground-h: 40; --accent-s: 20%; --accent-l: 10%; /* Very dark text on accent */
 
-    --destructive: 0 65% 60%; 
-    --destructive-foreground: 0 0% 98%;
+    --destructive-h: 0; --destructive-s: 65%; --destructive-l: 60%; 
+    --destructive-foreground-h: 0; --destructive-s: 0%; --destructive-l: 98%;
 
-    --border: 225 20% 30%; 
-    --input: 225 20% 20%; 
-    --ring: 220 70% 60%; 
+    --border-h: 225; --border-s: 20%; --border-l: 30%; 
+    --input-h: 225; --input-s: 20%; --input-l: 20%; 
+    --ring-h: 220; --ring-s: 70%; --ring-l: 60%; 
     
-    --chart-1: 220 70% 60%;
-    --chart-2: 45 80% 65%;
-    --chart-3: 225 25% 50%;
-    --chart-4: 220 60% 75%;
-    --chart-5: 45 70% 75%;
+    /* Derived Colors for Dark Theme */
+    --background: hsl(var(--background-h) var(--background-s) var(--background-l));
+    --foreground: hsl(var(--foreground-h) var(--foreground-s) var(--foreground-l));
+    --card: hsl(var(--card-h) var(--card-s) var(--card-l));
+    --card-foreground: hsl(var(--card-foreground-h) var(--card-foreground-s) var(--card-foreground-l));
+    --popover: hsl(var(--popover-h) var(--popover-s) var(--popover-l));
+    --popover-foreground: hsl(var(--popover-foreground-h) var(--popover-foreground-s) var(--popover-foreground-l));
+    --primary: hsl(var(--primary-h) var(--primary-s) var(--primary-l));
+    --primary-foreground: hsl(var(--primary-foreground-h) var(--primary-foreground-s) var(--primary-foreground-l));
+    --secondary: hsl(var(--secondary-h) var(--secondary-s) var(--secondary-l));
+    --secondary-foreground: hsl(var(--secondary-foreground-h) var(--secondary-foreground-s) var(--secondary-foreground-l));
+    --muted: hsl(var(--muted-h) var(--muted-s) var(--muted-l));
+    --muted-foreground: hsl(var(--muted-foreground-h) var(--muted-foreground-s) var(--muted-foreground-l));
+    --accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+    --accent-foreground: hsl(var(--accent-foreground-h) var(--accent-foreground-s) var(--accent-foreground-l));
+    --destructive: hsl(var(--destructive-h) var(--destructive-s) var(--destructive-l));
+    --destructive-foreground: hsl(var(--destructive-foreground-h) var(--destructive-foreground-s) var(--destructive-foreground-l));
+    --border: hsl(var(--border-h) var(--border-s) var(--border-l));
+    --input: hsl(var(--input-h) var(--input-s) var(--input-l));
+    --ring: hsl(var(--ring-h) var(--ring-s) var(--ring-l));
+
+    --chart-1: hsl(var(--primary-h) var(--primary-s) calc(var(--primary-l) + 5%));
+    --chart-2: hsl(var(--accent-h) var(--accent-s) calc(var(--accent-l) + 5%));
+    --chart-3: hsl(225 25% 50%);
+    --chart-4: hsl(var(--primary-h) calc(var(--primary-s) - 10%) calc(var(--primary-l) + 10%));
+    --chart-5: hsl(var(--accent-h) calc(var(--accent-s) - 10%) calc(var(--accent-l) + 10%));
+  
+    --pattern-line-opacity: 0.1;
+    --pattern-tile-size: 40px;
   }
 }
 
@@ -85,10 +134,21 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    /* Explicitly set background color using HSL variables */
+    background-color: hsl(var(--background-h) var(--background-s) var(--background-l));
+    /* Add the subtle mosaic/grid pattern */
+    background-image:
+      linear-gradient(hsla(var(--border-h), var(--border-s), var(--border-l), var(--pattern-line-opacity)) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(var(--border-h), var(--border-s), var(--border-l), var(--pattern-line-opacity)) 1px, transparent 1px);
+    background-size: var(--pattern-tile-size) var(--pattern-tile-size);
+    
+    /* Apply text color and font styling */
+    @apply text-foreground font-body;
     font-feature-settings: "rlig" 1, "calt" 1; /* Enable common ligatures */
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline;
   }
 }
+
+    
