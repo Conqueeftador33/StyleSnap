@@ -1,7 +1,7 @@
 
 "use client";
 import Link from 'next/link';
-import Image from 'next/image'; // Added import
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Wand2, Shirt, MessageSquareText } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
@@ -14,19 +14,19 @@ export function AppHeader() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
           <Image 
-            src="/logo.png" // Assumes your logo is named logo.png in the /public folder
+            src="/logo.png" 
             alt="StyleSNAP! Logo" 
-            width={120} // Adjust width as needed
-            height={30}  // Adjust height as needed
-            priority // Optional: if logo is above the fold
-            className="h-auto" // Ensures responsiveness if parent container is smaller
+            width={120} 
+            height={30}
+            priority
+            className="h-auto"
           />
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2">
           <Button 
             variant="ghost" 
             onClick={() => router.push('/wardrobe')} 
-            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3" // Made always inline-flex
+            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
           >
             <Shirt className="h-4 w-4" />
             <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
