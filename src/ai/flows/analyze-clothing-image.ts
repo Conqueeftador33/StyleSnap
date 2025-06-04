@@ -10,7 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { AI_CLOTHING_TYPES, AI_CLOTHING_COLORS, AI_CLOTHING_MATERIALS, WARDROBE_CATEGORIES, type AnalyzedItemAttributes as AnalyzedItemAttributesType } from '@/lib/types';
+import { AI_CLOTHING_TYPES, AI_CLOTHING_COLORS, AI_CLOTHING_MATERIALS, WARDROBE_CATEGORIES } from '@/lib/types';
 
 const AnalyzeClothingImageInputSchema = z.object({
   photoDataUri: z
@@ -21,8 +21,6 @@ const AnalyzeClothingImageInputSchema = z.object({
 });
 export type AnalyzeClothingImageInput = z.infer<typeof AnalyzeClothingImageInputSchema>;
 
-// Output schema for the AI to populate.
-// Using enums defined in lib/types to guide the AI.
 const AnalyzedItemAttributesSchema = z.object({
   type: z.enum(AI_CLOTHING_TYPES).describe('The specific type of the clothing item (e.g., Shirt, Jeans, Dress).'),
   color: z.enum(AI_CLOTHING_COLORS).describe('The dominant color of the clothing item.'),
@@ -34,8 +32,6 @@ export type AnalyzedItemAttributes = z.infer<typeof AnalyzedItemAttributesSchema
 
 
 export async function analyzeClothingImage(input: AnalyzeClothingImageInput): Promise<AnalyzedItemAttributes> {
-  // For now, we're assuming the flow directly returns the attributes.
-  // In a more complex scenario, you might wrap a raw AI call or another flow.
   return analyzeClothingImageFlow(input);
 }
 
@@ -68,7 +64,6 @@ const analyzeClothingImageFlow = ai.defineFlow(
     if (!output) {
       throw new Error('AI analysis failed to return an output.');
     }
-    // The output should already conform to AnalyzedItemAttributesSchema due to the prompt's output schema.
     return output;
   }
 );

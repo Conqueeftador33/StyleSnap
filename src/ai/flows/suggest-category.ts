@@ -24,6 +24,7 @@ export type SuggestCategoryOutput = z.infer<typeof SuggestCategoryOutputSchema>;
 export async function suggestCategory(input: SuggestCategoryInput): Promise<SuggestCategoryOutput> {
   console.log("Placeholder: suggestCategory called", input);
   // Actual Genkit flow call here
+  // return suggestCategoryFlow(input); // If flow is defined
   return { suggestedCategory: "Other" };
 }
 
@@ -36,6 +37,8 @@ const suggestCategoryFlow = ai.defineFlow(
   },
   async (input) => {
     // AI logic
+    // const { output } = await suggestCategoryPrompt(input);
+    // return output!;
     throw new Error('Flow not implemented');
   }
 );

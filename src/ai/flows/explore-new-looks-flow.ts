@@ -29,6 +29,7 @@ export type ExploreLooksOutput = z.infer<typeof ExploreLooksOutputSchema>;
 export async function exploreNewLooks(input: ExploreLooksInput): Promise<ExploreLooksOutput> {
   console.log("Placeholder: exploreNewLooks called", input);
   // Actual Genkit flow call here
+  // return exploreNewLooksFlow(input); // If flow is defined
   return { looks: [] };
 }
 
@@ -41,6 +42,8 @@ const exploreNewLooksFlow = ai.defineFlow(
   },
   async (input) => {
     // AI logic
+    // const { output } = await exploreNewLooksPrompt(input);
+    // return output!;
     throw new Error('Flow not implemented');
   }
 );

@@ -31,7 +31,6 @@ export type SuggestOutfitsOutput = z.infer<typeof SuggestOutfitsOutputSchema>;
 
 
 export async function suggestOutfits(input: SuggestOutfitsInput): Promise<SuggestOutfitsOutput> {
-  // It's okay if wardrobeItems is empty, AI might suggest purchases.
   return suggestOutfitsFlow(input);
 }
 
@@ -93,26 +92,30 @@ const suggestOutfitsFlow = ai.defineFlow(
       throw new Error('AI outfit suggestion failed to return an output.');
     }
     
+    // Ensure suggestedOutfits always exists and items are valid
     if (output.suggestedOutfits) {
       const validItemIds = new Set(input.wardrobeItems.map(item => item.id));
       output.suggestedOutfits.forEach(outfit => {
-        outfit.items.forEach(item => {
+        // Filter items within each outfit to ensure they exist in the wardrobe
+        outfit.items = outfit.items.filter(item => {
           if (!validItemIds.has(item.itemId)) {
-            console.warn('Outfit "' + outfit.outfitName + '" contains an item with itemId "' + item.itemId + '" not found in the provided wardrobe.');
+            console.warn('Outfit "' + outfit.outfitName + '" contains an item with itemId "' + item.itemId + '" not found in the provided wardrobe. It will be removed from the outfit.');
+            return false;
           }
+          return true;
         });
-        outfit.items = outfit.items.filter(item => validItemIds.has(item.itemId));
       });
+      // Filter out outfits that became empty after item validation
       output.suggestedOutfits = output.suggestedOutfits.filter(outfit => outfit.items.length > 0);
     } else {
-      output.suggestedOutfits = [];
+      output.suggestedOutfits = []; // Initialize if undefined
     }
 
+    // Ensure suggestedPurchases always exists
     if (!output.suggestedPurchases) {
-        output.suggestedPurchases = [];
+        output.suggestedPurchases = []; // Initialize if undefined
     }
 
     return output;
   }
 );
-
