@@ -1,7 +1,7 @@
 
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { Camera, Video, AlertTriangle, Loader2 } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Camera, Video, AlertTriangle, Loader2, CameraReverse } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,66 +11,86 @@ interface CameraCaptureProps {
   onImageCapture: (dataUri: string) => void;
 }
 
+type FacingMode = "user" | "environment";
+
 export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
   const { toast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null); // null: initializing, false: denied/error, true: granted
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const [currentStream, setCurrentStream] = useState<MediaStream | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [initializationMessage, setInitializationMessage] = useState<string | null>("Initializing Camera...");
+  const [currentFacingMode, setCurrentFacingMode] = useState<FacingMode>("environment");
+  const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
 
+  const stopCurrentStream = useCallback(() => {
+    if (currentStream) {
+      currentStream.getTracks().forEach(track => track.stop());
+      setCurrentStream(null);
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  }, [currentStream]);
+
+  const startCameraStream = useCallback(async (facingMode: FacingMode) => {
+    stopCurrentStream();
+    setIsSwitchingCamera(true);
+    setInitializationMessage("Initializing Camera...");
+
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const errorMsg = 'Your browser does not support camera access. Please use image upload.';
+      setHasCameraPermission(false);
+      setInitializationMessage(errorMsg);
+      toast({ variant: 'destructive', title: 'Camera Not Supported', description: errorMsg });
+      setIsSwitchingCamera(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode } });
+      setCurrentStream(stream);
+      setHasCameraPermission(true);
+      setInitializationMessage(null);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      let description = 'Could not access the camera. Please ensure it is not in use by another application and that you have granted permission.';
+      if (error instanceof Error) {
+        if (error.name === "NotAllowedError") {
+          description = "Camera access was denied. Please enable it in your browser settings and refresh the page.";
+        } else if (error.name === "NotFoundError" || error.name === "OverconstrainedError") {
+          description = `Could not find a camera with mode: ${facingMode}. Try the other camera.`;
+           // Attempt to switch to the other mode if one fails
+          if (facingMode === "environment") setCurrentFacingMode("user");
+          else setCurrentFacingMode("environment");
+        } else {
+          description = `Error: ${error.message}. Try refreshing or checking browser permissions.`;
+        }
+      }
+      setHasCameraPermission(false);
+      setInitializationMessage(description);
+    } finally {
+      setIsSwitchingCamera(false);
+    }
+  }, [stopCurrentStream, toast]);
 
   useEffect(() => {
-    const getCameraPermission = async () => {
-      setHasCameraPermission(null);
-      setInitializationMessage("Initializing Camera...");
-
-      if (typeof navigator === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        const errorMsg = 'Your browser does not support camera access. Please use image upload.';
-        setHasCameraPermission(false);
-        setInitializationMessage(errorMsg);
-        toast({ variant: 'destructive', title: 'Camera Not Supported', description: errorMsg });
-        return;
-      }
-
-      try {
-        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        setStream(cameraStream);
-        setHasCameraPermission(true);
-        setInitializationMessage(null); 
-        if (videoRef.current) {
-          videoRef.current.srcObject = cameraStream;
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        let description = 'Could not access the camera. Please ensure it is not in use by another application and that you have granted permission.';
-        if (error instanceof Error) {
-            if (error.name === "NotAllowedError") {
-                description = "Camera access was denied. Please enable it in your browser settings and refresh the page.";
-            } else if (error.name === "NotFoundError") {
-                description = "No camera was found on your device. Please connect a camera or use image upload.";
-            } else {
-                 description = `Error: ${error.message}. Try refreshing or checking browser permissions.`;
-            }
-        }
-        setHasCameraPermission(false);
-        setInitializationMessage(description);
-        // The Alert component will display the message if hasCameraPermission is false.
-      }
-    };
-
-    getCameraPermission();
-
+    startCameraStream(currentFacingMode);
     return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        if(videoRef.current) videoRef.current.srcObject = null;
-      }
+      stopCurrentStream();
     };
-  }, []);
+  }, [currentFacingMode, startCameraStream, stopCurrentStream]);
+
+  const handleToggleFacingMode = () => {
+    if (isSwitchingCamera) return;
+    setCurrentFacingMode(prevMode => prevMode === "user" ? "environment" : "user");
+  };
 
   const handleCapture = () => {
-    if (!videoRef.current || !stream || !hasCameraPermission) {
+    if (!videoRef.current || !currentStream || !hasCameraPermission || isCapturing) {
       toast({ title: "Cannot Capture", description: "Camera is not ready or permission denied.", variant: "destructive" });
       return;
     }
@@ -90,7 +110,7 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
     }
     setIsCapturing(false);
   };
-  
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -99,49 +119,62 @@ export function CameraCapture({ onImageCapture }: CameraCaptureProps) {
           Take a Photo
         </CardTitle>
         <CardDescription>
-          Use your device camera to capture an image.
+          Use your device camera to capture an image. Current: {currentFacingMode === 'user' ? 'Front Camera' : 'Rear Camera'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="w-full aspect-video rounded-md bg-muted overflow-hidden relative flex items-center justify-center">
-          {/* Video element is always rendered as per guideline */}
-          <video 
-            ref={videoRef} 
+          <video
+            ref={videoRef}
             className="w-full h-full object-cover"
-            autoPlay 
-            muted 
-            playsInline 
+            autoPlay
+            muted
+            playsInline
           />
-          {/* Overlay message when video is not active or there are permission issues */}
-          {hasCameraPermission !== true && initializationMessage && (
+          {(hasCameraPermission !== true || isSwitchingCamera) && initializationMessage && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted/90 p-4 text-center backdrop-blur-sm">
-              {hasCameraPermission === null && <Loader2 className="h-8 w-8 animate-spin mb-2 text-muted-foreground" />}
-              {hasCameraPermission === false && <AlertTriangle className="h-8 w-8 mb-2 text-destructive" />}
+              {(hasCameraPermission === null || isSwitchingCamera) && <Loader2 className="h-8 w-8 animate-spin mb-2 text-muted-foreground" />}
+              {hasCameraPermission === false && !isSwitchingCamera && <AlertTriangle className="h-8 w-8 mb-2 text-destructive" />}
               <p className="text-sm text-muted-foreground">{initializationMessage}</p>
             </div>
           )}
         </div>
 
-        {/* Alert displayed if permission is explicitly false, as per guideline */}
-        { hasCameraPermission === false && (
-            <Alert variant="destructive">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Camera Access Required</AlertTitle>
-                <AlertDescription>
-                    {initializationMessage || "Please allow camera access to use this feature. You might need to refresh the page after granting permission."}
-                </AlertDescription>
-            </Alert>
+        {hasCameraPermission === false && !isSwitchingCamera && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Camera Access Issue</AlertTitle>
+            <AlertDescription>
+              {initializationMessage || "Please allow camera access to use this feature. You might need to refresh the page after granting permission."}
+            </AlertDescription>
+          </Alert>
         )}
 
-        {hasCameraPermission === true && (
-          <Button onClick={handleCapture} disabled={isCapturing || !stream} className="w-full">
-            {isCapturing ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Camera className="mr-2 h-4 w-4" />
-            )}
-            Capture Photo
-          </Button>
+        {hasCameraPermission === true && !isSwitchingCamera && (
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button onClick={handleCapture} disabled={isCapturing || !currentStream} className="w-full flex-grow">
+              {isCapturing ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Camera className="mr-2 h-4 w-4" />
+              )}
+              Capture Photo
+            </Button>
+            <Button onClick={handleToggleFacingMode} variant="outline" disabled={isSwitchingCamera} className="w-full sm:w-auto">
+              {isSwitchingCamera ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CameraReverse className="mr-2 h-4 w-4" />
+              )}
+              Switch Camera
+            </Button>
+          </div>
+        )}
+         {isSwitchingCamera && hasCameraPermission === true && (
+            <Button disabled className="w-full">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Initializing Camera...
+            </Button>
         )}
       </CardContent>
     </Card>
