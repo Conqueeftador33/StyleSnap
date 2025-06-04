@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Ensure React is imported
 import { useRouter } from 'next/navigation';
 import { ImageUploader } from '@/components/common/image-uploader';
 import { CameraCapture } from '@/components/common/camera-capture';
@@ -13,16 +13,18 @@ import type { AiClothingType, AiClothingMaterial, AiClothingColor, WardrobeCateg
 import { WARDROBE_CATEGORIES, AI_CLOTHING_TYPES, AI_CLOTHING_MATERIALS, AI_CLOTHING_COLORS } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AlertCircle, CheckCircle2, Loader2, Wand2, ListChecks, Check } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Loader2, Wand2, ListChecks, Check, ArrowLeft } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useIsMobile } from '@/hooks/use-mobile'; // Added import
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth'; // Import useAuth
 
 export default function AddItemPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth(); // Use auth hook
   const { addItem } = useWardrobe();
   const { toast } = useToast();
-  const isMobile = useIsMobile(); // Use the hook
+  const isMobile = useIsMobile();
 
   const [imageDataUri, setImageDataUri] = useState<string | null>(null);
   
@@ -37,6 +39,13 @@ export default function AddItemPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [analysisDone, setAnalysisDone] = useState(false);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login?redirect=/add');
+    }
+  }, [user, authLoading, router]);
+
   const resetPageToBlank = () => {
     setImageDataUri(null);
     setFormDefaultValues({});
@@ -48,7 +57,7 @@ export default function AddItemPage() {
   };
 
   const handleImageUpload = (dataUri: string) => {
-    resetPageToBlank(); // Reset all states when a new image is uploaded/captured
+    resetPageToBlank(); 
     setImageDataUri(dataUri);
   };
 
@@ -94,7 +103,6 @@ export default function AddItemPage() {
       setAnalysisDone(true);
 
       if (analysisResult.items && analysisResult.items.length > 0) {
-        // Automatically select the first non-added item
         const firstNonAddedIndex = analysisResult.items.findIndex((_, idx) => !addedAnalysedItemIndices.includes(idx));
         if (firstNonAddedIndex !== -1) {
             handleSelectAnalyzedItem(firstNonAddedIndex, analysisResult.items);
@@ -132,19 +140,19 @@ export default function AddItemPage() {
     }
   };
 
-  const handleFormSubmit = (data: ItemFormData) => {
+  const handleFormSubmit = async (data: ItemFormData) => {
     if (!imageDataUri) {
       toast({ title: 'Error', description: 'Image data is missing.', variant: 'destructive' });
       return;
     }
-    if (selectedAnalyzedItemIndex === null && analyzedItemsList && analyzedItemsList.length > 0) {
+    if (selectedAnalyzedItemIndex === null && analyzedItemsList && analyzedItemsList.length > 0 && !addedAnalysedItemIndices.includes(0) /* check if first one is available */) {
         toast({ title: 'Select Item', description: 'Please select an item from the detected list to add.', variant: 'destructive'});
         return;
     }
 
     setIsSubmitting(true);
     try {
-      addItem({
+      await addItem({ // addItem is now async
         imageUrl: imageDataUri,
         name: data.name,
         type: data.type,
@@ -163,14 +171,12 @@ export default function AddItemPage() {
       const allAnalyzedItemsAdded = analyzedItemsList && newAddedIndices.length === analyzedItemsList.length;
 
       if (allAnalyzedItemsAdded || !analyzedItemsList || analyzedItemsList.length === 0) {
-        // All items from analysis added, or no analysis, or only one analyzed item (which is now added)
         if (isMobile) {
           resetPageToBlank();
         } else {
           router.push('/');
         }
       } else {
-        // More items from current analysis to potentially add
         setFormDefaultValues({
             type: AI_CLOTHING_TYPES[0],
             material: AI_CLOTHING_MATERIALS[0],
@@ -178,14 +184,13 @@ export default function AddItemPage() {
             category: WARDROBE_CATEGORIES[0],
             name: '',
         });
-        setSelectedAnalyzedItemIndex(null); // Clear selection, prompting user to select next
+        setSelectedAnalyzedItemIndex(null); 
         
         const nextItemToSelect = analyzedItemsList.findIndex((_,idx) => !newAddedIndices.includes(idx));
         if(nextItemToSelect !== -1){
             handleSelectAnalyzedItem(nextItemToSelect, analyzedItemsList);
              toast({ title: 'Item Added & Next Loaded', description: 'Previous item added. Details for the next detected item are loaded.', variant: 'default' });
         } else {
-            // This case should ideally be covered by allAnalyzedItemsAdded, but as a fallback:
             toast({ title: 'Item Added', description: 'All detected items from this image have been processed.', variant: 'default' });
              if (isMobile) { resetPageToBlank(); } else { router.push('/');}
         }
@@ -201,9 +206,24 @@ export default function AddItemPage() {
   
   const allItemsFromAnalysisAdded = !!analyzedItemsList && analyzedItemsList.length > 0 && addedAnalysedItemIndices.length === analyzedItemsList.length;
 
+  if (authLoading || !user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-15rem)]">
+        {authLoading ? <Loader2 className="h-12 w-12 animate-spin text-primary" /> : <p>Please log in to add items.</p>}
+         {!authLoading && !user && (
+             <Button onClick={() => router.push('/login?redirect=/add')} className="mt-4">Go to Login</Button>
+         )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div>
+         <Button variant="outline" size="sm" onClick={() => router.back()} className="mb-4">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
         <h1 className="text-3xl font-headline tracking-tight">Add New Clothing Item</h1>
         <p className="text-muted-foreground">Upload an image or use your camera to add an item to your virtual wardrobe.</p>
       </div>

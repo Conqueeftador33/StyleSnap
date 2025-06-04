@@ -1,34 +1,65 @@
 
 "use client";
-import React, { useState, useMemo } from 'react'; // Import React
+import React, { useState, useMemo, useEffect } from 'react'; 
+import { useRouter } from 'next/navigation';
 import { WardrobeGrid } from '@/components/wardrobe/wardrobe-grid';
 import { SearchFilters, Filters } from '@/components/wardrobe/search-filters';
 import { useWardrobe } from '@/hooks/use-wardrobe';
+import { useAuth } from '@/hooks/use-auth'; // Import useAuth
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button'; // For login button
+import { Loader2 } from 'lucide-react'; // For loading spinner
 
 export default function WardrobePage() {
-  const { isLoading: isWardrobeLoading, filterItems } = useWardrobe();
+  const { user, loading: authLoading } = useAuth(); // Use auth hook
+  const router = useRouter();
+  const { items: wardrobeItemsSWR, isLoading: isWardrobeLoading, filterItems } = useWardrobe();
   const [currentFilters, setCurrentFilters] = useState<Filters>({});
+
+  // Redirect to login if not authenticated and not loading
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
 
   const handleFilterChange = (newFilters: Filters) => {
     setCurrentFilters(newFilters);
   };
 
-  // Use useMemo to avoid re-calculating on every render unless dependencies change
   const displayedItems = useMemo(() => {
-    if (isWardrobeLoading) return []; // Return empty array while loading
+    if (isWardrobeLoading || authLoading || !user) return []; 
     return filterItems(currentFilters);
-  }, [filterItems, currentFilters, isWardrobeLoading]);
+  }, [filterItems, currentFilters, isWardrobeLoading, authLoading, user]);
 
-
-  if (isWardrobeLoading) {
+  if (authLoading || (!user && !authLoading)) { // Show loader or login prompt
     return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-15rem)]">
+        {authLoading ? (
+          <>
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <p className="text-muted-foreground">Loading your wardrobe...</p>
+          </>
+        ) : (
+          <>
+            <p className="text-xl font-semibold mb-4">Please log in to view your wardrobe.</p>
+            <Button onClick={() => router.push('/login')}>Go to Login</Button>
+          </>
+        )}
+      </div>
+    );
+  }
+  
+  // If wardrobe is loading (but user is authenticated) show skeletons
+  if (isWardrobeLoading) {
+     return (
       <div className="space-y-8">
         <CardSkeleton />
         <GridSkeleton />
       </div>
     );
   }
+
 
   return (
     <div className="space-y-8">

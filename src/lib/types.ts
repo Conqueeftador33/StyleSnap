@@ -23,6 +23,7 @@ export interface ClothingItem {
   color: AiClothingColor; // From AI analysis
   category: WardrobeCategory; // User-editable, AI-suggested
   addedDate: string; // ISO date string
+  userId?: string; // Added for Firestore
 }
 
 export interface AnalyzedItemData {

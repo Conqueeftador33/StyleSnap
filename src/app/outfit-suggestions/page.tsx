@@ -1,14 +1,16 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWardrobe } from '@/hooks/use-wardrobe';
+import { useAuth } from '@/hooks/use-auth'; // Import useAuth
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette, Copy } from 'lucide-react';
 import Image from 'next/image';
-import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, FlowClothingItem, DailyOutfitSchema } from '@/ai/flows/suggest-outfits-flow';
+import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, FlowClothingItem } from '@/ai/flows/suggest-outfits-flow'; // DailyOutfitSchema no longer needed directly here
 import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 const SEASONS: Season[] = ['Spring', 'Summer', 'Autumn', 'Winter'];
 
 export default function OutfitSuggestionsPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth(); // Use auth hook
   const { items: wardrobeItems, isLoading: isWardrobeLoading } = useWardrobe();
   const { toast } = useToast();
   const [selectedSeason, setSelectedSeason] = useState<Season | undefined>(undefined);
@@ -23,12 +27,19 @@ export default function OutfitSuggestionsPage() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login?redirect=/outfit-suggestions');
+    }
+  }, [user, authLoading, router]);
+
   const handleSuggestOutfits = async () => {
     if (!selectedSeason) {
       toast({ title: 'Select Season', description: 'Please select a season first.', variant: 'destructive' });
       return;
     }
-    if (wardrobeItems.length === 0) {
+    if (wardrobeItems.length === 0 && !isWardrobeLoading) { // Check isWardrobeLoading to avoid premature empty message
         toast({ title: 'Empty Wardrobe', description: 'Add items to your wardrobe to get suggestions.', variant: 'default' });
         setSuggestions([
             { dayOfWeek: "Monday", outfitDescription: "Your wardrobe is currently empty. Add some clothes!", items: [] },
@@ -92,6 +103,18 @@ export default function OutfitSuggestionsPage() {
         toast({ title: 'Copy Failed', description: 'Could not copy items to clipboard.', variant: 'destructive' });
       });
   };
+
+  if (authLoading || !user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-15rem)]">
+        {authLoading ? <Loader2 className="h-12 w-12 animate-spin text-primary" /> : <p>Please log in to get outfit suggestions.</p>}
+        {!authLoading && !user && (
+             <Button onClick={() => router.push('/login?redirect=/outfit-suggestions')} className="mt-4">Go to Login</Button>
+         )}
+      </div>
+    );
+  }
+
 
   return (
     <div className="space-y-8">
@@ -193,7 +216,7 @@ export default function OutfitSuggestionsPage() {
                       })}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No specific items suggested, or perhaps you need to add more items to your wardrobe!</p>
+                    <p className="text-sm text-muted-foreground">{dailySuggestion.outfitDescription.includes("empty") ? dailySuggestion.outfitDescription : "No specific items suggested, or perhaps you need to add more items to your wardrobe!"}</p>
                   )}
                 </CardContent>
                 {dailySuggestion.items.length > 0 && (
@@ -208,7 +231,7 @@ export default function OutfitSuggestionsPage() {
           </div>
         </div>
       )}
-       { !isSuggesting && !suggestions && !error && wardrobeItems.length === 0 && !isWardrobeLoading && (
+       { !isSuggesting && !suggestions && !error && wardrobeItems.length === 0 && !isWardrobeLoading && !authLoading && user && (
          <Alert>
             <Sparkles className="h-4 w-4" />
             <AlertTitle>Ready to Plan?</AlertTitle>
@@ -217,7 +240,7 @@ export default function OutfitSuggestionsPage() {
             </AlertDescription>
           </Alert>
        )}
-       { !isSuggesting && !suggestions && !error && wardrobeItems.length > 0 && !isWardrobeLoading && (
+       { !isSuggesting && !suggestions && !error && wardrobeItems.length > 0 && !isWardrobeLoading && !authLoading && user && (
          <Alert>
             <Sparkles className="h-4 w-4" />
             <AlertTitle>Ready to Plan?</AlertTitle>

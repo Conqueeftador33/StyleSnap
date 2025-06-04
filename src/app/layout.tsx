@@ -4,6 +4,7 @@ import './globals.css';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Toaster } from "@/components/ui/toaster";
 import { WardrobeProvider } from '@/hooks/use-wardrobe'; 
+import { AuthProvider } from '@/hooks/use-auth'; // Added AuthProvider
 
 export const metadata: Metadata = {
   title: 'Style Snap',
@@ -28,12 +29,14 @@ export default function RootLayout({
         <meta name="theme-color" content="#1F1D1E" media="(prefers-color-scheme: dark)" />
       </head>
       <body className="font-body antialiased">
+        <AuthProvider> {/* Wrapped with AuthProvider */}
           <WardrobeProvider>
             <AppLayout>
               {children}
             </AppLayout>
             <Toaster />
           </WardrobeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
