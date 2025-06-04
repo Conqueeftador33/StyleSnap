@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -65,6 +65,17 @@ export default function OutfitSuggestionsPage() {
   const [isExploringLooks, setIsExploringLooks] = useState(false);
   const [exploreError, setExploreError] = useState<string | null>(null);
 
+  const wardrobeItemImageMap = useMemo(() => {
+    if (isWardrobeLoading || !wardrobeItems) return new Map<string, string>();
+    const map = new Map<string, string>();
+    wardrobeItems.forEach(item => {
+      if (item.imageUrl) {
+        map.set(item.id, item.imageUrl);
+      }
+    });
+    return map;
+  }, [wardrobeItems, isWardrobeLoading]);
+
 
   const handleSuggestWardrobeOutfits = async () => {
     if (!selectedSeason) {
@@ -103,7 +114,7 @@ export default function OutfitSuggestionsPage() {
         season: selectedSeason,
         gender: selectedGender,
         wardrobeItems: flowItems,
-        desiredOutfitCount: desiredOutfitCount
+        desiredOutfitCount: desiredOutfitCount === ANY_OUTFIT_COUNT_VALUE ? undefined : desiredOutfitCount
       };
       const result = await suggestOutfits(input);
       setWardrobeSuggestionsOutput(result);
@@ -163,8 +174,7 @@ export default function OutfitSuggestionsPage() {
 
 
   const getItemImageUrl = (itemId: string): string | undefined => {
-    const item = wardrobeItems.find(i => i.id === itemId);
-    return item?.imageUrl;
+    return wardrobeItemImageMap.get(itemId);
   };
 
   const handleCopyOutfitItems = (dailyOutfit: SuggestOutfitsOutput['suggestions'][0]) => {
@@ -407,3 +417,4 @@ const LoadingSkeletons = ({ type }: { type: 'wardrobe' | 'explore' }) => (
         {[...Array(type === 'wardrobe' ? 3 : 2)].map((_, i) => <CardSkeleton key={i} isExplore={type === 'explore'} />)}
     </div>
 );
+

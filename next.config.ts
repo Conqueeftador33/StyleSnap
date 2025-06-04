@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
       }
       // Prevent 'async_hooks' from being bundled on the client
       // by providing an empty module fallback.
-      config.resolve.fallback.async_hooks = false; 
+      config.resolve.fallback.async_hooks = false;
     }
     // Important: return the modified config
     return config;
