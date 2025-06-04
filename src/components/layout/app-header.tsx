@@ -1,7 +1,7 @@
 
 "use client";
 import Link from 'next/link';
-import { PlusCircle, Sparkles } from 'lucide-react'; // Changed Camera to Sparkles
+import { PlusCircle, Sparkles, Palette } from 'lucide-react'; 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -12,7 +12,7 @@ export function AppHeader() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
-          <Sparkles className="h-7 w-7 text-primary" /> {/* Changed icon */}
+          <Palette className="h-7 w-7 text-primary" />
           <h1 className="font-headline text-2xl font-semibold tracking-tight text-foreground">
             Style Snap
           </h1>

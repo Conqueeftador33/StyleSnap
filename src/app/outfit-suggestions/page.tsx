@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette } from 'lucide-react';
+import { Sparkles, CalendarDays, Loader2, AlertCircle, Palette, Copy } from 'lucide-react';
 import Image from 'next/image';
-import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, FlowClothingItem } from '@/ai/flows/suggest-outfits-flow';
+import { suggestOutfits, SuggestOutfitsInput, SuggestOutfitsOutput, Season, FlowClothingItem, DailyOutfitSchema } from '@/ai/flows/suggest-outfits-flow';
 import type { ClothingItem as WardrobeClothingItem } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -77,6 +77,22 @@ export default function OutfitSuggestionsPage() {
     return item?.imageUrl;
   };
 
+  const handleCopyOutfitItems = (dailyOutfit: SuggestOutfitsOutput['suggestions'][0]) => {
+    if (!dailyOutfit || dailyOutfit.items.length === 0) {
+      toast({ title: 'No items to copy', variant: 'default' });
+      return;
+    }
+    const itemNames = dailyOutfit.items.map(item => item.itemName).join(', ');
+    navigator.clipboard.writeText(itemNames)
+      .then(() => {
+        toast({ title: 'Items Copied!', description: `${itemNames} copied to clipboard.`, className: 'bg-green-500 text-white' });
+      })
+      .catch(err => {
+        console.error('Failed to copy items: ', err);
+        toast({ title: 'Copy Failed', description: 'Could not copy items to clipboard.', variant: 'destructive' });
+      });
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -122,7 +138,7 @@ export default function OutfitSuggestionsPage() {
 
       {isSuggesting && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => ( // Show 3 skeletons while loading
+          {[...Array(3)].map((_, i) => ( 
             <Card key={i}>
               <CardHeader>
                 <Skeleton className="h-6 w-1/2 mb-2" />
@@ -132,6 +148,9 @@ export default function OutfitSuggestionsPage() {
                 <Skeleton className="h-20 w-full" />
                 <Skeleton className="h-4 w-1/4" />
               </CardContent>
+                <CardFooter>
+                    <Skeleton className="h-8 w-24" />
+                </CardFooter>
             </Card>
           ))}
         </div>
@@ -177,6 +196,13 @@ export default function OutfitSuggestionsPage() {
                     <p className="text-sm text-muted-foreground">No specific items suggested, or perhaps you need to add more items to your wardrobe!</p>
                   )}
                 </CardContent>
+                {dailySuggestion.items.length > 0 && (
+                  <CardFooter className="pt-4">
+                    <Button variant="outline" size="sm" onClick={() => handleCopyOutfitItems(dailySuggestion)} className="w-full">
+                      <Copy className="mr-2 h-4 w-4" /> Copy Items
+                    </Button>
+                  </CardFooter>
+                )}
               </Card>
             ))}
           </div>
@@ -200,8 +226,6 @@ export default function OutfitSuggestionsPage() {
             </AlertDescription>
           </Alert>
        )}
-
-
     </div>
   );
 }

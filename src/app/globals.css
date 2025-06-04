@@ -5,77 +5,97 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* Light Cool Blue */
-    --foreground: 215 25% 25%; /* Dark Slate Blue */
-    --card: 0 0% 100%; /* White */
-    --card-foreground: 215 25% 25%;
+    /* Updated theme based on PRD: Dusty Rose, Light Grayish Rose, Muted Violet */
+    --background: 0 17% 93%; /* Very light grayish rose (#F0ECEC) */
+    --foreground: 0 0% 20%; /* Darker foreground for contrast on light background */
+    
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 0 0% 15%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 25%;
-    --primary: 250 65% 60%; /* Vibrant Violet */
-    --primary-foreground: 0 0% 100%; /* White */
-    --secondary: 30 90% 70%; /* Bright Orange */
-    --secondary-foreground: 215 25% 25%;
-    --muted: 210 40% 90%; /* Lighter Cool Blue */
-    --muted-foreground: 210 30% 50%; /* Muted Slate Blue */
-    --accent: 180 70% 55%; /* Bright Teal */
-    --accent-foreground: 0 0% 100%; /* White */
-    --destructive: 0 75% 55%; /* Strong Red */
+    --popover-foreground: 0 0% 15%;
+
+    --primary: 0 19% 70%; /* Dusty rose (#C2A3A3) */
+    --primary-foreground: 0 0% 10%; /* Dark text on dusty rose */
+
+    --secondary: 240 15% 80%; /* Lighter variant of Muted Violet for secondary elements */
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 0 10% 88%; /* Slightly darker than background for muted elements */
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 240 21% 70%; /* Muted violet (#A3A3C2) */
+    --accent-foreground: 0 0% 100%; /* White text on muted violet */
+
+    --destructive: 0 75% 55%; /* Strong Red (Kept for destructive actions) */
     --destructive-foreground: 0 0% 100%;
-    --border: 210 30% 80%; /* Soft Blue-Gray Border */
-    --input: 210 30% 94%; /* Very Light Blue for Input */
-    --ring: 250 70% 65%; /* Brighter Violet for Ring */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+
+    --border: 0 10% 80%; /* Soft border, related to background/muted */
+    --input: 0 0% 98%; /* Light input background */
+    --ring: 0 19% 65%; /* Ring color related to primary */
+    
+    --chart-1: 0 19% 60%;
+    --chart-2: 240 21% 60%;
+    --chart-3: 0 10% 50%;
+    --chart-4: 0 19% 75%;
+    --chart-5: 240 21% 75%;
     --radius: 0.5rem;
 
-    --sidebar-background: 220 20% 96%;
-    --sidebar-foreground: 220 15% 30%;
-    --sidebar-primary: 250 60% 55%;
+    /* Sidebar colors - can be adjusted for better harmony with the new theme */
+    --sidebar-background: 0 15% 90%; /* Lighter than main bg but similar hue */
+    --sidebar-foreground: 0 0% 25%;
+    --sidebar-primary: 0 19% 65%; /* Primary for sidebar */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 92%;
-    --sidebar-accent-foreground: 220 15% 20%;
-    --sidebar-border: 220 15% 85%;
-    --sidebar-ring: 250 65% 60%;
+    --sidebar-accent: 0 10% 85%; /* Accent for sidebar elements */
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 10% 75%;
+    --sidebar-ring: 0 19% 60%;
   }
 
   .dark {
-    --background: 220 20% 12%; /* Dark Slate Blue */
-    --foreground: 210 30% 90%; /* Light Cool Gray */
-    --card: 220 20% 15%; /* Slightly Lighter Dark Slate */
-    --card-foreground: 210 30% 90%;
-    --popover: 220 20% 15%;
-    --popover-foreground: 210 30% 90%;
-    --primary: 250 70% 65%; /* Vibrant Violet (Dark Mode) */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 30 85% 65%; /* Bright Orange (Dark Mode) */
-    --secondary-foreground: 220 15% 10%;
-    --muted: 220 15% 25%; /* Muted Dark Slate */
-    --muted-foreground: 210 25% 65%;
-    --accent: 180 75% 60%; /* Bright Teal (Dark Mode) */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 60%; /* Strong Red (Dark Mode) */
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 30%; /* Darker Slate Border */
-    --input: 220 15% 20%; /* Dark Input Background */
-    --ring: 250 75% 70%; /* Brighter Violet Ring (Dark Mode) */
+    /* Dark theme adjustments for the new palette */
+    --background: 0 5% 12%; /* Dark grayish rose */
+    --foreground: 0 0% 85%; 
     
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --card: 0 5% 15%; 
+    --card-foreground: 0 0% 85%;
 
-    --sidebar-background: 220 15% 10%;
-    --sidebar-foreground: 210 30% 85%;
-    --sidebar-primary: 250 65% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 210 30% 90%;
-    --sidebar-border: 220 15% 25%;
-    --sidebar-ring: 250 70% 65%;
+    --popover: 0 5% 15%;
+    --popover-foreground: 0 0% 85%;
+
+    --primary: 0 19% 60%; /* Dusty rose, slightly desaturated/darker for dark mode */
+    --primary-foreground: 0 0% 95%;
+
+    --secondary: 240 15% 55%; 
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 5% 20%; 
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 240 21% 60%; /* Muted violet, slightly desaturated/darker */
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 70% 50%; 
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 0 5% 25%; 
+    --input: 0 5% 18%; 
+    --ring: 0 19% 55%; 
+    
+    --chart-1: 0 19% 50%;
+    --chart-2: 240 21% 50%;
+    --chart-3: 0 10% 40%;
+    --chart-4: 0 19% 65%;
+    --chart-5: 240 21% 65%;
+
+    --sidebar-background: 0 5% 10%;
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-primary: 0 19% 55%;
+    --sidebar-primary-foreground: 0 0% 95%;
+    --sidebar-accent: 0 5% 14%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 0 5% 20%;
+    --sidebar-ring: 0 19% 50%;
   }
 }
 

@@ -38,7 +38,7 @@ const OutfitSuggestionSchema = z.object({
 
 const DailyOutfitSchema = z.object({
   dayOfWeek: z.string().describe('The day of the week (e.g., Monday, Tuesday).'),
-  outfitDescription: z.string().describe('A brief description of the suggested outfit and why it fits the season/day.'),
+  outfitDescription: z.string().describe('A brief description of the suggested outfit and why it fits the season/day, considering style and trends.'),
   items: z.array(OutfitSuggestionSchema).describe('A list of clothing item IDs that make up the outfit.'),
 });
 
@@ -55,7 +55,7 @@ const prompt = ai.definePrompt({
   name: 'suggestOutfitsPrompt',
   input: {schema: SuggestOutfitsInputSchema},
   output: {schema: SuggestOutfitsOutputSchema},
-  prompt: `You are a helpful fashion AI assistant. Your goal is to suggest a week's worth of outfits (Monday to Sunday) based on the user's current wardrobe items and the specified season.
+  prompt: `You are a sophisticated AI fashion stylist. Your goal is to suggest a week's worth of outfits (Monday to Sunday) based on the user's current wardrobe items and the specified season.
 
 Current Season: {{{season}}}
 
@@ -66,14 +66,15 @@ Available Wardrobe Items:
 
 Consider the following when making suggestions:
 - Seasonality: Choose items appropriate for the weather and general vibe of the '{{{season}}}' season.
+- Current Fashion Trends: Incorporate current, tasteful fashion trends that are suitable for everyday wear. Think about popular silhouettes, color pairings, or ways of styling items.
+- Styling Principles: Apply good styling principles (e.g., balance, proportion, color harmony, texture mixing).
 - Variety: Try to suggest different combinations throughout the week. Avoid using the exact same item too many times unless it's a staple (like basic pants or a versatile jacket).
 - Completeness: Aim for complete outfits (e.g., top, bottom, possibly outerwear or shoes if appropriate types are available).
-- Style: Create stylish and coherent outfits.
 - Item Availability: Only use items from the provided "Available Wardrobe Items" list. Reference them by their Item ID.
 
 For each day of the week (Monday to Sunday), provide:
 1.  'dayOfWeek': The name of the day.
-2.  'outfitDescription': A brief (1-2 sentences) description of the outfit and why it's suitable.
+2.  'outfitDescription': A brief (1-2 sentences) description of the outfit, highlighting its style, why it's suitable for the season, and how it incorporates trends or good styling.
 3.  'items': An array of objects, where each object contains 'itemName' (the original item's name or type) and 'itemId' (the original item's ID) for the items in the outfit.
 
 Return the suggestions in the specified JSON format according to the output schema.
