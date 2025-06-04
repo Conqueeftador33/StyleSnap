@@ -20,12 +20,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
+import React from 'react';
 
 interface ClothingItemCardProps {
   item: ClothingItem;
 }
 
-export function ClothingItemCard({ item }: ClothingItemCardProps) {
+export const ClothingItemCard = React.memo(function ClothingItemCard({ item }: ClothingItemCardProps) {
   const { deleteItem } = useWardrobe();
   const { toast } = useToast();
 
@@ -103,4 +104,4 @@ export function ClothingItemCard({ item }: ClothingItemCardProps) {
       </CardFooter>
     </Card>
   );
-}
+});

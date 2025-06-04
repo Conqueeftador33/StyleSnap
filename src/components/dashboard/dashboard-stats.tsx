@@ -10,7 +10,7 @@ interface DashboardStatsProps {
   items: ClothingItem[];
 }
 
-export function DashboardStats({ items }: DashboardStatsProps) {
+export const DashboardStats = React.memo(function DashboardStats({ items }: DashboardStatsProps) {
   const totalItems = items.length;
 
   const uniqueCategories = useMemo(() => {
@@ -64,5 +64,4 @@ export function DashboardStats({ items }: DashboardStatsProps) {
       ))}
     </div>
   );
-}
-
+});

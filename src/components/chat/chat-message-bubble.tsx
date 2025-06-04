@@ -2,15 +2,16 @@
 "use client";
 import type { ChatMessage } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User, Bot } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import React from 'react';
 
 interface ChatMessageBubbleProps {
   message: ChatMessage;
 }
 
-export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
+export const ChatMessageBubble = React.memo(function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
   const isUser = message.sender === 'user';
 
   return (
@@ -41,4 +42,4 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
       )}
     </div>
   );
-}
+});

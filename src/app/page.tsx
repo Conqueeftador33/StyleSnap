@@ -1,5 +1,4 @@
 
-"use client";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -50,7 +49,7 @@ export default function HomePage() {
                 alt="Stylishly organized digital wardrobe interface" 
                 layout="fill" 
                 objectFit="cover" 
-                data-ai-hint="fashion organization digital" 
+                data-ai-hint="fashion organization" 
               />
             </div>
           </CardContent>
@@ -70,7 +69,7 @@ export default function HomePage() {
               <CardDescription>Add items by uploading photos or using your camera. Our AI analyzes each piece, identifying its type, color, material, and category.</CardDescription>
             </CardHeader>
             <CardContent className="text-center flex-grow flex flex-col justify-center">
-               <Image src="https://placehold.co/400x300.png" alt="AI analyzing clothing from a photo" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI clothing photo"/>
+               <Image src="https://placehold.co/400x300.png" alt="AI analyzing clothing from a photo" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI clothing"/>
             </CardContent>
           </Card>
 
@@ -83,7 +82,7 @@ export default function HomePage() {
               <CardDescription>Your analyzed items populate your digital wardrobe. View, sort, filter, and edit details to keep everything perfectly organized.</CardDescription>
             </CardHeader>
              <CardContent className="text-center flex-grow flex flex-col justify-center">
-               <Image src="https://placehold.co/400x300.png" alt="Grid view of a digital wardrobe" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="digital closet grid" />
+               <Image src="https://placehold.co/400x300.png" alt="Grid view of a digital wardrobe" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="digital closet" />
             </CardContent>
           </Card>
 
@@ -96,7 +95,7 @@ export default function HomePage() {
               <CardDescription>Request AI outfit suggestions for any occasion or style preference. Discover new combinations and get fashion tips to complete your look.</CardDescription>
             </CardHeader>
             <CardContent className="text-center flex-grow flex flex-col justify-center">
-              <Image src="https://placehold.co/400x300.png" alt="AI generated outfit suggestions on a screen" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI outfit fashion" />
+              <Image src="https://placehold.co/400x300.png" alt="AI generated outfit suggestions on a screen" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI fashion" />
             </CardContent>
           </Card>
         </div>
