@@ -1,6 +1,7 @@
 
 "use client";
 import type { ClothingItem } from '@/lib/types';
+import type { ItemDisplaySize } from '@/app/page'; // Import the type
 import { ClothingItemCard } from './clothing-item-card';
 import { Boxes } from 'lucide-react';
 import Link from 'next/link';
@@ -8,9 +9,23 @@ import { Button } from '@/components/ui/button';
 
 interface WardrobeGridProps {
   items: ClothingItem[];
+  itemSize?: ItemDisplaySize; // Make itemSize optional for now or provide a default
 }
 
-export function WardrobeGrid({ items }: WardrobeGridProps) {
+const getItemSizeClasses = (size: ItemDisplaySize = 'medium'): string => {
+  switch (size) {
+    case 'small':
+      return 'sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
+    case 'medium':
+      return 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+    case 'large':
+      return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    default: // Fallback to medium
+      return 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+  }
+};
+
+export function WardrobeGrid({ items, itemSize = 'medium' }: WardrobeGridProps) {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg min-h-[300px] bg-card">
@@ -26,8 +41,10 @@ export function WardrobeGrid({ items }: WardrobeGridProps) {
     );
   }
 
+  const sizeSpecificClasses = getItemSizeClasses(itemSize);
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+    <div className={`grid grid-cols-1 ${sizeSpecificClasses} gap-4 md:gap-6`}>
       {items.map((item) => (
         <ClothingItemCard key={item.id} item={item} />
       ))}

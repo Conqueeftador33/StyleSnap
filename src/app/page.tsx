@@ -5,7 +5,7 @@ import { useWardrobe } from '@/hooks/use-wardrobe';
 import { WardrobeGrid } from '@/components/wardrobe/wardrobe-grid';
 import { SearchFilters, type Filters } from '@/components/wardrobe/search-filters';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { Loader2, LayersIcon, ListOrdered } from 'lucide-react';
+import { Loader2, LayersIcon, ListOrdered, RowsIcon } from 'lucide-react'; // Added RowsIcon
 import type { ClothingItem } from '@/lib/types';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -20,10 +20,19 @@ const sortOptions = [
   { value: 'type_asc', label: 'Type (A-Z)' },
 ];
 
+export type ItemDisplaySize = 'small' | 'medium' | 'large';
+
+const itemSizeOptions: { value: ItemDisplaySize, label: string }[] = [
+  { value: 'small', label: 'Small' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'large', label: 'Large' },
+];
+
 export default function WardrobePage() {
   const { items: allItems, isLoading } = useWardrobe();
   const [filters, setFilters] = useState<Filters>({});
-  const [sortBy, setSortBy] = useState<string>('createdAt_desc'); // Default sort
+  const [sortBy, setSortBy] = useState<string>('createdAt_desc');
+  const [itemDisplaySize, setItemDisplaySize] = useState<ItemDisplaySize>('medium');
 
   const filteredItems = useMemo(() => {
     if (!filters || Object.keys(filters).length === 0) {
@@ -98,24 +107,39 @@ export default function WardrobePage() {
       {allItems.length > 0 && (
         <div className="space-y-4">
           <Card className="shadow-sm">
-            <CardHeader className="py-4 px-4 sm:px-6"> {/* Adjusted padding for CardHeader */}
+            <CardHeader className="py-4 px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <CardTitle className="font-headline text-lg flex items-center whitespace-nowrap">
                   <ListOrdered className="mr-2 h-5 w-5 text-primary" />
                   View Options
                 </CardTitle>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Label htmlFor="sort-by-select" className="text-sm font-medium whitespace-nowrap">Sort by:</Label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger id="sort-by-select" className="h-10 w-full sm:w-[220px]">
-                      <SelectValue placeholder="Select sort order" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sortOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <Label htmlFor="sort-by-select" className="text-sm font-medium whitespace-nowrap">Sort by:</Label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger id="sort-by-select" className="h-10 w-full sm:w-[220px]">
+                        <SelectValue placeholder="Select sort order" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sortOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <Label htmlFor="item-size-select" className="text-sm font-medium whitespace-nowrap">Item size:</Label>
+                    <Select value={itemDisplaySize} onValueChange={(value) => setItemDisplaySize(value as ItemDisplaySize)}>
+                      <SelectTrigger id="item-size-select" className="h-10 w-full sm:w-[150px]">
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {itemSizeOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </CardHeader>
@@ -124,7 +148,7 @@ export default function WardrobePage() {
         </div>
       )}
       
-      <WardrobeGrid items={sortedAndFilteredItems} />
+      <WardrobeGrid items={sortedAndFilteredItems} itemSize={itemDisplaySize} />
     </div>
   );
 }
