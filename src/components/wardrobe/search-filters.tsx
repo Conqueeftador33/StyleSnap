@@ -22,6 +22,8 @@ interface SearchFiltersProps {
   initialFilters?: Filters;
 }
 
+const ALL_VALUE = "_all_"; // Special value for "All" options
+
 export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFiltersProps) {
   const [name, setName] = useState(initialFilters.name || '');
   const [category, setCategory] = useState<WardrobeCategory | undefined>(initialFilters.category);
@@ -79,12 +81,12 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
 
           <div className="space-y-1">
             <Label htmlFor="filter-category" className="text-sm font-medium">Category</Label>
-            <Select value={category || ""} onValueChange={(value) => setCategory(value as WardrobeCategory || undefined)}>
+            <Select value={category || ALL_VALUE} onValueChange={(value) => setCategory(value === ALL_VALUE ? undefined : value as WardrobeCategory)}>
               <SelectTrigger id="filter-category">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Categories</SelectItem>
+                <SelectItem value={ALL_VALUE}>All Categories</SelectItem>
                 {WARDROBE_CATEGORIES.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
               </SelectContent>
             </Select>
@@ -92,12 +94,12 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
 
           <div className="space-y-1">
             <Label htmlFor="filter-type" className="text-sm font-medium">Type</Label>
-            <Select value={type || ""} onValueChange={(value) => setType(value as AiClothingType || undefined)}>
+            <Select value={type || ALL_VALUE} onValueChange={(value) => setType(value === ALL_VALUE ? undefined : value as AiClothingType)}>
               <SelectTrigger id="filter-type">
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value={ALL_VALUE}>All Types</SelectItem>
                 {AI_CLOTHING_TYPES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
               </SelectContent>
             </Select>
@@ -105,12 +107,12 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
           
           <div className="space-y-1">
             <Label htmlFor="filter-color" className="text-sm font-medium">Color</Label>
-            <Select value={color || ""} onValueChange={(value) => setColor(value as AiClothingColor || undefined)}>
+            <Select value={color || ALL_VALUE} onValueChange={(value) => setColor(value === ALL_VALUE ? undefined : value as AiClothingColor)}>
               <SelectTrigger id="filter-color">
                 <SelectValue placeholder="All Colors" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Colors</SelectItem>
+                <SelectItem value={ALL_VALUE}>All Colors</SelectItem>
                 {AI_CLOTHING_COLORS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
@@ -118,12 +120,12 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
 
           <div className="space-y-1">
             <Label htmlFor="filter-material" className="text-sm font-medium">Material</Label>
-            <Select value={material || ""} onValueChange={(value) => setMaterial(value as AiClothingMaterial || undefined)}>
+            <Select value={material || ALL_VALUE} onValueChange={(value) => setMaterial(value === ALL_VALUE ? undefined : value as AiClothingMaterial)}>
               <SelectTrigger id="filter-material">
                 <SelectValue placeholder="All Materials" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Materials</SelectItem>
+                <SelectItem value={ALL_VALUE}>All Materials</SelectItem>
                 {AI_CLOTHING_MATERIALS.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
               </SelectContent>
             </Select>
@@ -156,3 +158,4 @@ function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
 
   return debounced as (...args: Parameters<F>) => ReturnType<F>;
 }
+
