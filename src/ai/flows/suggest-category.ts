@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -15,7 +16,7 @@ const SuggestCategoryInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      'A photo of a clothing item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.' // Corrected the escaping here
+      'A photo of a clothing item, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'
     ),
 });
 export type SuggestCategoryInput = z.infer<typeof SuggestCategoryInputSchema>;
