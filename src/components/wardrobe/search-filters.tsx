@@ -4,9 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { WARDROBE_CATEGORIES, AI_CLOTHING_TYPES, AI_CLOTHING_COLORS, AI_CLOTHING_MATERIALS, WardrobeCategory, AiClothingType, AiClothingColor, AiClothingMaterial } from '@/lib/types';
-import { Filter, XCircle } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { WARDROBE_CATEGORIES, AI_CLOTHING_TYPES, AI_CLOTHING_COLORS, AI_CLOTHING_MATERIALS, type WardrobeCategory, type AiClothingType, type AiClothingColor, type AiClothingMaterial } from '@/lib/types';
+import { Filter, XCircle, Search } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 
 export interface Filters {
@@ -22,7 +22,7 @@ interface SearchFiltersProps {
   initialFilters?: Filters;
 }
 
-const ALL_VALUE = "_all_"; // Special value for "All" options
+const ALL_VALUE = "_all_"; 
 
 export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFiltersProps) {
   const [name, setName] = useState(initialFilters.name || '');
@@ -31,22 +31,24 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
   const [color, setColor] = useState<AiClothingColor | undefined>(initialFilters.color);
   const [material, setMaterial] = useState<AiClothingMaterial | undefined>(initialFilters.material);
 
-  const debouncedFilterChange = useCallback(
-    debounce((filters: Filters) => {
-      onFilterChange(filters);
-    }, 300),
-    [onFilterChange]
-  );
-
-  useEffect(() => {
+  const applyFilters = useCallback(() => {
     const filters: Filters = {};
-    if (name) filters.name = name;
+    if (name) filters.name = name.trim();
     if (category) filters.category = category;
     if (type) filters.type = type;
     if (color) filters.color = color;
     if (material) filters.material = material;
-    debouncedFilterChange(filters);
-  }, [name, category, type, color, material, debouncedFilterChange]);
+    onFilterChange(filters);
+  }, [name, category, type, color, material, onFilterChange]);
+
+  useEffect(() => {
+    // Apply filters when any filter state changes.
+    // A debounce could be added here if direct typing in 'name' causes too many re-renders.
+    const handler = setTimeout(() => {
+        applyFilters();
+    }, 300); // Debounce for 300ms
+    return () => clearTimeout(handler);
+  }, [name, category, type, color, material, applyFilters]);
 
   const clearFilters = () => {
     setName('');
@@ -54,34 +56,43 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
     setType(undefined);
     setColor(undefined);
     setMaterial(undefined);
-    onFilterChange({}); 
+    // onFilterChange will be called by useEffect
+  };
+  
+  const handleSelectChange = <T extends string>(setter: React.Dispatch<React.SetStateAction<T | undefined>>) => (value: string) => {
+    setter(value === ALL_VALUE ? undefined : value as T);
   };
 
   const hasActiveFilters = !!name || !!category || !!type || !!color || !!material;
 
   return (
-    <Card className="mb-8 shadow-md">
-      <CardHeader className="pb-4">
-        <CardTitle className="font-headline text-xl flex items-center">
+    <Card className="mb-6 shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="font-headline text-lg flex items-center">
           <Filter className="mr-2 h-5 w-5 text-primary" />
-          Filter Your Wardrobe
+          Refine Your View
         </CardTitle>
+        <CardDescription>Filter by name, category, type, color, or material.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 items-end">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-3 items-end">
           <div className="space-y-1">
-            <Label htmlFor="filter-name" className="text-sm font-medium">Name</Label>
-            <Input
-              id="filter-name"
-              placeholder="Search by name..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <Label htmlFor="filter-name" className="text-xs font-medium">Name / Brand / Notes</Label>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="filter-name"
+                placeholder="Search items..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="pl-8"
+              />
+            </div>
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="filter-category" className="text-sm font-medium">Category</Label>
-            <Select value={category || ALL_VALUE} onValueChange={(value) => setCategory(value === ALL_VALUE ? undefined : value as WardrobeCategory)}>
+            <Label htmlFor="filter-category" className="text-xs font-medium">Category</Label>
+            <Select value={category || ALL_VALUE} onValueChange={handleSelectChange(setCategory)}>
               <SelectTrigger id="filter-category">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -93,8 +104,8 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="filter-type" className="text-sm font-medium">Type</Label>
-            <Select value={type || ALL_VALUE} onValueChange={(value) => setType(value === ALL_VALUE ? undefined : value as AiClothingType)}>
+            <Label htmlFor="filter-type" className="text-xs font-medium">Type</Label>
+            <Select value={type || ALL_VALUE} onValueChange={handleSelectChange(setType)}>
               <SelectTrigger id="filter-type">
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
@@ -106,8 +117,8 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
           </div>
           
           <div className="space-y-1">
-            <Label htmlFor="filter-color" className="text-sm font-medium">Color</Label>
-            <Select value={color || ALL_VALUE} onValueChange={(value) => setColor(value === ALL_VALUE ? undefined : value as AiClothingColor)}>
+            <Label htmlFor="filter-color" className="text-xs font-medium">Color</Label>
+            <Select value={color || ALL_VALUE} onValueChange={handleSelectChange(setColor)}>
               <SelectTrigger id="filter-color">
                 <SelectValue placeholder="All Colors" />
               </SelectTrigger>
@@ -119,8 +130,8 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
           </div>
 
           <div className="space-y-1">
-            <Label htmlFor="filter-material" className="text-sm font-medium">Material</Label>
-            <Select value={material || ALL_VALUE} onValueChange={(value) => setMaterial(value === ALL_VALUE ? undefined : value as AiClothingMaterial)}>
+            <Label htmlFor="filter-material" className="text-xs font-medium">Material</Label>
+            <Select value={material || ALL_VALUE} onValueChange={handleSelectChange(setMaterial)}>
               <SelectTrigger id="filter-material">
                 <SelectValue placeholder="All Materials" />
               </SelectTrigger>
@@ -133,9 +144,9 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
         </div>
         {hasActiveFilters && (
           <div className="mt-4 flex justify-end">
-            <Button variant="ghost" onClick={clearFilters} size="sm">
-              <XCircle className="mr-2 h-4 w-4" />
-              Clear Filters
+            <Button variant="ghost" onClick={clearFilters} size="sm" className="text-muted-foreground hover:text-destructive">
+              <XCircle className="mr-1.5 h-4 w-4" />
+              Clear All Filters
             </Button>
           </div>
         )}
@@ -143,19 +154,3 @@ export function SearchFilters({ onFilterChange, initialFilters = {} }: SearchFil
     </Card>
   );
 }
-
-// Simple debounce function
-function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-
-  const debounced = (...args: Parameters<F>) => {
-    if (timeout !== null) {
-      clearTimeout(timeout);
-      timeout = null;
-    }
-    timeout = setTimeout(() => func(...args), waitFor);
-  };
-
-  return debounced as (...args: Parameters<F>) => ReturnType<F>;
-}
-

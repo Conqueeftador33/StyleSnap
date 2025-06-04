@@ -2,7 +2,7 @@
 "use client";
 import Image from 'next/image';
 import Link from 'next/link';
-import { ClothingItem } from '@/lib/types';
+import type { ClothingItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -68,6 +68,9 @@ export function ClothingItemCard({ item }: ClothingItemCardProps) {
           <Badge variant="outline" className="text-xs">{item.color}</Badge>
           <Badge variant="outline" className="text-xs">{item.material}</Badge>
         </div>
+        {item.notes && (
+          <p className="text-xs text-muted-foreground mt-2 line-clamp-2">Notes: {item.notes}</p>
+        )}
       </CardContent>
       <CardFooter className="p-3 border-t bg-card flex justify-between items-center">
         <Link href={`/edit/${item.id}`} passHref>

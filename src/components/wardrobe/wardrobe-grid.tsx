@@ -1,8 +1,10 @@
 
 "use client";
-import { ClothingItem } from '@/lib/types';
+import type { ClothingItem } from '@/lib/types';
 import { ClothingItemCard } from './clothing-item-card';
 import { Boxes } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface WardrobeGridProps {
   items: ClothingItem[];
@@ -11,10 +13,15 @@ interface WardrobeGridProps {
 export function WardrobeGrid({ items }: WardrobeGridProps) {
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg min-h-[300px]">
-        <Boxes className="h-16 w-16 text-muted-foreground mb-4" />
-        <h2 className="text-xl font-headline text-muted-foreground">Your Wardrobe is Empty</h2>
-        <p className="text-muted-foreground">Add some items to see them here!</p>
+      <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed border-muted-foreground/20 rounded-lg min-h-[300px] bg-card">
+        <Boxes className="h-16 w-16 text-primary mb-4" />
+        <h2 className="text-2xl font-headline text-foreground mb-2">Your Wardrobe is Looking a Bit Bare!</h2>
+        <p className="text-muted-foreground mb-6">
+          Let's fill it up! Add your first clothing item to start building your virtual style collection.
+        </p>
+        <Button asChild size="lg">
+          <Link href="/add">Add First Item</Link>
+        </Button>
       </div>
     );
   }
