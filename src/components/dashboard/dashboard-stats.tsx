@@ -1,9 +1,10 @@
 
 "use client";
 import type { ClothingItem } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shirt, Layers3, Palette, ShoppingBag } from 'lucide-react'; // Palette for colors
+import { Card, CardTitle } from '@/components/ui/card'; // Removed CardHeader and CardContent as we'll do custom layout
+import { Shirt, Layers3, Palette, ShoppingBag } from 'lucide-react'; 
 import { useMemo } from 'react';
+import React from 'react';
 
 interface DashboardStatsProps {
   items: ClothingItem[];
@@ -28,26 +29,37 @@ export function DashboardStats({ items }: DashboardStatsProps) {
   }, [items]);
   
   const stats = [
-    { title: "Total Items", value: totalItems, icon: <ShoppingBag className="h-5 w-5 text-primary" />, description: "All clothes in your wardrobe" },
-    { title: "Item Categories", value: uniqueCategories, icon: <Layers3 className="h-5 w-5 text-primary" />, description: "Sections like 'Tops', 'Bottoms'" },
-    { title: "Item Types", value: uniqueTypes, icon: <Shirt className="h-5 w-5 text-primary" />, description: "Distinct types like 'Dress', 'Jeans'" },
-    { title: "Color Palette", value: uniqueColors, icon: <Palette className="h-5 w-5 text-primary" />, description: "Different colors represented" },
+    { title: "Total Items", value: totalItems, icon: <ShoppingBag className="h-6 w-6 text-primary" />, description: "All clothes in your wardrobe" },
+    { title: "Item Categories", value: uniqueCategories, icon: <Layers3 className="h-6 w-6 text-primary" />, description: "Sections like 'Tops', 'Bottoms'" },
+    { title: "Item Types", value: uniqueTypes, icon: <Shirt className="h-6 w-6 text-primary" />, description: "Distinct types like 'Dress', 'Jeans'" },
+    { title: "Color Palette", value: uniqueColors, icon: <Palette className="h-6 w-6 text-primary" />, description: "Different colors represented" },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    // Enforce 4 columns and a fixed gap. mb-6 for bottom margin.
+    <div className="grid grid-cols-4 gap-4 mb-6"> 
       {stats.map((stat) => (
-        <Card key={stat.title} className="shadow-sm hover:shadow-md transition-shadow duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {stat.title}
-            </CardTitle>
+        // Added aspect-square to make cards square.
+        // Added flex utilities to center content within the square card.
+        // p-3 for internal padding.
+        <Card 
+          key={stat.title} 
+          className="shadow-sm hover:shadow-md transition-shadow duration-200 aspect-square flex flex-col items-center justify-center text-center p-3"
+        >
+          {/* Icon is displayed above the title */}
+          <div className="mb-2"> 
             {stat.icon}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-headline">{stat.value}</div>
-            <p className="text-xs text-muted-foreground pt-1">{stat.description}</p>
-          </CardContent>
+          </div>
+          {/* CardTitle is used for the main statistic title */}
+          <CardTitle className="text-sm font-medium text-muted-foreground mb-1">
+            {stat.title}
+          </CardTitle>
+          {/* The main statistic value */}
+          <div className="text-2xl font-bold font-headline mb-1">
+            {stat.value}
+          </div>
+          {/* A short description for the statistic */}
+          <p className="text-xs text-muted-foreground leading-tight">{stat.description}</p>
         </Card>
       ))}
     </div>
