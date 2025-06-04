@@ -3,22 +3,20 @@
 import React, { useState } from 'react';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { suggestOutfits, type SuggestOutfitsInput, type SuggestOutfitsOutput, type Outfit } from '@/ai/flows/suggest-outfits-flow';
-import type { FlowClothingItem } from '@/ai/flows/shared-types';
+import type { FlowClothingItem, SuggestedPurchaseItem } from '@/ai/flows/shared-types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Shirt, Wand2, Lightbulb, Info } from 'lucide-react';
+import { Loader2, Shirt, Wand2, Lightbulb, Info, ShoppingBag } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from 'next/image';
 import Link from 'next/link';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 
 export default function OutfitSuggestionsPage() {
   const { items: wardrobe, isLoading: wardrobeLoading } = useWardrobe();
   const [suggestions, setSuggestions] = useState<Outfit[]>([]);
+  const [suggestedPurchases, setSuggestedPurchases] = useState<SuggestedPurchaseItem[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,19 +31,21 @@ export default function OutfitSuggestionsPage() {
       type: item.type,
       color: item.color,
       category: item.category,
-      description: item.notes || undefined, // Use notes as description if available
+      description: item.notes || undefined, 
     }));
   };
 
   const handleGetSuggestions = async () => {
-    if (wardrobe.length === 0) {
+    if (wardrobe.length === 0 && desiredOutfitCount > 0) { // Check desiredOutfitCount to avoid error if user wants 0 and has 0 items.
       setError("Your wardrobe is empty. Add some items first to get suggestions!");
       setSuggestions([]);
+      setSuggestedPurchases([]);
       return;
     }
     setIsLoadingSuggestions(true);
     setError(null);
     setSuggestions([]);
+    setSuggestedPurchases([]);
 
     const flowItems = mapWardrobeToFlowItems();
     const input: SuggestOutfitsInput = {
@@ -56,11 +56,12 @@ export default function OutfitSuggestionsPage() {
     };
 
     try {
-      const result = await suggestOutfits(input);
-      if (result.suggestedOutfits.length === 0 && wardrobe.length > 0) {
-        setError("The AI couldn't generate outfits with your current items and preferences. Try adjusting filters or adding more versatile pieces to your wardrobe.");
+      const result: SuggestOutfitsOutput = await suggestOutfits(input);
+      if (result.suggestedOutfits.length === 0 && result.suggestedPurchases && result.suggestedPurchases.length === 0 && wardrobe.length > 0) {
+        setError("The AI couldn't generate outfits with your current items and preferences, and no immediate purchase suggestions were made. Try adjusting filters or adding more versatile pieces to your wardrobe.");
       }
       setSuggestions(result.suggestedOutfits);
+      setSuggestedPurchases(result.suggestedPurchases || []);
     } catch (err) {
       console.error("Outfit suggestion error:", err);
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred.";
@@ -82,7 +83,7 @@ export default function OutfitSuggestionsPage() {
           <Wand2 className="mr-3 h-10 w-10" /> AI Outfit Stylist
         </h1>
         <p className="text-lg text-muted-foreground mt-1">
-          Get personalized outfit suggestions based on your virtual wardrobe.
+          Get personalized outfit suggestions. If needed, the AI will also suggest key items to buy!
         </p>
       </div>
 
@@ -120,7 +121,7 @@ export default function OutfitSuggestionsPage() {
               min="1"
               max="5"
               value={desiredOutfitCount}
-              onChange={(e) => setDesiredOutfitCount(parseInt(e.target.value,10))}
+              onChange={(e) => setDesiredOutfitCount(Math.max(1, Math.min(5, parseInt(e.target.value,10))))}
               className="max-w-xs"
             />
           </div>
@@ -152,7 +153,7 @@ export default function OutfitSuggestionsPage() {
         </Alert>
       )}
 
-      {!error && !isLoadingSuggestions && suggestions.length === 0 && wardrobe.length > 0 && (
+      {!error && !isLoadingSuggestions && suggestions.length === 0 && suggestedPurchases.length === 0 && wardrobe.length > 0 && (
          <Alert>
           <Info className="h-4 w-4" />
           <AlertTitle>Ready for Styling!</AlertTitle>
@@ -163,7 +164,7 @@ export default function OutfitSuggestionsPage() {
         </Alert>
       )}
       
-      {!error && !isLoadingSuggestions && wardrobe.length === 0 && !wardrobeLoading && (
+      {!error && !isLoadingSuggestions && wardrobe.length === 0 && !wardrobeLoading && desiredOutfitCount > 0 && (
          <Alert variant="default" className="border-primary/50 bg-primary/10">
           <Shirt className="h-4 w-4 text-primary" />
           <AlertTitle className="text-primary">Your Wardrobe is Empty</AlertTitle>
@@ -174,9 +175,31 @@ export default function OutfitSuggestionsPage() {
         </Alert>
       )}
 
+      {suggestedPurchases.length > 0 && !isLoadingSuggestions && (
+        <Card className="mt-6 shadow-md border-primary/30">
+          <CardHeader>
+            <CardTitle className="font-headline text-xl flex items-center text-primary">
+              <ShoppingBag className="mr-2 h-5 w-5" />
+              Shopping Suggestions
+            </CardTitle>
+            <CardDescription>
+              To help you create more outfits or achieve your desired look, consider adding these items to your wardrobe:
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {suggestedPurchases.map((item, index) => (
+              <div key={index} className="p-3 border rounded-md bg-muted/30">
+                <p className="font-semibold text-foreground">{item.type} - {item.color}</p>
+                {item.style && <p className="text-sm text-muted-foreground">Style/Details: {item.style}</p>}
+                <p className="text-sm mt-1 text-foreground/90">{item.reason}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
-      {suggestions.length > 0 && (
-        <div className="space-y-6">
+      {suggestions.length > 0 && !isLoadingSuggestions && (
+        <div className="space-y-6 mt-6">
           <h2 className="text-2xl font-headline text-center">Here are your AI-Styled Outfits!</h2>
           {suggestions.map((outfit, index) => (
             <Card key={index} className="overflow-hidden shadow-md">
@@ -208,8 +231,8 @@ export default function OutfitSuggestionsPage() {
                 {outfit.fashionTips && (
                   <Alert variant="default" className="bg-accent/10 border-accent/30">
                     <Lightbulb className="h-4 w-4 text-accent" />
-                    <AlertTitle className="text-accent-foreground/90 font-medium">Fashion Tip</AlertTitle>
-                    <AlertDescription className="text-accent-foreground/80">
+                    <AlertTitle className="text-accent font-medium">Fashion Tip</AlertTitle>
+                    <AlertDescription className="text-muted-foreground">
                       {outfit.fashionTips}
                     </AlertDescription>
                   </Alert>

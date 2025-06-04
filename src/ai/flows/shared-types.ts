@@ -14,7 +14,6 @@ export const FlowClothingItemSchema = z.object({
   type: z.enum(AI_CLOTHING_TYPES).describe("The specific type of the clothing item (e.g., Shirt, Jeans)."),
   color: z.enum(AI_CLOTHING_COLORS).describe("The dominant color of the clothing item."),
   category: z.enum(WARDROBE_CATEGORIES).describe("The general wardrobe category this item belongs to."),
-  // material: z.enum(AI_CLOTHING_MATERIALS).optional().describe("The primary material of the item."), // Optional for now
   description: z.string().optional().describe("A brief description of the item, potentially including its style, pattern, or specific details (e.g., 'vintage floral dress', 'striped cotton t-shirt'). This can be from AI analysis or user notes.")
 });
 export type FlowClothingItem = z.infer<typeof FlowClothingItemSchema>;
@@ -34,3 +33,12 @@ export const OutfitSchema = z.object({
   fashionTips: z.string().optional().describe("Optional short fashion tip related to this outfit, accessories, or how to style it further."),
 });
 export type Outfit = z.infer<typeof OutfitSchema>;
+
+// Schema for a suggested item to purchase
+export const SuggestedPurchaseItemSchema = z.object({
+  type: z.enum(AI_CLOTHING_TYPES).describe("The type of clothing item suggested for purchase (e.g., 'Blazer', 'Sneakers', 'Little Black Dress')."),
+  color: z.enum(AI_CLOTHING_COLORS).describe("The suggested color for the new item (e.g., 'Black', 'Neutral Beige', 'Forest Green')."),
+  style: z.string().optional().describe("A brief description of the style or specific features of the suggested item (e.g., 'linen', 'oversized', 'platform', 'vintage wash', 'minimalist')."),
+  reason: z.string().describe("A brief explanation why this item would enhance the wardrobe, help create more outfits, or fill a specific gap (e.g., 'A versatile blazer for smart-casual looks.', 'Essential white sneakers for everyday comfort.', 'Would pair well with your existing jeans and skirts.')."),
+});
+export type SuggestedPurchaseItem = z.infer<typeof SuggestedPurchaseItemSchema>;
