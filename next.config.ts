@@ -17,18 +17,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    // Ensure the fallback object exists before attempting to modify it.
-    // This handles a potential case where config.resolve or config.resolve.fallback might be undefined.
+  webpack: (config, { isServer, webpack }) => {
+    // Ensure config.resolve and config.resolve.fallback exist
     config.resolve = config.resolve || {};
     config.resolve.fallback = config.resolve.fallback || {};
 
     if (!isServer) {
-      // Prevent 'async_hooks' from being bundled on the client
-      // by providing an empty module fallback.
+      // For client-side bundles, provide an empty module for 'async_hooks'
+      // This prevents the "Module not found: Can't resolve 'async_hooks'" error.
       config.resolve.fallback.async_hooks = false;
     }
-    // Important: return the modified config
+
+    // It's good practice to return the modified config
     return config;
   },
 };
