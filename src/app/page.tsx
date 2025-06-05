@@ -11,7 +11,7 @@ const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section - Redesigned */}
-      <section className="text-center py-8 md:py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
+      <section className="text-center py-8 md:py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden"> {/* Added overflow-hidden as a precaution */}
         <div className="container mx-auto px-4">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
             {/* Left Column: Logo and Buttons */}
@@ -20,8 +20,8 @@ const HomePage = React.memo(function HomePage() {
                 <Image
                   src="/logo1.png"
                   alt="StyleSNAP! Logo"
-                  width={450} // 100% bigger
-                  height={114} // 100% bigger
+                  width={450} 
+                  height={114} 
                   priority
                 />
               </div>
@@ -36,7 +36,7 @@ const HomePage = React.memo(function HomePage() {
             </div>
 
             {/* Right Column: Headline and Description */}
-            <div className="text-center md:text-left">
+            <div className="text-center md:text-left -translate-y-[500px]">
               <h1 className="text-4xl md:text-5xl font-headline tracking-tight text-primary mb-4">
                 Welcome to Style Snap!
               </h1>
