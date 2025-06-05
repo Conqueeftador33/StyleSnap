@@ -3,11 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Wand2, Shirt } from 'lucide-react'; 
-import { useRouter } from 'next/navigation';
+import { Shirt, Wand2, MessageSquareText, PlusCircle, PanelLeft } from 'lucide-react'; 
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+// import { useSidebar } from '@/components/ui/sidebar'; // Example if using a sidebar for mobile, not used here.
 
 export function AppHeader() {
-  const router = useRouter();
+  const pathname = usePathname();
+  // const { toggleSidebar, setOpenMobile } = useSidebar(); // If we had a drawer menu for mobile
+
+  const navLinks = [
+    { href: '/wardrobe', label: 'My Wardrobe', icon: <Shirt className="h-5 w-5" /> },
+    { href: '/outfit-suggestions', label: 'AI Outfits', icon: <Wand2 className="h-5 w-5" /> },
+    { href: '/stylist-chat', label: 'Stylist Chat', icon: <MessageSquareText className="h-5 w-5" /> },
+  ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -22,28 +31,38 @@ export function AppHeader() {
             className="h-auto"
           />
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2">
-          <Button 
-            variant="ghost" 
-            onClick={() => router.push('/wardrobe')} 
-            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <Shirt className="h-4 w-4" />
-            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
-              My Wardrobe
-            </span>
-          </Button>
-          <Button 
-            variant="default" 
-            onClick={() => router.push('/outfit-suggestions')} 
-            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <Wand2 className="h-4 w-4" />
-            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
-              AI Outfits
-            </span>
+        
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-2">
+          {navLinks.map((link) => (
+            <Button
+              key={link.href}
+              variant="ghost"
+              asChild
+              className={cn(
+                "text-sm font-medium",
+                pathname === link.href ? "text-primary bg-accent" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Link href={link.href} className="flex items-center gap-2 px-3 py-2">
+                {link.icon}
+                {link.label}
+              </Link>
+            </Button>
+          ))}
+          <Button asChild className="ml-2">
+            <Link href="/add">
+              <PlusCircle className="mr-2 h-5 w-5" />
+              Add Item
+            </Link>
           </Button>
         </nav>
+
+        {/* Mobile: Hamburger Icon Placeholder (if we decide to add a drawer later) */}
+        {/* <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpenMobile(true)}>
+          <PanelLeft className="h-6 w-6" />
+          <span className="sr-only">Open menu</span>
+        </Button> */}
       </div>
     </header>
   );

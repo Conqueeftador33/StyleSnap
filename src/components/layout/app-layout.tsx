@@ -1,9 +1,7 @@
 
 import type { ReactNode } from 'react';
 import { AppHeader } from './app-header';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { PlusCircle, MessageSquareText } from 'lucide-react';
+import { MobileBottomNav } from './mobile-bottom-nav'; // New import
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -14,36 +12,16 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <AppHeader />
       <main className="flex-1">
-        <div className="container py-2 lg:py-4">
+        {/* Add padding-bottom on mobile to account for the bottom nav bar */}
+        <div className="container py-2 lg:py-4 md:pb-2 lg:pb-4 pb-20"> 
             {children}
         </div>
       </main>
 
-      {/* Add Item FAB */}
-      <Button
-        variant="default"
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
-        aria-label="Add new item"
-        asChild
-      >
-        <Link href="/add">
-          <PlusCircle className="h-7 w-7" />
-        </Link>
-      </Button>
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
 
-      {/* Stylist Chat FAB */}
-      <Button
-        variant="default"
-        className="fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
-        aria-label="Open stylist chat"
-        asChild
-      >
-        <Link href="/stylist-chat">
-          <MessageSquareText className="h-7 w-7" />
-        </Link>
-      </Button>
-
-      <footer className="py-6 md:px-8 md:py-0 border-t">
+      <footer className="py-6 md:px-8 md:py-0 border-t hidden md:flex"> {/* Hide footer on mobile to save space if bottom nav is present */}
         <div className="container flex flex-col items-center justify-center gap-4 md:h-20 md:flex-row">
           <p className="text-balance text-center text-sm leading-loose text-muted-foreground">
             Style Snap &copy; {new Date().getFullYear()}
