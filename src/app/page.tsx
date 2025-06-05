@@ -11,21 +11,21 @@ const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="text-center pt-1 pb-2 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
-        <div className="mb-0.5 mx-auto flex justify-center">
+      <section className="text-center pt-0 pb-1 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background"> {/* Changed pt-1 to pt-0, pb-2 to pb-1 */}
+        <div className="mb-px mx-auto flex justify-center"> {/* Changed mb-0.5 to mb-px */}
           <Image
             src="/logo1.png"
             alt="StyleSNAP! Logo"
-            width={225}
-            height={57}
+            width={225} 
+            height={57} 
             priority
             className="h-auto"
           />
         </div>
-        <h1 className="text-5xl font-headline tracking-tight text-primary mb-0">
+        <h1 className="text-5xl font-headline tracking-tight text-primary mb-0"> {/* mb-0 stays */}
           Welcome to Style Snap!
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-2">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-1"> {/* Changed mb-2 to mb-1 */}
           Transform your closet into a smart, virtual wardrobe. Discover new looks, get AI-powered outfit suggestions, and never wonder "What should I wear?" again.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
