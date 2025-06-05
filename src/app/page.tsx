@@ -56,7 +56,7 @@ const HomePage = React.memo(function HomePage() {
             </div>
             <div className="flex flex-col justify-center items-center rounded-lg overflow-hidden">
               <Image
-                src="/What_Style_Snap.jpg"
+                src="/What_Style_Snap.jpg" 
                 alt="Stylishly organized digital wardrobe interface"
                 width={400}
                 height={300}
@@ -72,42 +72,36 @@ const HomePage = React.memo(function HomePage() {
         <h2 className="text-3xl font-headline text-center text-foreground mb-10">How It Works: Your Journey to Effortless Style</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col">
-            <CardHeader className="items-center text-center">
+            <CardHeader className="items-center text-center p-6">
               <div className="p-4 bg-primary/10 rounded-full inline-block mb-3">
                 <UploadCloud className="h-10 w-10 text-primary" />
               </div>
               <CardTitle className="font-headline text-xl">1. Snap & Analyze</CardTitle>
               <CardDescription>Add items by uploading photos or using your camera. Our AI analyzes each piece, identifying its type, color, material, and category.</CardDescription>
             </CardHeader>
-            <CardContent className="text-center flex-grow flex flex-col justify-center">
-               <Image src="https://placehold.co/400x300.png" alt="AI analyzing clothing from a photo" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI clothing"/>
-            </CardContent>
+            {/* Removed CardContent with Image placeholder */}
           </Card>
 
           <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col">
-            <CardHeader className="items-center text-center">
+            <CardHeader className="items-center text-center p-6">
                 <div className="p-4 bg-primary/10 rounded-full inline-block mb-3">
                     <LibraryBig className="h-10 w-10 text-primary" />
                 </div>
               <CardTitle className="font-headline text-xl">2. Build Your Closet</CardTitle>
               <CardDescription>Your analyzed items populate your digital wardrobe. View, sort, filter, and edit details to keep everything perfectly organized.</CardDescription>
             </CardHeader>
-             <CardContent className="text-center flex-grow flex flex-col justify-center">
-               <Image src="https://placehold.co/400x300.png" alt="Grid view of a digital wardrobe" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="digital closet" />
-            </CardContent>
+            {/* Removed CardContent with Image placeholder */}
           </Card>
 
           <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col">
-            <CardHeader className="items-center text-center">
+            <CardHeader className="items-center text-center p-6">
                 <div className="p-4 bg-primary/10 rounded-full inline-block mb-3">
                     <Wand2 className="h-10 w-10 text-primary" />
                 </div>
               <CardTitle className="font-headline text-xl">3. Get Styled</CardTitle>
               <CardDescription>Request AI outfit suggestions for any occasion or style preference. Discover new combinations and get fashion tips to complete your look.</CardDescription>
             </CardHeader>
-            <CardContent className="text-center flex-grow flex flex-col justify-center">
-              <Image src="https://placehold.co/400x300.png" alt="AI generated outfit suggestions on a screen" width={400} height={300} className="rounded-md mx-auto my-4 shadow-sm" data-ai-hint="AI fashion" />
-            </CardContent>
+            {/* Removed CardContent with Image placeholder */}
           </Card>
         </div>
       </section>
