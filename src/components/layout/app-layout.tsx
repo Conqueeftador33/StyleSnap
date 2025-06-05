@@ -11,7 +11,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <AppHeader />
       <main className="flex-1">
-        <div className="container py-6 lg:py-8">
+        <div className="container py-2 lg:py-4">
             {children}
         </div>
       </main>
