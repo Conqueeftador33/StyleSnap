@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Shirt, Wand2, MessageSquareText, PlusCircle, LogIn, LogOut, UserPlus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/hooks/useAuth'; // Corrected import path
+import { useAuth } from '@/hooks/useAuth'; 
+import { ThemeToggleButton } from '@/components/theme/theme-toggle-button'; // Import ThemeToggleButton
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -34,48 +35,53 @@ export function AppHeader() {
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
-          {visibleNavLinks.map((link) => (
-            <Button
-              key={link.href}
-              variant="ghost"
-              asChild
-              className={cn(
-                "text-sm font-medium",
-                pathname === link.href ? "text-primary bg-accent" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Link href={link.href} className="flex items-center gap-2 px-3 py-2">
-                {link.icon}
-                {link.label}
-              </Link>
-            </Button>
-          ))}
-          {!isLoading && user && (
-            <Button asChild className="ml-2">
-              <Link href="/add">
-                <PlusCircle className="mr-2 h-5 w-5" />
-                Add Item
-              </Link>
-            </Button>
-          )}
-          {!isLoading && !user && (
-            <>
-              <Button variant="ghost" asChild className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                <Link href="/login"><LogIn className="mr-1 h-4 w-4" />Login</Link>
+        <div className="flex items-center gap-1"> {/* Wrapper for nav and theme toggle */}
+          <nav className="hidden md:flex items-center gap-1">
+            {visibleNavLinks.map((link) => (
+              <Button
+                key={link.href}
+                variant="ghost"
+                asChild
+                className={cn(
+                  "text-sm font-medium",
+                  pathname === link.href ? "text-primary bg-accent" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Link href={link.href} className="flex items-center gap-2 px-3 py-2">
+                  {link.icon}
+                  {link.label}
+                </Link>
               </Button>
-              <Button asChild className="ml-1">
-                <Link href="/signup"><UserPlus className="mr-1 h-4 w-4" />Sign Up</Link>
+            ))}
+            {!isLoading && user && (
+              <Button asChild className="ml-2">
+                <Link href="/add">
+                  <PlusCircle className="mr-2 h-5 w-5" />
+                  Add Item
+                </Link>
               </Button>
-            </>
-          )}
-          {!isLoading && user && (
-            <Button variant="outline" onClick={logout} className="ml-2 text-sm font-medium">
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          )}
-        </nav>
+            )}
+            {!isLoading && !user && (
+              <>
+                <Button variant="ghost" asChild className="text-sm font-medium text-muted-foreground hover:text-foreground">
+                  <Link href="/login"><LogIn className="mr-1 h-4 w-4" />Login</Link>
+                </Button>
+                <Button asChild className="ml-1">
+                  <Link href="/signup"><UserPlus className="mr-1 h-4 w-4" />Sign Up</Link>
+                </Button>
+              </>
+            )}
+            {!isLoading && user && (
+              <Button variant="outline" onClick={logout} className="ml-2 text-sm font-medium">
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            )}
+          </nav>
+          <div className="ml-2"> {/* Margin for spacing */}
+            <ThemeToggleButton />
+          </div>
+        </div>
         {/* Mobile nav button placeholder if needed later */}
         {/* <Button variant="ghost" size="icon" className="md:hidden"> <PanelLeft /> </Button> */}
       </div>

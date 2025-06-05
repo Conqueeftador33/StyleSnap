@@ -4,7 +4,8 @@ import './globals.css';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Toaster } from "@/components/ui/toaster";
 import { WardrobeProvider } from '@/hooks/use-wardrobe';
-import { AuthProvider } from '@/hooks/useAuth'; // Changed from use-auth to useAuth
+import { AuthProvider } from '@/hooks/useAuth';
+import { ThemeProvider } from '@/components/theme/theme-provider'; // New ThemeProvider
 
 export const metadata: Metadata = {
   title: 'Style Snap',
@@ -23,18 +24,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Belleza&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-        <meta name="theme-color" content="#F0ECEC" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#262223" media="(prefers-color-scheme: dark)" />
+        {/* Meta theme colors are dynamically handled or less critical with JS theme switching */}
       </head>
       <body className="font-body antialiased">
-        <AuthProvider>
-          <WardrobeProvider>
-            <AppLayout>
-              {children}
-            </AppLayout>
-            <Toaster />
-          </WardrobeProvider>
-        </AuthProvider>
+        <ThemeProvider
+          defaultTheme="system"
+          storageKey="style-snap-theme"
+        >
+          <AuthProvider>
+            <WardrobeProvider>
+              <AppLayout>
+                {children}
+              </AppLayout>
+              <Toaster />
+            </WardrobeProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

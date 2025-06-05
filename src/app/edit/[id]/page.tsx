@@ -8,8 +8,10 @@ import { useToast } from '@/hooks/use-toast';
 import type { ClothingItem } from '@/lib/types';
 import { Loader2, AlertTriangle, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth'; // Import useAuth
+import { useAuth } from '@/hooks/useAuth'; 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 
 export default function EditItemPage() {
@@ -17,20 +19,19 @@ export default function EditItemPage() {
   const params = useParams();
   const { getItemById, updateItem, isLoading: isWardrobeLoading } = useWardrobe();
   const { toast } = useToast();
-  const { user, isLoading: authLoading } = useAuth(); // Get user and auth loading state
+  const { user, isLoading: authLoading } = useAuth(); 
 
   const itemId = typeof params.id === 'string' ? params.id : undefined;
   const [item, setItem] = useState<ClothingItem | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Wait for auth and wardrobe to finish loading before trying to get item
     if (itemId && !isWardrobeLoading && !authLoading) {
-      if (user) { // Only fetch if user is logged in
+      if (user) { 
         const fetchedItem = getItemById(itemId);
-        setItem(fetchedItem); // Will be undefined if not found, null if explicitly set to not found
+        setItem(fetchedItem); 
       } else {
-        setItem(null); // No user, so item cannot be found/edited
+        setItem(null); 
       }
     }
   }, [itemId, getItemById, isWardrobeLoading, user, authLoading]);
@@ -79,11 +80,19 @@ export default function EditItemPage() {
   if (!user && !authLoading) {
      return (
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
-        <Alert variant="default" className="max-w-md">
-            <Wand2 className="h-4 w-4" />
-          <AlertTitle>Login Required</AlertTitle>
-          <AlertDescription>
-            Please <a href={`/login?redirect=/edit/${itemId || ''}`} className="underline font-semibold">log in</a> or <a href={`/signup?redirect=/edit/${itemId || ''}`} className="underline font-semibold">sign up</a> to edit items in your wardrobe.
+        <Alert variant="default" className="max-w-md shadow-lg">
+          <Wand2 className="h-4 w-4" />
+          <AlertTitle className="text-primary">Login Required</AlertTitle>
+          <AlertDescription className="space-x-1">
+            Please
+            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
+                <Link href={`/login?redirect=/edit/${itemId || ''}`}>log in</Link>
+            </Button>
+            or
+            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
+                <Link href={`/signup?redirect=/edit/${itemId || ''}`}>sign up</Link>
+            </Button>
+             to edit this item.
           </AlertDescription>
         </Alert>
       </div>
@@ -91,9 +100,9 @@ export default function EditItemPage() {
   }
 
 
-  if (!item) { // This now also covers the case where item is null due to no user
+  if (!item) { 
     return (
-      <Card className="max-w-md mx-auto mt-10">
+      <Card className="max-w-md mx-auto mt-10 shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-destructive font-headline">Item Not Found</CardTitle>
         </CardHeader>
@@ -119,7 +128,7 @@ export default function EditItemPage() {
         formTitle="Update Item Details"
         formDescription="Make changes to your clothing item below."
         onSubmit={handleFormSubmit}
-        initialData={item} // Item is guaranteed to be ClothingItem here
+        initialData={item} 
         imageUrl={item.imageUrl}
         isSubmitting={isSubmitting}
         submitButtonText={isSubmitting ? "Saving..." : "Save Changes"}

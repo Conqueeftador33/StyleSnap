@@ -13,13 +13,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from '@/components/ui/separator';
-import { useAuth } from '@/hooks/useAuth'; // Import useAuth
+import { useAuth } from '@/hooks/useAuth'; 
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function AddItemPage() {
   const router = useRouter();
   const { addItem } = useWardrobe();
   const { toast } = useToast();
-  const { user, isLoading: authLoading } = useAuth(); // Get user and auth loading state
+  const { user, isLoading: authLoading } = useAuth(); 
 
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
   const [aiAnalysisResult, setAiAnalysisResult] = useState<AnalyzedItemAttributes | null>(null);
@@ -36,7 +38,7 @@ export default function AddItemPage() {
         return;
     }
     setSelectedImageUri(dataUri);
-    setAiAnalysisResult(null); // Reset previous analysis
+    setAiAnalysisResult(null); 
     setAnalysisError(null);
     setIsAnalyzing(true);
 
@@ -62,7 +64,7 @@ export default function AddItemPage() {
   const handleFormSubmit = async (data: ItemFormData) => {
     if (!user && !authLoading) {
       toast({ variant: "destructive", title: "Login Required", description: "Please log in to add items to your wardrobe." });
-      router.push('/login?redirect=/add'); // Optionally redirect to login
+      router.push('/login?redirect=/add'); 
       return;
     }
     if (!selectedImageUri) {
@@ -71,8 +73,6 @@ export default function AddItemPage() {
     }
     setIsSubmitting(true);
     try {
-      // The addItem function now expects Omit<ClothingItem, 'id' | 'createdAt'>
-      // It internally handles id and createdAt
       await addItem({ ...data, imageUrl: selectedImageUri });
       toast({
         title: "Item Added!",
@@ -105,11 +105,19 @@ export default function AddItemPage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
-        <Alert variant="default" className="max-w-md">
-            <Wand2 className="h-4 w-4" />
-          <AlertTitle>Login Required</AlertTitle>
-          <AlertDescription>
-            Please <a href="/login?redirect=/add" className="underline font-semibold">log in</a> or <a href="/signup?redirect=/add" className="underline font-semibold">sign up</a> to add items to your virtual wardrobe.
+        <Alert variant="default" className="max-w-md shadow-lg">
+          <Wand2 className="h-4 w-4" />
+          <AlertTitle className="text-primary">Login Required</AlertTitle>
+          <AlertDescription className="space-x-1">
+            Please
+            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
+                <Link href="/login?redirect=/add">log in</Link>
+            </Button>
+            or
+            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
+                 <Link href="/signup?redirect=/add">sign up</Link>
+            </Button>
+            to add items.
           </AlertDescription>
         </Alert>
       </div>
@@ -132,7 +140,7 @@ export default function AddItemPage() {
           <TabsTrigger value="camera"><Camera className="mr-2" /> Use Camera</TabsTrigger>
         </TabsList>
         <TabsContent value="upload">
-          <Card>
+          <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="font-headline">Upload Image</CardTitle>
               <CardDescription>Select one or more images of your clothing items.</CardDescription>
@@ -143,7 +151,7 @@ export default function AddItemPage() {
           </Card>
         </TabsContent>
         <TabsContent value="camera">
-           <Card>
+           <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="font-headline">Use Camera</CardTitle>
               <CardDescription>Take a photo of your clothing item.</CardDescription>
@@ -156,7 +164,7 @@ export default function AddItemPage() {
       </Tabs>
 
       {isAnalyzing && (
-        <Card className="mt-6">
+        <Card className="mt-6 shadow-md">
           <CardContent className="p-6 flex flex-col items-center justify-center">
             <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
             <p className="text-muted-foreground font-semibold text-lg">AI is analyzing your item...</p>

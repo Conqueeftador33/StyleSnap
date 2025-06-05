@@ -54,7 +54,7 @@ export function AuthForm({
       await onSubmit(data);
       // Success toast and redirection will be handled by the calling page (login/signup)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : `An unknown error occurred during ${mode}.`;
+      const errorMessage = error instanceof Error ? error.message : `An unknown error occurred during ${mode}. Ensure your Firebase project is correctly configured and Email/Password sign-in is enabled in the Firebase console.`;
       toast({
         variant: "destructive",
         title: `${mode === 'login' ? 'Login' : 'Sign Up'} Failed`,
@@ -66,9 +66,9 @@ export function AuthForm({
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline text-2xl">{title}</CardTitle>
+        <CardTitle className="font-headline text-2xl text-primary">{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -108,7 +108,7 @@ export function AuthForm({
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               {alternateActionText}{' '}
-              <Button variant="link" asChild className="p-0 h-auto">
+              <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm">
                 <Link href={alternateActionLink}>Click here</Link>
               </Button>
             </p>
