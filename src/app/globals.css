@@ -45,7 +45,7 @@
     --primary: hsl(var(--primary-h) var(--primary-s) var(--primary-l));
     --primary-foreground: hsl(var(--primary-foreground-h) var(--primary-foreground-s) var(--primary-foreground-l));
     --secondary: hsl(var(--secondary-h) var(--secondary-s) var(--secondary-l));
-    --secondary-foreground: hsl(var(--secondary-foreground-h) var(--secondary-foreground-s) var(--secondary-foreground-l));
+    --secondary-foreground: hsl(var(--secondary-foreground-h) var(--secondary-s) var(--secondary-foreground-l));
     --muted: hsl(var(--muted-h) var(--muted-s) var(--muted-l));
     --muted-foreground: hsl(var(--muted-foreground-h) var(--muted-foreground-s) var(--muted-foreground-l));
     --accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
@@ -83,7 +83,7 @@
     --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-l: 98%; /* Very light text on primary */
 
     --secondary-h: 225; --secondary-s: 25%; --secondary-l: 35%; /* Muted dark blue/gray */
-    --secondary-foreground-h: 225; --secondary-foreground-s: 40%; --secondary-l: 90%;
+    --secondary-foreground-h: 225; --secondary-s: 40%; --secondary-l: 90%;
 
     --muted-h: 225; --muted-s: 20%; --muted-l: 25%; /* Darker muted blue */
     --muted-foreground-h: 225; --muted-s: 30%; --muted-l: 70%; /* Lighter muted text */
