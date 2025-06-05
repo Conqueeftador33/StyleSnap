@@ -55,7 +55,6 @@ const HomePage = React.memo(function HomePage() {
               </ul>
             </div>
             <div className="flex flex-col justify-center items-center rounded-lg overflow-hidden">
-              <p className="text-xs text-red-500 mb-1">(Debug: Image should appear below this text)</p>
               <Image
                 src="/What_Style_Snap.jpg"
                 alt="Stylishly organized digital wardrobe interface"
