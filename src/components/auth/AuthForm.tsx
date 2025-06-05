@@ -27,6 +27,7 @@ interface AuthFormProps {
   buttonText: string;
   alternateActionLink: string;
   alternateActionText: string;
+  alternateActionLinkText: string; // New prop
 }
 
 export function AuthForm({
@@ -36,7 +37,8 @@ export function AuthForm({
   description,
   buttonText,
   alternateActionLink,
-  alternateActionText
+  alternateActionText,
+  alternateActionLinkText, // New prop
 }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -109,7 +111,7 @@ export function AuthForm({
             <p className="text-sm text-muted-foreground text-center">
               {alternateActionText}{' '}
               <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm">
-                <Link href={alternateActionLink}>Click here</Link>
+                <Link href={alternateActionLink}>{alternateActionLinkText}</Link>
               </Button>
             </p>
           </CardFooter>

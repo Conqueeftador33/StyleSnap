@@ -4,12 +4,13 @@ import { AuthForm } from '@/components/auth/AuthForm';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation'; // Added useSearchParams
 import { UserPlus } from 'lucide-react';
 
 export default function SignUpPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams(); // Get search params
 
   const handleSignUp = async (data: { email: string; password: any; }) => {
     try {
@@ -19,7 +20,8 @@ export default function SignUpPage() {
         description: "Welcome to Style Snap! You can now log in.",
         className: "bg-green-500 text-white",
       });
-      router.push('/login'); // Redirect to login page after sign up
+      const redirectUrl = searchParams.get('redirect') ? `/login?redirect=${searchParams.get('redirect')}` : '/login';
+      router.push(redirectUrl); 
     } catch (error) {
       // Error is caught and displayed by AuthForm, re-throw.
       throw error;
@@ -39,7 +41,8 @@ export default function SignUpPage() {
         description="Create an account to start building your virtual wardrobe."
         buttonText="Sign Up"
         alternateActionText="Already have an account?"
-        alternateActionLink="/login"
+        alternateActionLinkText="Log In" // Updated prop
+        alternateActionLink={`/login${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} // Preserve redirect
       />
     </div>
   );

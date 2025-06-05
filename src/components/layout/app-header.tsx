@@ -4,13 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Shirt, Wand2, MessageSquareText, PlusCircle, LogIn, LogOut, UserPlus } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth'; 
-import { ThemeToggleButton } from '@/components/theme/theme-toggle-button'; // Import ThemeToggleButton
+import { ThemeToggleButton } from '@/components/theme/theme-toggle-button'; 
 
 export function AppHeader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, logout, isLoading } = useAuth();
 
   const navLinks = [
@@ -20,6 +21,11 @@ export function AppHeader() {
   ];
 
   const visibleNavLinks = navLinks.filter(link => !link.requiresAuth || (link.requiresAuth && user));
+  
+  const currentRedirect = searchParams.get('redirect');
+  const loginHref = currentRedirect ? `/login?redirect=${currentRedirect}` : '/login';
+  const signupHref = currentRedirect ? `/signup?redirect=${currentRedirect}` : '/signup';
+
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -35,7 +41,7 @@ export function AppHeader() {
           />
         </Link>
 
-        <div className="flex items-center gap-1"> {/* Wrapper for nav and theme toggle */}
+        <div className="flex items-center gap-1"> 
           <nav className="hidden md:flex items-center gap-1">
             {visibleNavLinks.map((link) => (
               <Button
@@ -63,11 +69,11 @@ export function AppHeader() {
             )}
             {!isLoading && !user && (
               <>
-                <Button variant="ghost" asChild className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                  <Link href="/login"><LogIn className="mr-1 h-4 w-4" />Login</Link>
+                <Button asChild className="text-sm font-medium">
+                  <Link href={loginHref}><LogIn className="mr-1 h-4 w-4" />Login</Link>
                 </Button>
                 <Button asChild className="ml-1">
-                  <Link href="/signup"><UserPlus className="mr-1 h-4 w-4" />Sign Up</Link>
+                  <Link href={signupHref}><UserPlus className="mr-1 h-4 w-4" />Sign Up</Link>
                 </Button>
               </>
             )}
@@ -78,12 +84,10 @@ export function AppHeader() {
               </Button>
             )}
           </nav>
-          <div className="ml-2"> {/* Margin for spacing */}
+          <div className="ml-2"> 
             <ThemeToggleButton />
           </div>
         </div>
-        {/* Mobile nav button placeholder if needed later */}
-        {/* <Button variant="ghost" size="icon" className="md:hidden"> <PanelLeft /> </Button> */}
       </div>
     </header>
   );
