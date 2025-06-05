@@ -6,7 +6,7 @@ import { ItemForm, type ItemFormData } from '@/components/forms/item-form';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
 import type { ClothingItem } from '@/lib/types';
-import { Loader2, AlertTriangle, Wand2 } from 'lucide-react';
+import { Loader2, AlertTriangle, Wand2, CloudCog } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth'; 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,33 +17,40 @@ import Link from 'next/link';
 export default function EditItemPage() {
   const router = useRouter();
   const params = useParams();
-  const { getItemById, updateItem, isLoading: isWardrobeLoading } = useWardrobe();
+  const { getItemById, updateItem, isLoading: isWardrobeLoading, wardrobeSource } = useWardrobe();
   const { toast } = useToast();
   const { user, isLoading: authLoading } = useAuth(); 
 
   const itemId = typeof params.id === 'string' ? params.id : undefined;
-  const [item, setItem] = useState<ClothingItem | null | undefined>(undefined);
+  const [item, setItem] = useState<ClothingItem | null | undefined>(undefined); // undefined initially
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (itemId && !isWardrobeLoading && !authLoading) {
-      if (user) { 
-        const fetchedItem = getItemById(itemId);
-        setItem(fetchedItem); 
-      } else {
-        setItem(null); 
+    if (itemId && !isWardrobeLoading && !authLoading) { // Ensure auth and wardrobe are not loading
+      const fetchedItem = getItemById(itemId);
+      if (!user && wardrobeSource === 'local' && fetchedItem?.id.startsWith('local_')) {
+        setItem(fetchedItem); // Guest editing their own local item
+      } else if (user && fetchedItem && !fetchedItem.id.startsWith('local_')) {
+        setItem(fetchedItem); // Logged-in user editing their Firestore item
+      } else if (user && fetchedItem?.id.startsWith('local_')) {
+        // Logged-in user trying to edit a local item ID (e.g., from old URL)
+        // This scenario should ideally not happen if navigation is correct post-login.
+        // Redirect or show "item not found" for their cloud wardrobe.
+        setItem(null);
+        toast({ variant: "destructive", title: "Item Mismatch", description: "This item belongs to a guest session." });
+        router.push('/wardrobe');
       }
+      else {
+        setItem(null); // Item not found or permission issue
+      }
+    } else if (!authLoading && !isWardrobeLoading && !itemId) {
+        setItem(null); // No item ID provided
     }
-  }, [itemId, getItemById, isWardrobeLoading, user, authLoading]);
+  }, [itemId, getItemById, isWardrobeLoading, user, authLoading, wardrobeSource, router, toast]);
 
   const handleFormSubmit = async (data: ItemFormData) => {
     if (!itemId || !item) {
       toast({ variant: "destructive", title: "Error", description: "Item not found or ID is missing." });
-      return;
-    }
-    if (!user && !authLoading) {
-      toast({ variant: "destructive", title: "Login Required", description: "Please log in to edit items." });
-      router.push(`/login?redirect=/edit/${itemId}`);
       return;
     }
     setIsSubmitting(true);
@@ -68,7 +75,7 @@ export default function EditItemPage() {
     }
   };
 
-  if (isWardrobeLoading || authLoading || item === undefined) {
+  if (authLoading || isWardrobeLoading || item === undefined) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
@@ -77,28 +84,24 @@ export default function EditItemPage() {
     );
   }
   
-  if (!user && !authLoading) {
-     return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
-        <Alert variant="default" className="max-w-md shadow-lg">
-          <Wand2 className="h-4 w-4" />
-          <AlertTitle className="text-primary">Login Required</AlertTitle>
-          <AlertDescription className="space-x-1">
-            Please
-            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
-                <Link href={`/login?redirect=/edit/${itemId || ''}`}>log in</Link>
-            </Button>
-            or
-            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
-                <Link href={`/signup?redirect=/edit/${itemId || ''}`}>sign up</Link>
-            </Button>
-             to edit this item.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
+  // Guest user specific message when editing a local item
+  const guestUserMessage = !user && wardrobeSource === 'local' && item?.id.startsWith('local_') && (
+    <Alert variant="default" className="mb-6 shadow-md border-primary/30 bg-primary/10">
+      <CloudCog className="h-5 w-5 text-primary" />
+      <AlertTitle className="text-primary font-semibold">You're Editing a Local Item</AlertTitle>
+      <AlertDescription className="text-primary/80">
+        Changes are saved locally on this device. 
+        <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
+            <Link href={`/login?redirect=/edit/${itemId}`}>Log In</Link>
+        </Button>
+        or
+        <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
+            <Link href={`/signup?redirect=/edit/${itemId}`}>Sign Up</Link>
+        </Button>
+        to sync your wardrobe to the cloud.
+      </AlertDescription>
+    </Alert>
+  );
 
   if (!item) { 
     return (
@@ -109,8 +112,11 @@ export default function EditItemPage() {
         <CardContent className="text-center">
           <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
           <p className="text-muted-foreground">
-            The clothing item you are trying to edit could not be found. It might have been deleted or you may not have access.
+            The clothing item you are trying to edit could not be found or you may not have permission to edit it.
           </p>
+          <Button asChild variant="outline" className="mt-4">
+            <Link href="/wardrobe">Back to Wardrobe</Link>
+          </Button>
         </CardContent>
       </Card>
     );
@@ -124,6 +130,7 @@ export default function EditItemPage() {
           Update the details for "{item.name || item.type}".
         </p>
       </div>
+      {guestUserMessage}
       <ItemForm
         formTitle="Update Item Details"
         formDescription="Make changes to your clothing item below."

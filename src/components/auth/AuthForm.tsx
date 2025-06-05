@@ -27,7 +27,7 @@ interface AuthFormProps {
   buttonText: string;
   alternateActionLink: string;
   alternateActionText: string;
-  alternateActionLinkText: string; // New prop
+  alternateActionLinkText: string;
 }
 
 export function AuthForm({
@@ -38,7 +38,7 @@ export function AuthForm({
   buttonText,
   alternateActionLink,
   alternateActionText,
-  alternateActionLinkText, // New prop
+  alternateActionLinkText,
 }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -55,12 +55,38 @@ export function AuthForm({
     try {
       await onSubmit(data);
       // Success toast and redirection will be handled by the calling page (login/signup)
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : `An unknown error occurred during ${mode}. Ensure your Firebase project is correctly configured and Email/Password sign-in is enabled in the Firebase console.`;
+    } catch (error: any) {
+      console.error(`Firebase ${mode} error:`, error); // Log the raw error
+      let errorMessage = `An unknown error occurred during ${mode}.`;
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            errorMessage = 'Invalid email or password. Please try again.';
+            break;
+          case 'auth/email-already-in-use':
+            errorMessage = 'This email address is already in use. Please try logging in or use a different email.';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'The password is too weak. Please choose a stronger password.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'The email address is not valid.';
+            break;
+          default:
+            errorMessage = error.message || `Firebase error: ${error.code}`;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      errorMessage += "\n\nTroubleshooting tips:\n- Ensure your Firebase project API keys in .env are correct.\n- Verify 'Email/Password' sign-in is enabled in the Firebase Authentication console.\n- Check your internet connection.";
+
       toast({
         variant: "destructive",
         title: `${mode === 'login' ? 'Login' : 'Sign Up'} Failed`,
         description: errorMessage,
+        duration: 9000, // Longer duration for more complex error messages
       });
     } finally {
       setIsLoading(false);

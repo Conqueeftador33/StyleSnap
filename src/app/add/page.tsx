@@ -8,7 +8,7 @@ import { ItemForm, type ItemFormData } from '@/components/forms/item-form';
 import { analyzeClothingImage, type AnalyzedItemAttributes } from '@/ai/flows/analyze-clothing-image';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Image as ImageIcon, Camera, Wand2 } from 'lucide-react';
+import { Loader2, Image as ImageIcon, Camera, Wand2, CloudCog } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -19,7 +19,7 @@ import Link from 'next/link';
 
 export default function AddItemPage() {
   const router = useRouter();
-  const { addItem } = useWardrobe();
+  const { addItem, wardrobeSource } = useWardrobe(); // Get wardrobeSource
   const { toast } = useToast();
   const { user, isLoading: authLoading } = useAuth(); 
 
@@ -62,24 +62,23 @@ export default function AddItemPage() {
   };
 
   const handleFormSubmit = async (data: ItemFormData) => {
-    if (!user && !authLoading) {
-      toast({ variant: "destructive", title: "Login Required", description: "Please log in to add items to your wardrobe." });
-      router.push('/login?redirect=/add'); 
-      return;
-    }
     if (!selectedImageUri) {
       toast({ variant: "destructive", title: "Missing Image", description: "Please select an image for the item." });
       return;
     }
     setIsSubmitting(true);
     try {
-      await addItem({ ...data, imageUrl: selectedImageUri });
-      toast({
-        title: "Item Added!",
-        description: `${data.name || data.type} has been added to your wardrobe.`,
-        className: "bg-green-500 text-white"
-      });
-      router.push('/wardrobe'); 
+      const addedItem = await addItem({ ...data, imageUrl: selectedImageUri });
+      if (addedItem) {
+        toast({
+          title: "Item Added!",
+          description: `${data.name || data.type} has been added to your ${wardrobeSource === 'local' ? 'local' : ''} wardrobe.`,
+          className: "bg-green-500 text-white"
+        });
+        router.push('/wardrobe'); 
+      } else {
+         toast({ variant: "destructive", title: "Save Failed", description: "Could not save item. Please try again." });
+      }
     } catch (error) {
       console.error("Error saving item:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error saving item.";
@@ -93,7 +92,7 @@ export default function AddItemPage() {
     }
   };
   
-  if (authLoading) {
+  if (authLoading) { // Only show auth loading spinner if truly loading auth state
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
@@ -102,28 +101,24 @@ export default function AddItemPage() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
-        <Alert variant="default" className="max-w-md shadow-lg">
-          <Wand2 className="h-4 w-4" />
-          <AlertTitle className="text-primary">Login Required</AlertTitle>
-          <AlertDescription className="space-x-1">
-            Please
-            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
-                <Link href="/login?redirect=/add">log in</Link>
-            </Button>
-            or
-            <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
-                 <Link href="/signup?redirect=/add">sign up</Link>
-            </Button>
-            to add items.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
+  // Guest user specific message
+  const guestUserMessage = !user && wardrobeSource === 'local' && (
+    <Alert variant="default" className="mb-6 shadow-md border-primary/30 bg-primary/10">
+      <CloudCog className="h-5 w-5 text-primary" />
+      <AlertTitle className="text-primary font-semibold">You're Browsing as a Guest</AlertTitle>
+      <AlertDescription className="text-primary/80">
+        Items you add are saved locally on this device. 
+        <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm mx-1">
+            <Link href="/login?redirect=/add">Log In</Link>
+        </Button>
+        or
+        <Button variant="outline" size="sm" asChild className="p-1 px-2 h-auto text-sm ml-1">
+            <Link href="/signup?redirect=/add">Sign Up</Link>
+        </Button>
+        to save your wardrobe to the cloud and access AI features.
+      </AlertDescription>
+    </Alert>
+  );
 
   return (
     <div className="space-y-8">
@@ -133,6 +128,8 @@ export default function AddItemPage() {
           Upload a photo or use your camera. Our AI will help identify and categorize your item!
         </p>
       </div>
+
+      {guestUserMessage}
 
       <Tabs value={currentTab} onValueChange={(value) => setCurrentTab(value as "upload" | "camera")} className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:max-w-sm mx-auto">
@@ -190,7 +187,7 @@ export default function AddItemPage() {
         initialData={aiAnalysisResult || {}}
         imageUrl={selectedImageUri}
         isSubmitting={isSubmitting}
-        submitButtonText={isSubmitting ? "Saving..." : "Add to Wardrobe"}
+        submitButtonText={isSubmitting ? "Saving..." : `Add to ${wardrobeSource === 'local' ? 'Local' : ''} Wardrobe`}
         aiSuggestion={aiAnalysisResult?.description}
       />
     </div>

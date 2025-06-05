@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { suggestOutfits, type SuggestOutfitsInput, type SuggestOutfitsOutput, type Outfit } from '@/ai/flows/suggest-outfits-flow';
 import type { FlowClothingItem, SuggestedPurchaseItem } from '@/ai/flows/shared-types';
@@ -8,13 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Shirt, Wand2, Lightbulb, Info, ShoppingBag } from 'lucide-react';
+import { Loader2, Shirt, Wand2, Lightbulb, Info, ShoppingBag, UserCheck } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function OutfitSuggestionsPage() {
-  const { items: wardrobe, isLoading: wardrobeLoading } = useWardrobe();
+  const { items: wardrobe, isLoading: wardrobeLoading, wardrobeSource } = useWardrobe();
+  const { user, isLoading: authLoading } = useAuth();
   const [suggestions, setSuggestions] = useState<Outfit[]>([]);
   const [suggestedPurchases, setSuggestedPurchases] = useState<SuggestedPurchaseItem[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
@@ -24,8 +26,18 @@ export default function OutfitSuggestionsPage() {
   const [stylePreference, setStylePreference] = useState<string>("");
   const [desiredOutfitCount, setDesiredOutfitCount] = useState<number>(3);
 
+  // Re-evaluate if user needs to log in when auth state or wardrobe source changes
+  useEffect(() => {
+    if (!authLoading && !user) {
+      // Handled by the return block below
+    }
+  }, [user, authLoading, wardrobeSource]);
+
+
   const mapWardrobeToFlowItems = (): FlowClothingItem[] => {
-    return wardrobe.map(item => ({
+    // Ensure we only send cloud items if logged in, or local if guest (though guest is blocked for this page)
+    const itemsToMap = (user && wardrobeSource === 'firestore') || (!user && wardrobeSource === 'local') ? wardrobe : [];
+    return itemsToMap.map(item => ({
       id: item.id,
       name: item.name,
       type: item.type,
@@ -36,8 +48,12 @@ export default function OutfitSuggestionsPage() {
   };
 
   const handleGetSuggestions = async () => {
-    if (wardrobe.length === 0 && desiredOutfitCount > 0) { // Check desiredOutfitCount to avoid error if user wants 0 and has 0 items.
-      setError("Your wardrobe is empty. Add some items first to get suggestions!");
+    if (!user) {
+      setError("Please log in to use the AI Outfit Stylist.");
+      return;
+    }
+    if (wardrobe.length === 0 && desiredOutfitCount > 0 && wardrobeSource === 'firestore') {
+      setError("Your cloud wardrobe is empty. Add some items first to get suggestions!");
       setSuggestions([]);
       setSuggestedPurchases([]);
       return;
@@ -57,7 +73,7 @@ export default function OutfitSuggestionsPage() {
 
     try {
       const result: SuggestOutfitsOutput = await suggestOutfits(input);
-      if (result.suggestedOutfits.length === 0 && result.suggestedPurchases && result.suggestedPurchases.length === 0 && wardrobe.length > 0) {
+      if (result.suggestedOutfits.length === 0 && result.suggestedPurchases && result.suggestedPurchases.length === 0 && flowItems.length > 0) {
         setError("The AI couldn't generate outfits with your current items and preferences, and no immediate purchase suggestions were made. Try adjusting filters or adding more versatile pieces to your wardrobe.");
       }
       setSuggestions(result.suggestedOutfits);
@@ -74,6 +90,37 @@ export default function OutfitSuggestionsPage() {
   const getItemImageUrl = (itemId: string): string | undefined => {
     const item = wardrobe.find(i => i.id === itemId);
     return item?.imageUrl;
+  }
+
+  if (authLoading || wardrobeLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        <p className="ml-4 text-muted-foreground">Loading stylist...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
+        <Alert variant="default" className="max-w-md shadow-lg">
+          <UserCheck className="h-5 w-5 text-primary" />
+          <AlertTitle className="text-primary">Login Required for AI Stylist</AlertTitle>
+          <AlertDescription className="space-y-2">
+            Please log in or sign up to get personalized outfit suggestions from our AI.
+            <div className="flex justify-center gap-2 mt-3">
+                <Button asChild>
+                    <Link href="/login?redirect=/outfit-suggestions">Log In</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                    <Link href="/signup?redirect=/outfit-suggestions">Sign Up</Link>
+                </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
@@ -138,13 +185,6 @@ export default function OutfitSuggestionsPage() {
         </CardFooter>
       </Card>
 
-      {wardrobeLoading && (
-         <div className="flex flex-col items-center justify-center text-center py-10">
-          <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-          <p className="text-muted-foreground">Loading your wardrobe...</p>
-        </div>
-      )}
-
       {error && !isLoadingSuggestions && (
         <Alert variant="destructive">
           <Info className="h-4 w-4" />
@@ -153,7 +193,7 @@ export default function OutfitSuggestionsPage() {
         </Alert>
       )}
 
-      {!error && !isLoadingSuggestions && suggestions.length === 0 && suggestedPurchases.length === 0 && wardrobe.length > 0 && (
+      {!error && !isLoadingSuggestions && suggestions.length === 0 && suggestedPurchases.length === 0 && wardrobe.length > 0 && wardrobeSource === 'firestore' && (
          <Alert>
           <Info className="h-4 w-4" />
           <AlertTitle>Ready for Styling!</AlertTitle>
@@ -164,10 +204,10 @@ export default function OutfitSuggestionsPage() {
         </Alert>
       )}
       
-      {!error && !isLoadingSuggestions && wardrobe.length === 0 && !wardrobeLoading && desiredOutfitCount > 0 && (
+      {!error && !isLoadingSuggestions && wardrobe.length === 0 && wardrobeSource === 'firestore' && desiredOutfitCount > 0 && (
          <Alert variant="default" className="border-primary/50 bg-primary/10">
           <Shirt className="h-4 w-4 text-primary" />
-          <AlertTitle className="text-primary">Your Wardrobe is Empty</AlertTitle>
+          <AlertTitle className="text-primary">Your Cloud Wardrobe is Empty</AlertTitle>
           <AlertDescription className="text-primary/80">
             You need to add some clothes to your virtual wardrobe before the AI can suggest outfits.
             <Link href="/add" className="font-semibold underline ml-1">Add items now.</Link>

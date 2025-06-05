@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,7 +13,6 @@
     --popover-h: 0; --popover-s: 0%; --popover-l: 100%;
     --popover-foreground-h: 230; --popover-foreground-s: 30%; --popover-foreground-l: 20%;
     
-    /* Updated Primary for Navy Dark Blue feel */
     --primary-h: 220; --primary-s: 45%; --primary-l: 30%; /* Navy Blue */
     --primary-foreground-h: 210; --primary-foreground-s: 40%; --primary-foreground-l: 95%; /* Light text for contrast */
     
@@ -21,13 +21,12 @@
     --muted-h: 225; --muted-s: 55%; --muted-l: 92%;
     --muted-foreground-h: 230; --muted-foreground-s: 30%; --muted-foreground-l: 45%;
     --accent-h: 45; --accent-s: 90%; --accent-l: 60%;
-    --accent-foreground-h: 40; --accent-foreground-s: 30%; --accent-foreground-l: 15%;
+    --accent-foreground-h: 40; --accent-s: 30%; --accent-foreground-l: 15%;
     --destructive-h: 0; --destructive-s: 70%; --destructive-l: 50%;
-    --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 100%;
+    --destructive-foreground-h: 0; --destructive-s: 0%; --destructive-foreground-l: 100%;
     --border-h: 225; --border-s: 40%; --border-l: 85%;
     --input-h: 225; --input-s: 70%; --input-l: 97%;
     
-    /* Updated Ring to align with new Primary */
     --ring-h: var(--primary-h); --ring-s: var(--primary-s); --ring-l: calc(var(--primary-l) + 10%);
 
     /* === Derived Light Colors === */
@@ -63,31 +62,35 @@
   }
 
   .dark {
-    /* === Base HSL Tokens (Dark Theme) === */
-    --background-h: 230; --background-s: 20%; --background-l: 12%;
-    --foreground-h: 225; --foreground-s: 40%; --foreground-l: 88%;
-    --card-h: 230; --card-s: 20%; --card-l: 16%;
-    --card-foreground-h: 225; --card-foreground-s: 40%; --card-foreground-l: 88%;
-    --popover-h: 230; --popover-s: 20%; --popover-l: 15%;
-    --popover-foreground-h: 225; --popover-foreground-s: 40%; --popover-foreground-l: 88%;
+    /* === Base HSL Tokens (Dark Theme - Overhauled) === */
+    --background-h: 220; --background-s: 20%; --background-l: 8%; /* Deeper, cooler dark background */
+    --foreground-h: 210; --foreground-s: 25%; --foreground-l: 92%; /* Brighter foreground for readability */
     
-    /* Updated Primary for Dark Theme */
-    --primary-h: 220; --primary-s: 60%; --primary-l: 55%; /* Rich Blue */
-    --primary-foreground-h: 210; --primary-foreground-s: 40%; --primary-foreground-l: 98%; /* Very Light Text */
+    --card-h: 220; --card-s: 20%; --card-l: 12%; /* Slightly lighter card background */
+    --card-foreground-h: 210; --card-foreground-s: 25%; --card-foreground-l: 90%;
     
-    --secondary-h: 225; --secondary-s: 25%; --secondary-l: 35%;
-    --secondary-foreground-h: 225; --secondary-foreground-s: 40%; --secondary-foreground-l: 90%;
-    --muted-h: 225; --muted-s: 20%; --muted-l: 25%;
-    --muted-foreground-h: 225; --muted-s: 30%; --muted-l: 70%;
-    --accent-h: 45; --accent-s: 80%; --accent-l: 68%;
-    --accent-foreground-h: 40; --accent-foreground-s: 20%; --accent-foreground-l: 10%;
-    --destructive-h: 0; --destructive-s: 65%; --destructive-l: 60%;
-    --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 98%;
-    --border-h: 225; --border-s: 20%; --border-l: 30%;
-    --input-h: 225; --input-s: 20%; --input-l: 20%;
+    --popover-h: 220; --popover-s: 20%; --popover-l: 10%; /* Consistent popover */
+    --popover-foreground-h: 210; --popover-foreground-s: 25%; --popover-foreground-l: 90%;
     
-    /* Updated Ring for Dark Theme */
-    --ring-h: var(--primary-h); --ring-s: var(--primary-s); --ring-l: calc(var(--primary-l) + 10%);
+    --primary-h: 210; --primary-s: 75%; --primary-l: 60%; /* More vibrant blue for primary actions */
+    --primary-foreground-h: 220; --primary-foreground-s: 20%; --primary-foreground-l: 10%; /* Dark text on primary buttons */
+    
+    --secondary-h: 220; --secondary-s: 15%; --secondary-l: 30%; /* Subtler secondary elements */
+    --secondary-foreground-h: 210; --secondary-foreground-s: 25%; --secondary-foreground-l: 88%;
+    
+    --muted-h: 220; --muted-s: 15%; --muted-l: 22%;
+    --muted-foreground-h: 210; --muted-foreground-s: 20%; --muted-l: 68%; /* Improved muted text contrast */
+    
+    --accent-h: 45; --accent-s: 75%; --accent-l: 65%; /* Accent remains noticeable */
+    --accent-foreground-h: 40; --accent-foreground-s: 85%; --accent-foreground-l: 10%;
+    
+    --destructive-h: 0; --destructive-s: 65%; --destructive-l: 58%;
+    --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 96%;
+    
+    --border-h: 220; --border-s: 15%; --border-l: 20%; /* Clearer borders */
+    --input-h: 220; --input-s: 15%; --input-l: 18%; /* Input background distinct but dark */
+    
+    --ring-h: var(--primary-h); --ring-s: calc(var(--primary-s) + 5%); --ring-l: calc(var(--primary-l) + 5%);
 
     /* === Derived Dark Colors === */
     --background: hsl(var(--background-h) var(--background-s) var(--background-l));
@@ -115,7 +118,7 @@
     --chart-3: hsl(225 25% 50%);
     --chart-4: hsl(var(--primary-h) calc(var(--primary-s) - 10%) calc(var(--primary-l) + 10%));
     --chart-5: hsl(var(--accent-h) calc(var(--accent-s) - 10%) calc(var(--accent-l) + 10%));
-    --pattern-line-opacity: 0.1;
+    --pattern-line-opacity: 0.07; /* Reduced opacity for dark mode pattern */
   }
 
   * {
