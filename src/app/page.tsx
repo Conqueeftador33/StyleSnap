@@ -10,31 +10,41 @@ import React from 'react';
 const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
-      {/* Hero Section */}
-      <section className="text-center pt-0 pb-1 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
-        <div className="mb-0 mx-auto flex justify-center"> {/* Changed mb-px to mb-0 */}
-          <Image
-            src="/logo1.png"
-            alt="StyleSNAP! Logo"
-            width={225} 
-            height={57} 
-            priority
-            // className="h-auto" // Removed h-auto
-          />
-        </div>
-        <h1 className="text-5xl font-headline tracking-tight text-primary mb-0">
-          Welcome to Style Snap!
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-1">
-          Transform your closet into a smart, virtual wardrobe. Discover new looks, get AI-powered outfit suggestions, and never wonder "What should I wear?" again.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link href="/wardrobe">View My Wardrobe <ArrowRight className="ml-2 h-5 w-5" /></Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-            <Link href="/add">Add New Item</Link>
-          </Button>
+      {/* Hero Section - Redesigned */}
+      <section className="text-center py-8 md:py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
+        <div className="container mx-auto px-4">
+          <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
+            {/* Left Column: Logo and Buttons */}
+            <div className="text-center md:text-left mb-8 md:mb-0">
+              <div className="mb-6 flex justify-center md:justify-start">
+                <Image
+                  src="/logo1.png"
+                  alt="StyleSNAP! Logo"
+                  width={450} // 100% bigger
+                  height={114} // 100% bigger
+                  priority
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                <Button asChild size="lg" className="w-full sm:w-auto">
+                  <Link href="/wardrobe">View My Wardrobe <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                  <Link href="/add">Add New Item</Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Column: Headline and Description */}
+            <div className="text-center md:text-left">
+              <h1 className="text-4xl md:text-5xl font-headline tracking-tight text-primary mb-4">
+                Welcome to Style Snap!
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto md:mx-0">
+                Transform your closet into a smart, virtual wardrobe. Discover new looks, get AI-powered outfit suggestions, and never wonder "What should I wear?" again.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -61,6 +71,7 @@ const HomePage = React.memo(function HomePage() {
                 width={400}
                 height={300}
                 className="rounded-md object-contain shadow-lg"
+                data-ai-hint="digital wardrobe app"
               />
             </div>
           </CardContent>
