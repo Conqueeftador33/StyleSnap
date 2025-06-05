@@ -6,34 +6,48 @@ import { ItemForm, type ItemFormData } from '@/components/forms/item-form';
 import { useWardrobe } from '@/hooks/use-wardrobe';
 import { useToast } from '@/hooks/use-toast';
 import type { ClothingItem } from '@/lib/types';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertTriangle, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks/useAuth'; // Import useAuth
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 
 export default function EditItemPage() {
   const router = useRouter();
   const params = useParams();
   const { getItemById, updateItem, isLoading: isWardrobeLoading } = useWardrobe();
   const { toast } = useToast();
+  const { user, isLoading: authLoading } = useAuth(); // Get user and auth loading state
 
   const itemId = typeof params.id === 'string' ? params.id : undefined;
-  const [item, setItem] = useState<ClothingItem | null | undefined>(undefined); // undefined for loading, null if not found
+  const [item, setItem] = useState<ClothingItem | null | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (itemId && !isWardrobeLoading) {
-      const fetchedItem = getItemById(itemId);
-      setItem(fetchedItem);
+    // Wait for auth and wardrobe to finish loading before trying to get item
+    if (itemId && !isWardrobeLoading && !authLoading) {
+      if (user) { // Only fetch if user is logged in
+        const fetchedItem = getItemById(itemId);
+        setItem(fetchedItem); // Will be undefined if not found, null if explicitly set to not found
+      } else {
+        setItem(null); // No user, so item cannot be found/edited
+      }
     }
-  }, [itemId, getItemById, isWardrobeLoading]);
+  }, [itemId, getItemById, isWardrobeLoading, user, authLoading]);
 
   const handleFormSubmit = async (data: ItemFormData) => {
     if (!itemId || !item) {
       toast({ variant: "destructive", title: "Error", description: "Item not found or ID is missing." });
       return;
     }
+    if (!user && !authLoading) {
+      toast({ variant: "destructive", title: "Login Required", description: "Please log in to edit items." });
+      router.push(`/login?redirect=/edit/${itemId}`);
+      return;
+    }
     setIsSubmitting(true);
     try {
-      updateItem(itemId, data);
+      await updateItem(itemId, data);
       toast({
         title: "Item Updated!",
         description: `${data.name || data.type} has been updated.`,
@@ -53,15 +67,31 @@ export default function EditItemPage() {
     }
   };
 
-  if (isWardrobeLoading || item === undefined) {
+  if (isWardrobeLoading || authLoading || item === undefined) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        <p className="ml-4 text-muted-foreground">Loading item details...</p>
+      </div>
+    );
+  }
+  
+  if (!user && !authLoading) {
+     return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
+        <Alert variant="default" className="max-w-md">
+            <Wand2 className="h-4 w-4" />
+          <AlertTitle>Login Required</AlertTitle>
+          <AlertDescription>
+            Please <a href={`/login?redirect=/edit/${itemId || ''}`} className="underline font-semibold">log in</a> or <a href={`/signup?redirect=/edit/${itemId || ''}`} className="underline font-semibold">sign up</a> to edit items in your wardrobe.
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
 
-  if (!item) {
+
+  if (!item) { // This now also covers the case where item is null due to no user
     return (
       <Card className="max-w-md mx-auto mt-10">
         <CardHeader>
@@ -70,7 +100,7 @@ export default function EditItemPage() {
         <CardContent className="text-center">
           <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
           <p className="text-muted-foreground">
-            The clothing item you are trying to edit could not be found. It might have been deleted.
+            The clothing item you are trying to edit could not be found. It might have been deleted or you may not have access.
           </p>
         </CardContent>
       </Card>
@@ -89,7 +119,7 @@ export default function EditItemPage() {
         formTitle="Update Item Details"
         formDescription="Make changes to your clothing item below."
         onSubmit={handleFormSubmit}
-        initialData={item}
+        initialData={item} // Item is guaranteed to be ClothingItem here
         imageUrl={item.imageUrl}
         isSubmitting={isSubmitting}
         submitButtonText={isSubmitting ? "Saving..." : "Save Changes"}

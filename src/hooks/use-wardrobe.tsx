@@ -2,15 +2,27 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import type { ClothingItem, ItemFormData } from '@/lib/types'; // ItemFormData will be used by ItemForm
-
-const LOCAL_STORAGE_KEY = 'styleSnapWardrobe';
+import type { ClothingItem, ItemFormData } from '@/lib/types';
+import { auth, db } from '@/lib/firebase'; // Import db
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  query,
+  orderBy,
+  Timestamp, // Import Timestamp
+} from 'firebase/firestore';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 interface WardrobeContextType {
   items: ClothingItem[];
-  addItem: (itemData: Omit<ClothingItem, 'id' | 'createdAt'>) => ClothingItem;
-  updateItem: (id: string, updatedData: Partial<Omit<ClothingItem, 'id' | 'createdAt'>>) => ClothingItem | undefined;
-  deleteItem: (id: string) => void;
+  addItem: (itemData: Omit<ClothingItem, 'id' | 'createdAt'>) => Promise<ClothingItem>;
+  updateItem: (id: string, updatedData: Partial<Omit<ClothingItem, 'id' | 'createdAt'>>) => Promise<ClothingItem | undefined>;
+  deleteItem: (id: string) => Promise<void>;
   getItemById: (id: string) => ClothingItem | undefined;
   isLoading: boolean;
 }
@@ -18,60 +30,132 @@ interface WardrobeContextType {
 const WardrobeContext = createContext<WardrobeContextType | undefined>(undefined);
 
 export const WardrobeProvider = ({ children }: { children: ReactNode }) => {
+  const { user, isLoading: authIsLoading } = useAuth();
+  const { toast } = useToast();
   const [items, setItems] = useState<ClothingItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [firestoreIsLoading, setFirestoreIsLoading] = useState(true);
+
+  const isLoading = authIsLoading || firestoreIsLoading;
 
   useEffect(() => {
-    try {
-      const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (storedItems) {
-        setItems(JSON.parse(storedItems));
-      }
-    } catch (error) {
-      console.error("Failed to load items from local storage:", error);
-      // Potentially clear corrupted storage
-      // localStorage.removeItem(LOCAL_STORAGE_KEY);
+    if (authIsLoading) {
+      setFirestoreIsLoading(true); // If auth is loading, we wait
+      return;
     }
-    setIsLoading(false);
-  }, []);
 
-  useEffect(() => {
-    if (!isLoading) { // Only save when not initially loading
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(items));
-      } catch (error) {
-        console.error("Failed to save items to local storage:", error);
-      }
+    if (!user) {
+      setItems([]); // No user, empty wardrobe
+      setFirestoreIsLoading(false);
+      return;
     }
-  }, [items, isLoading]);
 
-  const addItem = useCallback((itemData: Omit<ClothingItem, 'id' | 'createdAt'>): ClothingItem => {
-    const newItem: ClothingItem = {
-      ...itemData,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 9), // More unique ID
-      createdAt: new Date().toISOString(),
-    };
-    setItems(prevItems => [newItem, ...prevItems]);
-    return newItem;
-  }, []);
+    setFirestoreIsLoading(true);
+    const itemsCollectionRef = collection(db, 'users', user.uid, 'wardrobe');
+    const q = query(itemsCollectionRef, orderBy('createdAt', 'desc'));
 
-  const updateItem = useCallback((id: string, updatedData: Partial<Omit<ClothingItem, 'id' | 'createdAt'>>): ClothingItem | undefined => {
-    let updatedItem: ClothingItem | undefined;
-    setItems(prevItems =>
-      prevItems.map(item => {
-        if (item.id === id) {
-          updatedItem = { ...item, ...updatedData };
-          return updatedItem;
-        }
-        return item;
+    const unsubscribe = getDocs(q)
+      .then(snapshot => {
+        const fetchedItems = snapshot.docs.map(docSnapshot => {
+          const data = docSnapshot.data();
+          const createdAtRaw = data.createdAt;
+          // Ensure createdAt is consistently a string (ISO format)
+          const createdAtString = (createdAtRaw instanceof Timestamp)
+            ? createdAtRaw.toDate().toISOString()
+            : (typeof createdAtRaw === 'string' ? createdAtRaw : new Date().toISOString());
+
+          return {
+            id: docSnapshot.id,
+            ...data,
+            createdAt: createdAtString,
+          } as ClothingItem;
+        });
+        setItems(fetchedItems);
       })
-    );
-    return updatedItem;
-  }, []);
+      .catch(error => {
+        console.error("Error fetching wardrobe items:", error);
+        toast({ variant: "destructive", title: "Error Loading Wardrobe", description: error.message });
+      })
+      .finally(() => {
+        setFirestoreIsLoading(false);
+      });
+      
+    // In a real-time scenario with onSnapshot, you'd return the unsubscribe function.
+    // For a one-time fetch with getDocs, direct return isn't strictly necessary for cleanup here.
+    // However, if you switch to onSnapshot, return unsubscribe;
 
-  const deleteItem = useCallback((id: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
-  }, []);
+  }, [user, authIsLoading, toast]);
+
+  const addItem = useCallback(async (itemData: Omit<ClothingItem, 'id' | 'createdAt'>): Promise<ClothingItem> => {
+    if (!user) {
+      toast({ variant: "destructive", title: "Not Logged In", description: "You must be logged in to add items." });
+      throw new Error("User not logged in");
+    }
+    
+    const newItemDataWithTimestamp = {
+      ...itemData,
+      createdAt: new Date().toISOString(), // Store as ISO string
+    };
+
+    try {
+      const itemsCollectionRef = collection(db, 'users', user.uid, 'wardrobe');
+      const docRef = await addDoc(itemsCollectionRef, newItemDataWithTimestamp);
+      const newFullItem: ClothingItem = { ...newItemDataWithTimestamp, id: docRef.id };
+      
+      setItems(prevItems => [newFullItem, ...prevItems].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      return newFullItem;
+    } catch (error) {
+      console.error("Error adding item:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      toast({ variant: "destructive", title: "Error Adding Item", description: errorMessage });
+      throw error;
+    }
+  }, [user, toast]);
+
+  const updateItem = useCallback(async (id: string, updatedData: Partial<Omit<ClothingItem, 'id' | 'createdAt'>>): Promise<ClothingItem | undefined> => {
+    if (!user) {
+      toast({ variant: "destructive", title: "Not Logged In", description: "You must be logged in to update items." });
+      throw new Error("User not logged in");
+    }
+    
+    const itemDocRef = doc(db, 'users', user.uid, 'wardrobe', id);
+    try {
+      await updateDoc(itemDocRef, updatedData);
+      let updatedItemInState: ClothingItem | undefined;
+      setItems(prevItems =>
+        prevItems.map(item => {
+          if (item.id === id) {
+            updatedItemInState = { ...item, ...updatedData };
+            return updatedItemInState;
+          }
+          return item;
+        }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      );
+      return updatedItemInState;
+    } catch (error) {
+      console.error("Error updating item:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      toast({ variant: "destructive", title: "Error Updating Item", description: errorMessage });
+      throw error;
+    }
+  }, [user, toast]);
+
+  const deleteItem = useCallback(async (id: string): Promise<void> => {
+    if (!user) {
+      toast({ variant: "destructive", title: "Not Logged In", description: "You must be logged in to delete items." });
+      throw new Error("User not logged in");
+    }
+
+    const itemDocRef = doc(db, 'users', user.uid, 'wardrobe', id);
+    try {
+      await deleteDoc(itemDocRef);
+      setItems(prevItems => prevItems.filter(item => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      toast({ variant: "destructive", title: "Error Deleting Item", description: errorMessage });
+      throw error;
+    }
+  }, [user, toast]);
 
   const getItemById = useCallback((id: string): ClothingItem | undefined => {
     return items.find(item => item.id === id);

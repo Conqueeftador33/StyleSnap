@@ -13,11 +13,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/hooks/useAuth'; // Import useAuth
 
 export default function AddItemPage() {
   const router = useRouter();
   const { addItem } = useWardrobe();
   const { toast } = useToast();
+  const { user, isLoading: authLoading } = useAuth(); // Get user and auth loading state
 
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
   const [aiAnalysisResult, setAiAnalysisResult] = useState<AnalyzedItemAttributes | null>(null);
@@ -58,13 +60,20 @@ export default function AddItemPage() {
   };
 
   const handleFormSubmit = async (data: ItemFormData) => {
+    if (!user && !authLoading) {
+      toast({ variant: "destructive", title: "Login Required", description: "Please log in to add items to your wardrobe." });
+      router.push('/login?redirect=/add'); // Optionally redirect to login
+      return;
+    }
     if (!selectedImageUri) {
       toast({ variant: "destructive", title: "Missing Image", description: "Please select an image for the item." });
       return;
     }
     setIsSubmitting(true);
     try {
-      const newItem = addItem({ ...data, imageUrl: selectedImageUri });
+      // The addItem function now expects Omit<ClothingItem, 'id' | 'createdAt'>
+      // It internally handles id and createdAt
+      await addItem({ ...data, imageUrl: selectedImageUri });
       toast({
         title: "Item Added!",
         description: `${data.name || data.type} has been added to your wardrobe.`,
@@ -83,6 +92,30 @@ export default function AddItemPage() {
       setIsSubmitting(false);
     }
   };
+  
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <Loader2 className="h-12 w-12 text-primary animate-spin" />
+        <p className="ml-4 text-muted-foreground">Loading authentication...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
+        <Alert variant="default" className="max-w-md">
+            <Wand2 className="h-4 w-4" />
+          <AlertTitle>Login Required</AlertTitle>
+          <AlertDescription>
+            Please <a href="/login?redirect=/add" className="underline font-semibold">log in</a> or <a href="/signup?redirect=/add" className="underline font-semibold">sign up</a> to add items to your virtual wardrobe.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
 
   return (
     <div className="space-y-8">
@@ -142,12 +175,11 @@ export default function AddItemPage() {
       
       <Separator className="my-8" />
 
-      {/* Item Form is always rendered but might be disabled/show messages based on state */}
       <ItemForm
         formTitle="Describe Your Item"
         formDescription={selectedImageUri && !aiAnalysisResult && !isAnalyzing ? "Enter item details manually, or wait for AI suggestions if an image was just uploaded." : "Review the AI's suggestions or fill in the details for your new clothing item."}
         onSubmit={handleFormSubmit}
-        initialData={aiAnalysisResult || {}} // Use AI results or empty object
+        initialData={aiAnalysisResult || {}}
         imageUrl={selectedImageUri}
         isSubmitting={isSubmitting}
         submitButtonText={isSubmitting ? "Saving..." : "Add to Wardrobe"}
