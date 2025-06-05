@@ -33,7 +33,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Stylist Chat FAB */}
       <Link href="/stylist-chat" passHref legacyBehavior>
         <Button
-          variant="secondary"
+          variant="default" // Changed from "secondary" to "default"
           className="fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
           aria-label="Open stylist chat"
         >
