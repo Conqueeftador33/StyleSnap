@@ -36,8 +36,8 @@ export const DashboardStats = React.memo(function DashboardStats({ items }: Dash
   ];
 
   return (
-    // Enforce 4 columns and a fixed gap. mb-6 for bottom margin.
-    <div className="grid grid-cols-4 gap-4 mb-6"> 
+    // Enforce 2 columns on small screens, 4 on larger. Fixed gap. mb-6 for bottom margin.
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6"> 
       {stats.map((stat) => (
         // Added aspect-square to make cards square.
         // Added flex utilities to center content within the square card.
@@ -65,3 +65,4 @@ export const DashboardStats = React.memo(function DashboardStats({ items }: Dash
     </div>
   );
 });
+
