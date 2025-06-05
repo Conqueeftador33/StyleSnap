@@ -16,7 +16,7 @@
     --popover-h: 0; --popover-s: 0%; --popover-l: 100%; /* White */
     --popover-foreground-h: 230; --popover-foreground-s: 30%; --popover-foreground-l: 20%;
 
-    --primary-h: 220; --primary-s: 75%; --primary-l: 40%; /* Darker Cobalt Blue */
+    --primary-h: 0; --primary-s: 0%; --primary-l: 0%; /* Black */
     --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-l: 100%; /* White text on primary */
 
     --secondary-h: 225; --secondary-s: 50%; --secondary-l: 88%; /* Muted Periwinkle */
@@ -33,7 +33,7 @@
 
     --border-h: 225; --border-s: 40%; --border-l: 85%; /* Softer blue border */
     --input-h: 225; --input-s: 70%; --input-l: 97%; /* Very light blue input background */
-    --ring-h: 220; --ring-s: 75%; --ring-l: 50%; /* Ring color related to primary, adjusted for darker primary */
+    --ring-h: 0; --ring-s: 0%; --ring-l: 10%; /* Ring color related to primary (black) */
     
     /* Derived Colors for Light Theme */
     --background: hsl(var(--background-h) var(--background-s) var(--background-l));
@@ -47,7 +47,7 @@
     --secondary: hsl(var(--secondary-h) var(--secondary-s) var(--secondary-l));
     --secondary-foreground: hsl(var(--secondary-foreground-h) var(--secondary-s) var(--secondary-foreground-l));
     --muted: hsl(var(--muted-h) var(--muted-s) var(--muted-l));
-    --muted-foreground: hsl(var(--muted-foreground-h) var(--muted-foreground-s) var(--muted-foreground-l));
+    --muted-foreground: hsl(var(--muted-foreground-h) var(--muted-s) var(--muted-foreground-l));
     --accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
     --accent-foreground: hsl(var(--accent-foreground-h) var(--accent-s) var(--accent-l));
     --destructive: hsl(var(--destructive-h) var(--destructive-s) var(--destructive-l));
@@ -56,10 +56,10 @@
     --input: hsl(var(--input-h) var(--input-s) var(--input-l));
     --ring: hsl(var(--ring-h) var(--ring-s) var(--ring-l));
     
-    --chart-1: hsl(var(--primary-h) var(--primary-s) var(--primary-l)); /* Primary Blue */
+    --chart-1: hsl(var(--primary-h) var(--primary-s) var(--primary-l)); /* Primary Color (Now Black) */
     --chart-2: hsl(var(--accent-h) var(--accent-s) var(--accent-l));  /* Accent Gold */
     --chart-3: hsl(225 30% 60%); /* Neutral Muted Blue */
-    --chart-4: hsl(var(--primary-h) calc(var(--primary-s) - 10%) calc(var(--primary-l) + 15%)); /* Lighter Primary Blue */
+    --chart-4: hsl(var(--primary-h) var(--primary-s) calc(var(--primary-l) + 15%)); /* Lighter Primary (Gray if primary is black) */
     --chart-5: hsl(var(--accent-h) calc(var(--accent-s) - 10%) calc(var(--accent-l) + 10%));  /* Lighter Accent Gold */
     --radius: 0.5rem;
 
