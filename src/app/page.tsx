@@ -11,12 +11,12 @@ const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section - Redesigned */}
-      <section className="text-center py-8 md:py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden"> {/* Added overflow-hidden as a precaution */}
+      <section className="text-center -mt-[150px] py-8 md:py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden"> {/* Added overflow-hidden as a precaution */}
         <div className="container mx-auto px-4">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
             {/* Left Column: Logo and Buttons */}
             <div className="text-center md:text-left mb-8 md:mb-0">
-              <div className="mb-6 flex justify-center md:justify-start">
+              <div className="mb-0 flex justify-center md:justify-start">
                 <Image
                   src="/logo1.png"
                   alt="StyleSNAP! Logo"
@@ -25,7 +25,7 @@ const HomePage = React.memo(function HomePage() {
                   priority
                 />
               </div>
-              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 -translate-y-[150px]">
                 <Button asChild size="lg" className="w-full sm:w-auto">
                   <Link href="/wardrobe">View My Wardrobe <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
