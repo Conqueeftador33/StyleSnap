@@ -17,28 +17,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  /**
-   * Custom webpack configuration.
-   * @param {import('webpack').Configuration} config - The webpack configuration object.
-   * @param {object} options - Next.js build options.
-   * @param {boolean} options.isServer - True if the build is for the server, false for the client.
-   * @returns {import('webpack').Configuration} The modified webpack configuration.
-   */
-  webpack: (config, { isServer }) => {
-    // Ensure config.resolve and config.resolve.fallback exist
-    config.resolve = config.resolve || {};
-    config.resolve.fallback = config.resolve.fallback || {};
-
-    if (!isServer) {
-      // For client-side bundles, provide an empty module for 'async_hooks'.
-      // This prevents the "Module not found: Can't resolve 'async_hooks'" error
-      // which occurs because 'async_hooks' is a Node.js-specific module.
-      config.resolve.fallback.async_hooks = false;
-    }
-
-    // It's good practice to return the modified config
-    return config;
-  },
   // Add the development server origin for Firebase Studio to allowedDevOrigins
   // to prevent cross-origin request errors.
   experimental: {
