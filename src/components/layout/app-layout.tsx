@@ -20,26 +20,28 @@ export function AppLayout({ children }: AppLayoutProps) {
       </main>
 
       {/* Add Item FAB */}
-      <Link href="/add" passHref legacyBehavior>
-        <Button
-          variant="default"
-          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
-          aria-label="Add new item"
-        >
+      <Button
+        variant="default"
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
+        aria-label="Add new item"
+        asChild
+      >
+        <Link href="/add">
           <PlusCircle className="h-7 w-7" />
-        </Button>
-      </Link>
+        </Link>
+      </Button>
 
       {/* Stylist Chat FAB */}
-      <Link href="/stylist-chat" passHref legacyBehavior>
-        <Button
-          variant="default" // Changed from "secondary" to "default"
-          className="fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
-          aria-label="Open stylist chat"
-        >
+      <Button
+        variant="default"
+        className="fixed bottom-6 left-6 z-50 h-14 w-14 rounded-full shadow-lg flex items-center justify-center p-0"
+        aria-label="Open stylist chat"
+        asChild
+      >
+        <Link href="/stylist-chat">
           <MessageSquareText className="h-7 w-7" />
-        </Button>
-      </Link>
+        </Link>
+      </Button>
 
       <footer className="py-6 md:px-8 md:py-0 border-t">
         <div className="container flex flex-col items-center justify-center gap-4 md:h-20 md:flex-row">

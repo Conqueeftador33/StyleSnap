@@ -74,11 +74,11 @@ export const ClothingItemCard = React.memo(function ClothingItemCard({ item }: C
         )}
       </CardContent>
       <CardFooter className="p-3 border-t bg-card flex justify-between items-center">
-        <Link href={`/edit/${item.id}`} passHref>
-          <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10">
+        <Button asChild variant="ghost" size="sm" className="text-primary hover:bg-primary/10">
+          <Link href={`/edit/${item.id}`}>
             <Edit3 className="mr-1.5 h-3.5 w-3.5" /> Edit
-          </Button>
-        </Link>
+          </Link>
+        </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" size="sm" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
