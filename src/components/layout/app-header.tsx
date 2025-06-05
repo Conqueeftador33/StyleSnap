@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Shirt, Wand2, MessageSquareText, PlusCircle, LogIn, LogOut, UserPlus } from 'lucide-react';
+import { Shirt, Wand2, MessageSquareText, PlusCircle, LogIn, LogOut, UserPlus, Settings, UserCircle as UserAccountIcon } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth'; 
@@ -18,13 +18,16 @@ export function AppHeader() {
     { href: '/wardrobe', label: 'My Wardrobe', icon: <Shirt className="h-5 w-5" />, requiresAuth: true },
     { href: '/outfit-suggestions', label: 'AI Outfits', icon: <Wand2 className="h-5 w-5" />, requiresAuth: true },
     { href: '/stylist-chat', label: 'Stylist Chat', icon: <MessageSquareText className="h-5 w-5" />, requiresAuth: true },
+    { href: '/account', label: 'Account', icon: <UserAccountIcon className="h-5 w-5" />, requiresAuth: true },
+    { href: '/settings', label: 'Settings', icon: <Settings className="h-5 w-5" />, requiresAuth: true },
   ];
 
   const visibleNavLinks = navLinks.filter(link => !link.requiresAuth || (link.requiresAuth && user));
   
-  const currentRedirect = searchParams.get('redirect');
-  const loginHref = currentRedirect ? `/login?redirect=${currentRedirect}` : '/login';
-  const signupHref = currentRedirect ? `/signup?redirect=${currentRedirect}` : '/signup';
+  const currentRedirectPath = searchParams.get('redirect');
+  const redirectQuery = currentRedirectPath ? `?redirect=${encodeURIComponent(currentRedirectPath)}` : '';
+  const loginHref = `/login${redirectQuery}`;
+  const signupHref = `/signup${redirectQuery}`;
 
 
   return (
@@ -77,7 +80,7 @@ export function AppHeader() {
                 </Button>
               </>
             )}
-            {!isLoading && user && (
+            {!isLoading && user && ( // Logout button is now part of the Account page, but can remain here for quick access on desktop if desired
               <Button variant="outline" onClick={logout} className="ml-2 text-sm font-medium">
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
