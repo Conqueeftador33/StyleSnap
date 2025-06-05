@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Wand2, Shirt, MessageSquareText } from 'lucide-react'; 
+import { Wand2, Shirt } from 'lucide-react'; 
 import { useRouter } from 'next/navigation';
 
 export function AppHeader() {
@@ -33,16 +33,6 @@ export function AppHeader() {
               My Wardrobe
             </span>
           </Button>
-           <Button 
-            variant="outline" 
-            onClick={() => router.push('/add')} 
-            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <PlusCircle className="h-4 w-4" />
-            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
-              Add Item
-            </span>
-          </Button>
           <Button 
             variant="default" 
             onClick={() => router.push('/outfit-suggestions')} 
@@ -51,16 +41,6 @@ export function AppHeader() {
             <Wand2 className="h-4 w-4" />
             <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
               AI Outfits
-            </span>
-          </Button>
-          <Button 
-            variant="secondary" 
-            onClick={() => router.push('/stylist-chat')} 
-            className="group inline-flex items-center text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <MessageSquareText className="h-4 w-4" />
-            <span className="hidden group-hover:inline whitespace-nowrap ml-2 transition-opacity duration-150 ease-in-out">
-              Stylist Chat
             </span>
           </Button>
         </nav>
