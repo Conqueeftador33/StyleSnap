@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowRight, UploadCloud, LibraryBig, Wand2 } from 'lucide-react';
+import React from 'react'; // Added React import for React.memo
 
-export default function HomePage() {
+const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -52,12 +53,13 @@ export default function HomePage() {
                 <li><span className="font-semibold text-primary">Effortless Styling:</span> Let AI be your guide to looking your best for any occasion.</li>
               </ul>
             </div>
-            <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
+            <div className="flex justify-center items-center aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
               <Image
                 src="/What_Style_Snap.png"
-                alt="Stylishly organized digital wardrobe interface"
-                layout="fill"
-                objectFit="cover"
+                alt="Stylishly organized digital wardrobe interface displaying clothing items"
+                width={400} 
+                height={300}
+                className="rounded-md object-contain" 
               />
             </div>
           </CardContent>
@@ -118,4 +120,6 @@ export default function HomePage() {
       </section>
     </div>
   );
-}
+});
+
+export default HomePage;
