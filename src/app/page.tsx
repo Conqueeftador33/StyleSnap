@@ -1,10 +1,11 @@
 
+"use client";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowRight, UploadCloud, LibraryBig, Wand2 } from 'lucide-react';
-import React from 'react'; 
+import React from 'react';
 
 const HomePage = React.memo(function HomePage() {
   return (
@@ -53,13 +54,14 @@ const HomePage = React.memo(function HomePage() {
                 <li><span className="font-semibold text-primary">Effortless Styling:</span> Let AI be your guide to looking your best for any occasion.</li>
               </ul>
             </div>
-            <div className="flex justify-center items-center rounded-lg overflow-hidden">
+            <div className="flex flex-col justify-center items-center rounded-lg overflow-hidden">
+              <p className="text-xs text-red-500 mb-1">(Debug: Image should appear below this text)</p>
               <Image
-                src="/What_Style_Snap.jpg" 
+                src="/What_Style_Snap.jpg"
                 alt="Stylishly organized digital wardrobe interface"
-                width={400} 
+                width={400}
                 height={300}
-                className="rounded-md object-contain shadow-lg" 
+                className="rounded-md object-contain shadow-lg"
               />
             </div>
           </CardContent>
