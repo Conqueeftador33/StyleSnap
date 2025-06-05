@@ -4,23 +4,27 @@ import { AuthForm } from '@/components/auth/AuthForm';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter, useSearchParams } from 'next/navigation'; // Added useSearchParams
+import { useRouter, useSearchParams } from 'next/navigation'; 
 import { LogIn } from 'lucide-react';
+
+// Define a placeholder domain for constructing emails from usernames
+const APP_DOMAIN = "stylesnap.app";
 
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams(); // Get search params
+  const searchParams = useSearchParams(); 
 
-  const handleLogin = async (data: { email: string; password: any; }) => {
+  const handleLogin = async (data: { username: string; password: any; }) => { // Changed email to username
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const email = `${data.username}@${APP_DOMAIN}`; // Construct email from username
+      await signInWithEmailAndPassword(auth, email, data.password);
       toast({
         title: "Login Successful!",
         description: "Welcome back to Style Snap!",
         className: "bg-green-500 text-white",
       });
-      const redirectUrl = searchParams.get('redirect') || '/wardrobe'; // Get redirect URL or default
+      const redirectUrl = searchParams.get('redirect') || '/wardrobe'; 
       router.push(redirectUrl); 
     } catch (error) {
       // Error is caught and displayed by AuthForm, but re-throw to prevent success logic here.
@@ -38,11 +42,11 @@ export default function LoginPage() {
         mode="login"
         onSubmit={handleLogin}
         title="Welcome Back!"
-        description="Please enter your credentials to access your wardrobe."
+        description="Please enter your username and password to access your wardrobe." // Updated description
         buttonText="Log In"
         alternateActionText="Don't have an account?"
-        alternateActionLinkText="Sign Up" // Updated prop
-        alternateActionLink={`/signup${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} // Preserve redirect
+        alternateActionLinkText="Sign Up" 
+        alternateActionLink={`/signup${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} 
       />
     </div>
   );

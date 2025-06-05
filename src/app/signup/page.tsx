@@ -4,17 +4,21 @@ import { AuthForm } from '@/components/auth/AuthForm';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter, useSearchParams } from 'next/navigation'; // Added useSearchParams
+import { useRouter, useSearchParams } from 'next/navigation'; 
 import { UserPlus } from 'lucide-react';
+
+// Define a placeholder domain for constructing emails from usernames
+const APP_DOMAIN = "stylesnap.app";
 
 export default function SignUpPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams(); // Get search params
+  const searchParams = useSearchParams();
 
-  const handleSignUp = async (data: { email: string; password: any; }) => {
+  const handleSignUp = async (data: { username: string; password: any; }) => { // Changed email to username
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const email = `${data.username}@${APP_DOMAIN}`; // Construct email from username
+      await createUserWithEmailAndPassword(auth, email, data.password);
       toast({
         title: "Sign Up Successful!",
         description: "Welcome to Style Snap! You can now log in.",
@@ -38,11 +42,11 @@ export default function SignUpPage() {
         mode="signup"
         onSubmit={handleSignUp}
         title="Join Style Snap"
-        description="Create an account to start building your virtual wardrobe."
+        description="Choose a username and password (min. 8 characters) to create your account." // Updated description
         buttonText="Sign Up"
         alternateActionText="Already have an account?"
-        alternateActionLinkText="Log In" // Updated prop
-        alternateActionLink={`/login${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} // Preserve redirect
+        alternateActionLinkText="Log In" 
+        alternateActionLink={`/login${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} 
       />
     </div>
   );

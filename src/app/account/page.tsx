@@ -38,6 +38,11 @@ export default function AccountPage() {
       </div>
     );
   }
+  
+  // Extract username from the "fake" email if it follows the pattern username@domain.app
+  const displayedUsername = user.email?.includes('@stylesnap.app') 
+    ? user.email.split('@')[0] 
+    : user.email;
 
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
@@ -56,10 +61,14 @@ export default function AccountPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div>
-            <p className="text-sm font-medium text-muted-foreground">Email Address</p>
-            <p className="text-lg text-foreground">{user.email}</p>
+            <p className="text-sm font-medium text-muted-foreground">Username</p>
+            <p className="text-lg text-foreground">{displayedUsername}</p>
           </div>
-          {/* Placeholder for future details like name, membership, etc. */}
+           {user.email?.includes('@stylesnap.app') && (
+            <div className="text-xs text-muted-foreground">
+              (Note: Your account uses a system-generated email: {user.email} for Firebase authentication.)
+            </div>
+          )}
         </CardContent>
       </Card>
       
@@ -76,7 +85,6 @@ export default function AccountPage() {
           <Button onClick={logout} variant="destructive" className="w-full">
             <LogOut className="mr-2 h-5 w-5" /> Log Out
           </Button>
-          {/* Placeholder for future actions like "Change Password", "Delete Account" */}
         </CardContent>
       </Card>
     </div>

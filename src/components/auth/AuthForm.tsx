@@ -13,8 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
 const authSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  username: z.string().min(1, { message: "Username is required." }), // Changed from email to username
+  password: z.string().min(8, { message: "Password must be at least 8 characters." }), // Updated password length
 });
 
 type AuthFormData = z.infer<typeof authSchema>;
@@ -45,7 +45,7 @@ export function AuthForm({
   const form = useForm<AuthFormData>({
     resolver: zodResolver(authSchema),
     defaultValues: {
-      email: '',
+      username: '', // Changed from email
       password: '',
     },
   });
@@ -62,16 +62,17 @@ export function AuthForm({
         switch (error.code) {
           case 'auth/user-not-found':
           case 'auth/wrong-password':
-            errorMessage = 'Invalid email or password. Please try again.';
+          case 'auth/invalid-credential': // Common error for wrong username/password when email is faked
+            errorMessage = 'Invalid username or password. Please try again.';
             break;
-          case 'auth/email-already-in-use':
-            errorMessage = 'This email address is already in use. Please try logging in or use a different email.';
+          case 'auth/email-already-in-use': // This will now mean "username@stylesnap.app" is already in use
+            errorMessage = 'This username is already taken. Please choose a different one.';
             break;
           case 'auth/weak-password':
-            errorMessage = 'The password is too weak. Please choose a stronger password.';
+            errorMessage = 'The password is too weak. Please choose a stronger password (at least 8 characters).';
             break;
-          case 'auth/invalid-email':
-            errorMessage = 'The email address is not valid.';
+          case 'auth/invalid-email': // This might occur if the constructed fake email is malformed for some reason
+            errorMessage = 'The username format is invalid.';
             break;
           default:
             errorMessage = error.message || `Firebase error: ${error.code}`;
@@ -86,7 +87,7 @@ export function AuthForm({
         variant: "destructive",
         title: `${mode === 'login' ? 'Login' : 'Sign Up'} Failed`,
         description: errorMessage,
-        duration: 9000, // Longer duration for more complex error messages
+        duration: 9000, 
       });
     } finally {
       setIsLoading(false);
@@ -104,12 +105,12 @@ export function AuthForm({
           <CardContent className="space-y-4">
             <FormField
               control={form.control}
-              name="email"
+              name="username" // Changed from email
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Username</FormLabel> 
                   <FormControl>
-                    <Input type="email" placeholder="you@example.com" {...field} />
+                    <Input type="text" placeholder="Enter your username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
