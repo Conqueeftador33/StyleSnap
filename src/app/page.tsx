@@ -16,8 +16,8 @@ const HomePage = React.memo(function HomePage() {
           <Image
             src="/logo.png"
             alt="StyleSNAP! Logo"
-            width={180}
-            height={45}
+            width={150}
+            height={38}
             priority
             className="h-auto"
           />
@@ -56,7 +56,7 @@ const HomePage = React.memo(function HomePage() {
             </div>
             <div className="flex flex-col justify-center items-center rounded-lg overflow-hidden">
               <Image
-                src="/What_Style_Snap.jpg" 
+                src="/What_Style_Snap.jpg"
                 alt="Stylishly organized digital wardrobe interface"
                 width={400}
                 height={300}
@@ -79,7 +79,6 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">1. Snap & Analyze</CardTitle>
               <CardDescription>Add items by uploading photos or using your camera. Our AI analyzes each piece, identifying its type, color, material, and category.</CardDescription>
             </CardHeader>
-            {/* Removed CardContent with Image placeholder */}
           </Card>
 
           <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col">
@@ -90,7 +89,6 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">2. Build Your Closet</CardTitle>
               <CardDescription>Your analyzed items populate your digital wardrobe. View, sort, filter, and edit details to keep everything perfectly organized.</CardDescription>
             </CardHeader>
-            {/* Removed CardContent with Image placeholder */}
           </Card>
 
           <Card className="shadow-md hover:shadow-lg transition-shadow flex flex-col">
@@ -101,7 +99,6 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">3. Get Styled</CardTitle>
               <CardDescription>Request AI outfit suggestions for any occasion or style preference. Discover new combinations and get fashion tips to complete your look.</CardDescription>
             </CardHeader>
-            {/* Removed CardContent with Image placeholder */}
           </Card>
         </div>
       </section>
