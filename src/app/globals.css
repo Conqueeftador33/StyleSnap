@@ -11,8 +11,11 @@
     --card-foreground-h: 230; --card-foreground-s: 30%; --card-foreground-l: 20%;
     --popover-h: 0; --popover-s: 0%; --popover-l: 100%;
     --popover-foreground-h: 230; --popover-foreground-s: 30%; --popover-foreground-l: 20%;
-    --primary-h: 0; --primary-s: 0%; --primary-l: 0%;
-    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-foreground-l: 100%;
+    
+    /* Updated Primary for Navy Dark Blue feel */
+    --primary-h: 220; --primary-s: 45%; --primary-l: 30%; /* Navy Blue */
+    --primary-foreground-h: 210; --primary-foreground-s: 40%; --primary-foreground-l: 95%; /* Light text for contrast */
+    
     --secondary-h: 225; --secondary-s: 50%; --secondary-l: 88%;
     --secondary-foreground-h: 230; --secondary-foreground-s: 30%; --secondary-foreground-l: 30%;
     --muted-h: 225; --muted-s: 55%; --muted-l: 92%;
@@ -23,7 +26,9 @@
     --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 100%;
     --border-h: 225; --border-s: 40%; --border-l: 85%;
     --input-h: 225; --input-s: 70%; --input-l: 97%;
-    --ring-h: 0; --ring-s: 0%; --ring-l: 10%;
+    
+    /* Updated Ring to align with new Primary */
+    --ring-h: var(--primary-h); --ring-s: var(--primary-s); --ring-l: calc(var(--primary-l) + 10%);
 
     /* === Derived Light Colors === */
     --background: hsl(var(--background-h) var(--background-s) var(--background-l));
@@ -65,19 +70,24 @@
     --card-foreground-h: 225; --card-foreground-s: 40%; --card-foreground-l: 88%;
     --popover-h: 230; --popover-s: 20%; --popover-l: 15%;
     --popover-foreground-h: 225; --popover-foreground-s: 40%; --popover-foreground-l: 88%;
-    --primary-h: 220; --primary-s: 70%; --primary-l: 60%;
-    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-foreground-l: 98%;
+    
+    /* Updated Primary for Dark Theme */
+    --primary-h: 220; --primary-s: 60%; --primary-l: 55%; /* Rich Blue */
+    --primary-foreground-h: 210; --primary-foreground-s: 40%; --primary-foreground-l: 98%; /* Very Light Text */
+    
     --secondary-h: 225; --secondary-s: 25%; --secondary-l: 35%;
     --secondary-foreground-h: 225; --secondary-foreground-s: 40%; --secondary-foreground-l: 90%;
     --muted-h: 225; --muted-s: 20%; --muted-l: 25%;
-    --muted-foreground-h: 225; --muted-foreground-s: 30%; --muted-foreground-l: 70%;
+    --muted-foreground-h: 225; --muted-s: 30%; --muted-l: 70%;
     --accent-h: 45; --accent-s: 80%; --accent-l: 68%;
     --accent-foreground-h: 40; --accent-foreground-s: 20%; --accent-foreground-l: 10%;
     --destructive-h: 0; --destructive-s: 65%; --destructive-l: 60%;
     --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 98%;
     --border-h: 225; --border-s: 20%; --border-l: 30%;
     --input-h: 225; --input-s: 20%; --input-l: 20%;
-    --ring-h: 220; --ring-s: 70%; --ring-l: 55%;
+    
+    /* Updated Ring for Dark Theme */
+    --ring-h: var(--primary-h); --ring-s: var(--primary-s); --ring-l: calc(var(--primary-l) + 10%);
 
     /* === Derived Dark Colors === */
     --background: hsl(var(--background-h) var(--background-s) var(--background-l));
