@@ -54,11 +54,10 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-lg">
               <Image
-                src="https://placehold.co/600x450.png"
+                src="/What_Style_Snap.png"
                 alt="Stylishly organized digital wardrobe interface"
                 layout="fill"
                 objectFit="cover"
-                data-ai-hint="fashion organization"
               />
             </div>
           </CardContent>
