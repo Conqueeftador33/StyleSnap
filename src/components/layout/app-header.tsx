@@ -14,7 +14,7 @@ export function AppHeader() {
       <div className="container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
           <Image 
-            src="/logo.png" 
+            src="/logo1.png" 
             alt="StyleSNAP! Logo" 
             width={120} 
             height={30}

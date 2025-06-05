@@ -14,7 +14,7 @@ const HomePage = React.memo(function HomePage() {
       <section className="text-center py-12 rounded-lg shadow-lg bg-gradient-to-br from-primary/10 via-background to-background">
         <div className="mb-6 mx-auto flex justify-center">
           <Image
-            src="/logo.png"
+            src="/logo1.png"
             alt="StyleSNAP! Logo"
             width={150}
             height={38}
