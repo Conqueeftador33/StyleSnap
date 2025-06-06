@@ -71,7 +71,6 @@ const HomePage = React.memo(function HomePage() {
                 width={400}
                 height={300}
                 className="rounded-md object-contain shadow-lg"
-                data-ai-hint="digital wardrobe app"
               />
             </div>
           </CardContent>
@@ -92,12 +91,11 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="https://placehold.co/300x200.png"
+                src="/snap.jpg"
                 alt="Person taking a photo of a clothing item with a smartphone"
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
-                data-ai-hint="clothing photo app"
               />
             </div>
           </Card>
@@ -112,12 +110,11 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="https://placehold.co/300x200.png"
+                src="/closet.jpg"
                 alt="Digital wardrobe interface showing organized clothing items"
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
-                data-ai-hint="wardrobe organization app"
               />
             </div>
           </Card>
@@ -132,12 +129,11 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="https://placehold.co/300x200.png"
+                src="/s.jpg"
                 alt="AI generating outfit suggestions on a screen"
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
-                data-ai-hint="ai fashion outfits"
               />
             </div>
           </Card>
