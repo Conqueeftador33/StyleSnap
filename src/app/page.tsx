@@ -36,7 +36,7 @@ const HomePage = React.memo(function HomePage() {
             </div>
 
             {/* Right Column: Headline and Description */}
-            <div className="text-center md:text-left -translate-y-[50px]">
+            <div className="text-center md:text-left translate-y-[150px]">
               <h1 className="text-4xl md:text-5xl font-headline tracking-tight text-primary mb-4">
                 Welcome to Style Snap!
               </h1>
