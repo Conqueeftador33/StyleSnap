@@ -15,8 +15,8 @@ const HomePage = React.memo(function HomePage() {
         <div className="container mx-auto px-4">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
             {/* Left Column: Logo and Buttons */}
-            <div className="text-center md:text-left mb-8 md:mb-0 mt-8 md:mt-0">
-              <div className="mb-6 md:mb-0 flex justify-center md:justify-start md:translate-y-[50px]">
+            <div className="text-center md:text-left mb-8 md:mb-0 mt-8 md:mt-0 md:translate-y-[50px]">
+              <div className="mb-6 md:mb-0 flex justify-center md:justify-start">
                 <Image
                   src="/logo1.png"
                   alt="StyleSNAP! Logo"
@@ -71,6 +71,7 @@ const HomePage = React.memo(function HomePage() {
                 width={400}
                 height={300}
                 className="rounded-md object-contain shadow-lg"
+                data-ai-hint="digital wardrobe interface"
               />
             </div>
           </CardContent>
@@ -91,11 +92,12 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="/snap.jpg"
+                src="/mo.jpg"
                 alt="Person taking a photo of a clothing item with a smartphone"
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
+                data-ai-hint="clothing photo app"
               />
             </div>
           </Card>
@@ -115,6 +117,7 @@ const HomePage = React.memo(function HomePage() {
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
+                data-ai-hint="digital wardrobe"
               />
             </div>
           </Card>
@@ -134,6 +137,7 @@ const HomePage = React.memo(function HomePage() {
                 width={300}
                 height={200}
                 className="rounded-md object-contain shadow-md"
+                data-ai-hint="ai fashion"
               />
             </div>
           </Card>
