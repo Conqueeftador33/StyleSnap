@@ -6,26 +6,26 @@
 @layer base {
   :root {
     /* === Base HSL Tokens (Light Theme) === */
-    --background-h: 225; --background-s: 60%; --background-l: 94%;
-    --foreground-h: 230; --foreground-s: 30%; --foreground-l: 25%;
+    --background-h: 0; --background-s: 0%; --background-l: 96.5%; /* Very light grayish rose (#F0ECEC) */
+    --foreground-h: 0; --foreground-s: 10%; --foreground-l: 20%; /* Darker text for readability */
     --card-h: 0; --card-s: 0%; --card-l: 100%;
-    --card-foreground-h: 230; --card-foreground-s: 30%; --card-foreground-l: 20%;
+    --card-foreground-h: 0; --card-foreground-s: 10%; --card-foreground-l: 20%;
     --popover-h: 0; --popover-s: 0%; --popover-l: 100%;
-    --popover-foreground-h: 230; --popover-foreground-s: 30%; --popover-foreground-l: 20%;
+    --popover-foreground-h: 0; --popover-foreground-s: 10%; --popover-foreground-l: 20%;
     
-    --primary-h: 220; --primary-s: 45%; --primary-l: 30%; /* Navy Blue */
-    --primary-foreground-h: 210; --primary-foreground-s: 40%; --primary-foreground-l: 95%; /* Light text for contrast */
+    --primary-h: 0; --primary-s: 25%; --primary-l: 65%; /* Dusty Rose (#C2A3A3) */
+    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-foreground-l: 100%; /* White text for contrast */
     
-    --secondary-h: 225; --secondary-s: 50%; --secondary-l: 88%;
-    --secondary-foreground-h: 230; --secondary-foreground-s: 30%; --secondary-foreground-l: 30%;
-    --muted-h: 225; --muted-s: 55%; --muted-l: 92%;
-    --muted-foreground-h: 230; --muted-foreground-s: 30%; --muted-foreground-l: 45%;
-    --accent-h: 45; --accent-s: 90%; --accent-l: 60%;
-    --accent-foreground-h: 40; --accent-s: 30%; --accent-foreground-l: 15%;
+    --secondary-h: 0; --secondary-s: 15%; --secondary-l: 80%; /* Lighter dusty rose */
+    --secondary-foreground-h: 0; --secondary-foreground-s: 10%; --secondary-foreground-l: 25%;
+    --muted-h: 0; --muted-s: 10%; --muted-l: 90%; /* Even lighter rose/gray */
+    --muted-foreground-h: 0; --muted-foreground-s: 10%; --muted-foreground-l: 40%;
+    --accent-h: 270; --accent-s: 25%; --accent-l: 65%; /* Muted Violet (#A3A3C2) */
+    --accent-foreground-h: 0; --accent-foreground-s: 0%; --accent-foreground-l: 100%; /* White text for contrast */
     --destructive-h: 0; --destructive-s: 70%; --destructive-l: 50%;
     --destructive-foreground-h: 0; --destructive-s: 0%; --destructive-foreground-l: 100%;
-    --border-h: 225; --border-s: 40%; --border-l: 85%;
-    --input-h: 225; --input-s: 70%; --input-l: 97%;
+    --border-h: 0; --border-s: 15%; --border-l: 80%; /* Lighter border to match theme */
+    --input-h: 0; --input-s: 0%; --input-l: 95%; /* Very light input background */
     
     --ring-h: var(--primary-h); --ring-s: var(--primary-s); --ring-l: calc(var(--primary-l) + 10%);
 
@@ -62,33 +62,33 @@
   }
 
   .dark {
-    /* === Base HSL Tokens (Dark Theme - Overhauled) === */
-    --background-h: 220; --background-s: 20%; --background-l: 8%; /* Deeper, cooler dark background */
-    --foreground-h: 210; --foreground-s: 25%; --foreground-l: 92%; /* Brighter foreground for readability */
+    /* === Base HSL Tokens (Dark Theme - Overhauled for White Text) === */
+    --background-h: 0; --background-s: 5%; --background-l: 10%; /* Darker grayish rose */
+    --foreground-h: 0; --foreground-s: 0%; --foreground-l: 95%; /* Off-white for main text */
     
-    --card-h: 220; --card-s: 20%; --card-l: 12%; /* Slightly lighter card background */
-    --card-foreground-h: 210; --card-foreground-s: 25%; --card-foreground-l: 90%;
+    --card-h: 0; --card-s: 5%; --card-l: 14%; /* Slightly lighter card background */
+    --card-foreground-h: 0; --card-foreground-s: 0%; --card-foreground-l: 95%; /* Off-white for card text */
     
-    --popover-h: 220; --popover-s: 20%; --popover-l: 10%; /* Consistent popover */
-    --popover-foreground-h: 210; --popover-foreground-s: 25%; --popover-foreground-l: 90%;
+    --popover-h: 0; --popover-s: 5%; --popover-l: 12%; /* Consistent popover */
+    --popover-foreground-h: 0; --popover-foreground-s: 0%; --popover-foreground-l: 95%; /* Off-white for popover text */
     
-    --primary-h: 210; --primary-s: 75%; --primary-l: 60%; /* More vibrant blue for primary actions */
-    --primary-foreground-h: 220; --primary-foreground-s: 20%; --primary-foreground-l: 10%; /* Dark text on primary buttons */
+    --primary-h: 0; --primary-s: 25%; --primary-l: 55%; /* Dusty Rose, slightly darker for dark mode bg */
+    --primary-foreground-h: 0; --primary-foreground-s: 0%; --primary-foreground-l: 95%; /* Off-white text on primary elements */
     
-    --secondary-h: 220; --secondary-s: 15%; --secondary-l: 30%; /* Subtler secondary elements */
-    --secondary-foreground-h: 210; --secondary-foreground-s: 25%; --secondary-foreground-l: 88%;
+    --secondary-h: 0; --secondary-s: 15%; --secondary-l: 30%; /* Darker secondary elements */
+    --secondary-foreground-h: 0; --secondary-foreground-s: 0%; --secondary-foreground-l: 92%; /* Lighter secondary text */
     
-    --muted-h: 220; --muted-s: 15%; --muted-l: 22%;
-    --muted-foreground-h: 210; --muted-foreground-s: 20%; --muted-l: 68%; /* Improved muted text contrast */
+    --muted-h: 0; --muted-s: 10%; --muted-l: 22%;
+    --muted-foreground-h: 0; --muted-foreground-s: 0%; --muted-foreground-l: 80%; /* Lighter muted text */
     
-    --accent-h: 45; --accent-s: 75%; --accent-l: 65%; /* Accent remains noticeable */
-    --accent-foreground-h: 40; --accent-foreground-s: 85%; --accent-foreground-l: 10%;
+    --accent-h: 270; --accent-s: 30%; --accent-l: 45%; /* Darker Muted Violet for background */
+    --accent-foreground-h: 0; --accent-foreground-s: 0%; --accent-foreground-l: 95%; /* Off-white text on accent */
     
-    --destructive-h: 0; --destructive-s: 65%; --destructive-l: 58%;
-    --destructive-foreground-h: 0; --destructive-foreground-s: 0%; --destructive-foreground-l: 96%;
+    --destructive-h: 0; --destructive-s: 65%; --destructive-l: 45%; /* Slightly darker destructive red */
+    --destructive-foreground-h: 0; --destructive-s: 0%; --destructive-foreground-l: 96%; /* White text on destructive */
     
-    --border-h: 220; --border-s: 15%; --border-l: 20%; /* Clearer borders */
-    --input-h: 220; --input-s: 15%; --input-l: 18%; /* Input background distinct but dark */
+    --border-h: 0; --border-s: 10%; --border-l: 25%; /* Clearer borders */
+    --input-h: 0; --input-s: 5%; --input-l: 18%; /* Input background distinct but dark */
     
     --ring-h: var(--primary-h); --ring-s: calc(var(--primary-s) + 5%); --ring-l: calc(var(--primary-l) + 5%);
 
@@ -141,3 +141,5 @@
     @apply text-foreground;
   }
 }
+
+    
