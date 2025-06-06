@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
   experimental: {
     allowedDevOrigins: [
       '6000-firebase-studio-1749042133846.cluster-c3a7z3wnwzapkx3rfr5kz62dac.cloudworkstations.dev',
+      '9000-firebase-studio-1749042133846.cluster-c3a7z3wnwzapkx3rfr5kz62dac.cloudworkstations.dev',
       // You can add more trusted origins here if needed
     ],
   },
