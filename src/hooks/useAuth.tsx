@@ -1,10 +1,10 @@
 
 "use client";
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { User } from 'firebase/auth';
-import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { Loader2 } from 'lucide-react';
+// import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
+// import { auth } from '@/lib/firebase';
+// import { Loader2 } from 'lucide-react'; // Loader not needed if not showing full-screen loading
 import { useToast } from './use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -17,39 +17,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null); // Default to null for guest mode
+  const [isLoading, setIsLoading] = useState(false); // Default to false, no auth check initially
   const { toast } = useToast();
   const router = useRouter();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setIsLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+  // useEffect(() => {
+  //   // Firebase auth listener is commented out for guest-first mode
+  //   // const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  //   //   setUser(currentUser);
+  //   //   setIsLoading(false);
+  //   // });
+  //   // return () => unsubscribe();
+  //   // setIsLoading(false); // Ensure loading is false if no auth check
+  // }, []);
 
   const logout = async () => {
-    try {
-      await firebaseSignOut(auth);
-      toast({ title: 'Logged Out', description: "You've been successfully logged out." });
-      router.push('/'); // Redirect to home page after logout
-    } catch (error) {
-      console.error("Logout error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Unknown error during logout.";
-      toast({ variant: 'destructive', title: 'Logout Failed', description: errorMessage });
-    }
+    toast({
+      title: 'Login/Account Features Coming Soon!',
+      description: 'User accounts and cloud sync are under development. You can continue using the app with local storage.',
+      duration: 5000,
+    });
+    // Ensure user stays null or redirect to a page that clarifies guest mode
+    // router.push('/'); // Optional: redirect to home or wardrobe
   };
   
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
-        <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-        <p className="text-lg">Initializing Authentication...</p>
-      </div>
-    );
-  }
+  // Full-screen loader removed as we default to guest mode immediately.
+  // If a brief flicker or auth check is desired in the future, this can be reinstated.
 
   return (
     <AuthContext.Provider value={{ user, isLoading, logout }}>

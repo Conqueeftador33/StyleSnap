@@ -1,53 +1,36 @@
 
 "use client";
-import { AuthForm } from '@/components/auth/AuthForm';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter, useSearchParams } from 'next/navigation'; 
-import { LogIn } from 'lucide-react';
-
-// Define a placeholder domain for constructing emails from usernames
-const APP_DOMAIN = "stylesnap.app";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Construction } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
-  const { toast } = useToast();
-  const router = useRouter();
-  const searchParams = useSearchParams(); 
-
-  const handleLogin = async (data: { username: string; password: any; }) => { // Changed email to username
-    try {
-      const email = `${data.username}@${APP_DOMAIN}`; // Construct email from username
-      await signInWithEmailAndPassword(auth, email, data.password);
-      toast({
-        title: "Login Successful!",
-        description: "Welcome back to Style Snap!",
-        className: "bg-green-500 text-white",
-      });
-      const redirectUrl = searchParams.get('redirect') || '/wardrobe'; 
-      router.push(redirectUrl); 
-    } catch (error) {
-      // Error is caught and displayed by AuthForm, but re-throw to prevent success logic here.
-      throw error;
-    }
-  };
-
   return (
     <div className="container mx-auto flex flex-col items-center justify-center min-h-[calc(100vh-8rem)] py-8">
-      <div className="flex items-center text-primary mb-6">
-        <LogIn className="h-10 w-10 mr-3" />
-        <h1 className="text-4xl font-headline">Login to Style Snap</h1>
-      </div>
-      <AuthForm
-        mode="login"
-        onSubmit={handleLogin}
-        title="Welcome Back!"
-        description="Please enter your username and password to access your wardrobe." // Updated description
-        buttonText="Log In"
-        alternateActionText="Don't have an account?"
-        alternateActionLinkText="Sign Up" 
-        alternateActionLink={`/signup${searchParams.get('redirect') ? `?redirect=${searchParams.get('redirect')}` : ''}`} 
-      />
+      <Card className="w-full max-w-md mx-auto shadow-lg">
+        <CardHeader className="text-center">
+          <Construction className="h-16 w-16 text-primary mx-auto mb-4" />
+          <CardTitle className="font-headline text-3xl text-primary">Login Feature Coming Soon!</CardTitle>
+          <CardDescription className="text-muted-foreground text-base pt-2">
+            We're working hard to bring you user accounts and cloud synchronization for your wardrobe.
+            For now, please continue to enjoy Style Snap by using the local wardrobe features.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="text-center">
+          <p className="text-sm text-muted-foreground mb-6">
+            Your items will be saved on this device.
+          </p>
+          <Button asChild size="lg">
+            <Link href="/wardrobe">Go to My Local Wardrobe</Link>
+          </Button>
+           <div className="mt-4">
+            <Button variant="outline" asChild>
+                <Link href="/">Back to Home</Link>
+            </Button>
+           </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

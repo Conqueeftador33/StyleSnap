@@ -1,51 +1,38 @@
 
-"use client"; // Required for hooks and client-side logic
-
+"use client"; 
 import React from 'react';
-import { ChatInterface } from '@/components/chat/chat-interface';
-import { useAuth } from '@/hooks/useAuth';
-import { Loader2, UserCheck } from 'lucide-react';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MessageSquare, Construction } from 'lucide-react';
 import Link from 'next/link';
 
 export default function StylistChatPage() {
-  const { user, isLoading: authLoading } = useAuth();
-
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-        <Loader2 className="h-12 w-12 text-primary animate-spin" />
-        <p className="ml-4 text-muted-foreground">Loading chat...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center">
-        <Alert variant="default" className="max-w-md shadow-lg">
-          <UserCheck className="h-5 w-5 text-primary" />
-          <AlertTitle className="text-primary">Login Required for AI Stylist Chat</AlertTitle>
-          <AlertDescription className="space-y-2">
-            Please log in or sign up to chat with our AI stylist and get fashion advice.
-            <div className="flex justify-center gap-2 mt-3">
-                <Button asChild>
-                    <Link href="/login?redirect=/stylist-chat">Log In</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                    <Link href="/signup?redirect=/stylist-chat">Sign Up</Link>
-                </Button>
-            </div>
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto max-w-3xl py-0 md:py-6">
-      <ChatInterface />
+    <div className="container mx-auto max-w-3xl py-0 md:py-6 flex flex-col items-center justify-center min-h-[calc(100vh-10rem)]">
+      <Card className="w-full shadow-xl text-center">
+        <CardHeader className="border-b pb-4">
+           <Construction className="h-16 w-16 text-primary mx-auto mb-4" />
+          <CardTitle className="flex items-center justify-center font-headline text-3xl text-primary">
+            <MessageSquare className="mr-2 h-8 w-8" /> AI Stylist Chat Coming Soon!
+          </CardTitle>
+          <CardDescription className="text-muted-foreground text-base pt-2">
+            Our conversational AI stylist will soon be here to offer fashion advice and help you explore new looks! This feature requires a user account, which is under development.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6 space-y-4">
+          <p className="text-muted-foreground">
+            While we're getting the AI ready, feel free to organize your wardrobe locally.
+          </p>
+           <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <Button asChild size="lg">
+              <Link href="/add">Add Items to Wardrobe</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/wardrobe">View My Local Wardrobe</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
