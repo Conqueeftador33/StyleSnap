@@ -16,7 +16,7 @@ const HomePage = React.memo(function HomePage() {
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
             {/* Left Column: Logo and Buttons */}
             <div className="text-center md:text-left mb-8 md:mb-0">
-              <div className="mb-0 flex justify-center md:justify-start">
+              <div className="mb-0 flex justify-center md:justify-start translate-y-[50px]">
                 <Image
                   src="/logo1.png"
                   alt="StyleSNAP! Logo"
@@ -25,7 +25,7 @@ const HomePage = React.memo(function HomePage() {
                   priority
                 />
               </div>
-              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 -translate-y-[150px]">
+              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 -translate-y-[100px]">
                 <Button asChild size="lg" className="w-full sm:w-auto shadow-md">
                   <Link href="/wardrobe">View My Wardrobe <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
