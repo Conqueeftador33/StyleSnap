@@ -90,6 +90,16 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">1. Snap & Analyze</CardTitle>
               <CardDescription>Add items by uploading photos or using your camera. Our AI analyzes each piece, identifying its type, color, material, and category.</CardDescription>
             </CardHeader>
+            <div className="px-6 pb-6 flex justify-center">
+              <Image
+                src="/snap.jpg"
+                alt="Person taking a photo of a clothing item with a smartphone"
+                width={300}
+                height={200}
+                className="rounded-md object-contain shadow-md"
+                data-ai-hint="clothing photo app"
+              />
+            </div>
           </Card>
 
           <Card className="shadow-lg hover:shadow-xl transition-shadow flex flex-col">
