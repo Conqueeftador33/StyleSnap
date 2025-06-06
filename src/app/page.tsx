@@ -11,12 +11,12 @@ const HomePage = React.memo(function HomePage() {
   return (
     <div className="space-y-12">
       {/* Hero Section - Redesigned */}
-      <section className="text-center -mt-[150px] py-8 md:py-12 rounded-lg shadow-xl bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden">
+      <section className="text-center pt-8 pb-4 md:py-12 rounded-lg shadow-xl bg-gradient-to-br from-primary/10 via-background to-background overflow-hidden md:-mt-[150px]">
         <div className="container mx-auto px-4">
           <div className="md:grid md:grid-cols-2 md:gap-12 md:items-center">
             {/* Left Column: Logo and Buttons */}
             <div className="text-center md:text-left mb-8 md:mb-0">
-              <div className="mb-0 flex justify-center md:justify-start translate-y-[50px]">
+              <div className="mb-6 md:mb-0 flex justify-center md:justify-start md:translate-y-[50px]">
                 <Image
                   src="/logo1.png"
                   alt="StyleSNAP! Logo"
@@ -25,7 +25,7 @@ const HomePage = React.memo(function HomePage() {
                   priority
                 />
               </div>
-              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 -translate-y-[100px]">
+              <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 mt-6 md:mt-0 md:-translate-y-[100px]">
                 <Button asChild size="lg" className="w-full sm:w-auto shadow-md">
                   <Link href="/wardrobe">View My Wardrobe <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
@@ -36,7 +36,7 @@ const HomePage = React.memo(function HomePage() {
             </div>
 
             {/* Right Column: Headline and Description */}
-            <div className="text-center md:text-left translate-y-[100px]">
+            <div className="text-center md:text-left mt-8 md:mt-0 md:translate-y-[100px]">
               <h1 className="text-4xl md:text-5xl font-headline tracking-tight text-primary mb-4">
                 Welcome to Style Snap!
               </h1>
@@ -112,7 +112,7 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="https://placehold.co/300x200.png"
+                src="/closet.jpg"
                 alt="Digital wardrobe interface showing organized clothing items"
                 width={300}
                 height={200}
@@ -132,7 +132,7 @@ const HomePage = React.memo(function HomePage() {
             </CardHeader>
             <div className="px-6 pb-6 flex justify-center">
               <Image
-                src="https://placehold.co/300x200.png"
+                src="/s.jpg"
                 alt="AI generating outfit suggestions on a screen"
                 width={300}
                 height={200}
