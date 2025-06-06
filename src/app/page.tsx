@@ -110,6 +110,16 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">2. Build Your Closet</CardTitle>
               <CardDescription>Your analyzed items populate your digital wardrobe. View, sort, filter, and edit details to keep everything perfectly organized.</CardDescription>
             </CardHeader>
+            <div className="px-6 pb-6 flex justify-center">
+              <Image
+                src="https://placehold.co/300x200.png"
+                alt="Digital wardrobe interface showing organized clothing items"
+                width={300}
+                height={200}
+                className="rounded-md object-contain shadow-md"
+                data-ai-hint="wardrobe organization app"
+              />
+            </div>
           </Card>
 
           <Card className="shadow-lg hover:shadow-xl transition-shadow flex flex-col">
@@ -120,6 +130,16 @@ const HomePage = React.memo(function HomePage() {
               <CardTitle className="font-headline text-xl">3. Get Styled</CardTitle>
               <CardDescription>Request AI outfit suggestions for any occasion or style preference. Discover new combinations and get fashion tips to complete your look.</CardDescription>
             </CardHeader>
+            <div className="px-6 pb-6 flex justify-center">
+              <Image
+                src="https://placehold.co/300x200.png"
+                alt="AI generating outfit suggestions on a screen"
+                width={300}
+                height={200}
+                className="rounded-md object-contain shadow-md"
+                data-ai-hint="ai fashion outfits"
+              />
+            </div>
           </Card>
         </div>
       </section>
